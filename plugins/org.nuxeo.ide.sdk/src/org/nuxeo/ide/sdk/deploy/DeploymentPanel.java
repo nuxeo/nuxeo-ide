@@ -61,7 +61,7 @@ public class DeploymentPanel extends Composite {
         this.deployment = deployment;
         name.setText(deployment.getName());
         projects.setCheckedProjects(deployment.getProjects());
-//        libraries.setCheckedLibs(deployment.getLibraries());
+        libraries.setCheckedLibs(deployment.getLibraries());
     }
 
     public Deployment getDeployment() {
