@@ -23,18 +23,25 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IStatus;
 import org.nuxeo.ide.common.UI;
 import org.nuxeo.ide.common.forms.Form;
 import org.nuxeo.ide.common.forms.UIObject;
+import org.nuxeo.ide.sdk.SDKPlugin;
 
 /**
  * The base class for all template contexts.
- * 
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 @SuppressWarnings("serial")
 public class TemplateContext extends HashMap<String, Object> {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     protected String template;
 
@@ -124,8 +131,11 @@ public class TemplateContext extends HashMap<String, Object> {
 
     public void setPropertyIfNotNull(Form form, String key) {
         String v = form.getWidgetValueAsString(key);
-        v = v.trim();
+        if (v == null) {
+            SDKPlugin.log(IStatus.WARNING, "Failed to get value in form: " + key);
+        }
         if (v != null && v.length() > 0) {
+            v = v.trim();
             put(key, v);
         }
     }

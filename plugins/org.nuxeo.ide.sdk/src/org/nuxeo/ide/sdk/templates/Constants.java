@@ -17,10 +17,10 @@
 package org.nuxeo.ide.sdk.templates;
 
 /**
- * The set of built-in keys of a template context.
- *
+ * The set of built-in keys of a template context
+ * 
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- *
+ * 
  */
 public interface Constants {
 
@@ -35,6 +35,8 @@ public interface Constants {
     public final static String PROJECT_NAME = "projectName";
 
     public final static String PROJECT_PACKAGE = "package";
+
+    public final static String DEFAULT_PROJECT_PACKAGE = "org.nuxeo.sample";
 
     /**
      * The '/' separated path of the java PROJECT_PACKAGE

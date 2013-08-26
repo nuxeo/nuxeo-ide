@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class Form {
 
@@ -86,14 +86,14 @@ public class Form {
     protected Map<String, Image> images;
 
     public Form() {
-        this.layouts = new HashMap<String, LayoutManager>();
-        this.widgetTypes = new HashMap<String, Class<?>>();
-        this.bindings = new HashMap<String, UIObject<?>>();
-        this.widgets = new HashMap<String, UIObject<?>>();
-        this.actions = new HashMap<String, ActionHandler>();
-        this.errors = new HashMap<String, String>();
-        this.validators = new HashMap<String, Class<? extends Validator>>();
-        this.images = new HashMap<String, Image>();
+        layouts = new HashMap<String, LayoutManager>();
+        widgetTypes = new HashMap<String, Class<?>>();
+        bindings = new HashMap<String, UIObject<?>>();
+        widgets = new HashMap<String, UIObject<?>>();
+        actions = new HashMap<String, ActionHandler>();
+        errors = new HashMap<String, String>();
+        validators = new HashMap<String, Class<? extends Validator>>();
+        images = new HashMap<String, Image>();
         initDefaults();
     }
 
@@ -142,7 +142,7 @@ public class Form {
             if (clazz == null) {
                 clazz = (Class<? extends Validator>) Class.forName(type);
             }
-            return (Validator) clazz.newInstance();
+            return clazz.newInstance();
         } catch (Exception e) {
             throw new IllegalArgumentException("No such validator: " + type);
         }
@@ -161,7 +161,7 @@ public class Form {
     }
 
     public void addLayoutManager(LayoutManager layoutManager) {
-        this.layouts.put(layoutManager.getId(), layoutManager);
+        layouts.put(layoutManager.getId(), layoutManager);
     }
 
     public Map<String, LayoutManager> getLayouts() {
@@ -250,7 +250,7 @@ public class Form {
     }
 
     public void addBinding(String id, UIObject<?> binding) {
-        this.bindings.put(id, binding);
+        bindings.put(id, binding);
     }
 
     public Map<String, UIObject<?>> getBindings() {

@@ -24,7 +24,7 @@ import org.nuxeo.ide.sdk.templates.Constants;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class NuxeoProjectPage2 extends FormWizardPage<ProjectTemplateContext>
         implements Constants {
@@ -67,6 +67,7 @@ public class NuxeoProjectPage2 extends FormWizardPage<ProjectTemplateContext>
         return form.getWidgetValueAsString(PARENT_VERSION);
     }
 
+    @Override
     public NuxeoProjectPage1 getPreviousPage() {
         return (NuxeoProjectPage1) super.getPreviousPage();
     }
@@ -110,6 +111,8 @@ public class NuxeoProjectPage2 extends FormWizardPage<ProjectTemplateContext>
                 PROJECT_ID);
         String rootPackage = getPreviousPage().getForm().getWidgetValueAsString(
                 PROJECT_PACKAGE);
+
+        rootPackage = rootPackage != null ? rootPackage : DEFAULT_PROJECT_PACKAGE;
 
         int i = rootPackage.lastIndexOf('.');
         if (i > 0) {
