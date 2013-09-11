@@ -1,6 +1,22 @@
+/*
+ * (C) Copyright 2013 Nuxeo SA (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License (LGPL)
+ * version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * Contributors: Sun Seng David TAN (sunix@sunix.org)
+ */
 package org.nuxeo.ide.sdk.comp.contentassist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,8 +25,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IAnnotatable;
 import org.eclipse.jdt.core.IAnnotation;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMemberValuePair;
 import org.eclipse.jdt.core.IType;
@@ -33,6 +49,13 @@ import org.eclipse.wst.xml.ui.internal.contentassist.DefaultXMLCompletionProposa
 import org.nuxeo.ide.sdk.SDKPlugin;
 import org.w3c.dom.Node;
 
+/**
+ * Main class for Nuxeo components and extension point completion proposal in
+ * Eclipse WST XML Editor.
+ *
+ * @author Sun Seng David TAN (sunix@sunix.org)
+ *
+ */
 @SuppressWarnings("restriction")
 public class NuxeoXmlComponentProposalComputer extends
         DefaultXMLCompletionProposalComputer {
@@ -45,6 +68,25 @@ public class NuxeoXmlComponentProposalComputer extends
 
     public static final String XNODE = "org.nuxeo.common.xmap.annotation.XNode";
 
+    protected ExtensionProposalProcessor extensionProposalProcessor = null;
+
+    protected ExtensionProposalProcessor getExtensionProposalProcessor(
+            CompletionProposalInvocationContext context) {
+        if (extensionProposalProcessor == null) {
+            extensionProposalProcessor = new ExtensionProposalProcessor(context);
+        }
+        return extensionProposalProcessor;
+    }
+
+    protected ExtensionPointNodeResolver xpresolver = null;
+
+    protected ExtensionPointNodeResolver getExtensionPointNodeResolver() {
+        if (xpresolver == null) {
+            xpresolver = new ExtensionPointNodeResolver();
+        }
+        return xpresolver;
+    }
+
     @Override
     protected void addAttributeNameProposals(
             ContentAssistRequest contentAssistRequest,
@@ -52,7 +94,7 @@ public class NuxeoXmlComponentProposalComputer extends
 
         IDOMNode node = (IDOMNode) contentAssistRequest.getNode();
         int offset = getOffset(context);
-        List<Node> nodePath = getNodePath(contentAssistRequest);
+        List<Node> nodePath = getNodePath(contentAssistRequest, true);
         String prefix = extractPrefix(context.getViewer(), offset);
 
         // detect current element
@@ -74,15 +116,15 @@ public class NuxeoXmlComponentProposalComputer extends
         }
 
         if ("extension".equals(node.getNodeName()) && nodePath.size() == 3) {
-            ExtensionProposalProcessor extensionProposalProcessor = new ExtensionProposalProcessor(
-                    context);
-            extensionProposalProcessor.findAndAddExtensionProposal(prefix,
-                    contentAssistRequest, offset);
+
+            getExtensionProposalProcessor(context).findAndAddExtensionProposal(
+                    prefix, contentAssistRequest, offset);
             return;
         }
 
-        ExtensionPointNodeResolver extensionPointNodeResolver = new ExtensionPointNodeResolver();
-        extensionPointNodeResolver.resolve(nodePath, context);
+        ExtensionPointNodeResolver extensionPointNodeResolver = getExtensionPointNodeResolver();
+        extensionPointNodeResolver.resolve(nodePath, context,
+                contentAssistRequest, getExtensionProposalProcessor(context));
 
         IType nodeDescriptorType = extensionPointNodeResolver.getNodeDescriptorType();
         String currentNodePath = extensionPointNodeResolver.getCurrentNodePath();
@@ -90,60 +132,57 @@ public class NuxeoXmlComponentProposalComputer extends
         if (nodeDescriptorType != null) {
             // propose the current object attribute
 
-            IField[] fields;
+            List<IAnnotatable> annotatableElements = new ArrayList<IAnnotatable>();
             try {
-                fields = nodeDescriptorType.getFields();
+                annotatableElements.addAll(Arrays.asList(nodeDescriptorType.getFields()));
+                annotatableElements.addAll(Arrays.asList(nodeDescriptorType.getMethods()));
             } catch (JavaModelException e) {
                 SDKPlugin.log(
                         IStatus.WARNING,
-                        "exception while trying to get fields from the node type descriptor",
+                        "exception while trying to get fields and methods from the node type descriptor",
                         e);
                 return;
             }
-            for (IField field : fields) {
-                IAnnotation xnodeAnnotation = field.getAnnotation(XNODE);
+
+            for (IAnnotatable annotatableElement : annotatableElements) {
+                IAnnotation xnodeAnnotation = annotatableElement.getAnnotation(XNODE);
                 if (xnodeAnnotation != null) {
-                    String elementName = getAnnotationValue(xnodeAnnotation);
-
-                    // specific completion proposal for attribute name
-                    if (elementName == null) {
-                        continue;
-                    }
-                    if (currentNodePath != null
-                            && !elementName.startsWith(currentNodePath)) {
-                        continue;
-                    }
-                    elementName = currentNodePath == null ? elementName
-                            : elementName.substring(currentNodePath.length());
-                    if (elementName.toLowerCase().contains(prefix.toLowerCase())
-                            && elementName.startsWith("@")) {
-                        String replacementString = elementName.substring(1)
-                                + "=\"\"";
-                        CompletionProposal newProposal;
-                        try {
-                            newProposal = new CompletionProposal(
-                                    replacementString,
-                                    offset - prefix.length(),
-                                    prefix.length(),
-                                    replacementString.length() - 1,
-                                    SDKPlugin.getDefault().getImageRegistry().get(
-                                            "icons/comp/xpoint.gif"),
-                                    replacementString, null,
-                                    field.getAttachedJavadoc(null));
-                            contentAssistRequest.addProposal(newProposal);
-                        } catch (JavaModelException e) {
-                            SDKPlugin.log(
-                                    IStatus.ERROR,
-                                    "An error occured while generating xpoints completion proposal",
-                                    e);
-                        }
-                    }
+                    proposeAttributeName(contentAssistRequest, offset, prefix,
+                            currentNodePath, xnodeAnnotation);
                 }
-
             }
 
         }
 
+    }
+
+    protected void proposeAttributeName(
+            ContentAssistRequest contentAssistRequest, int offset,
+            String prefix, String currentNodePath, IAnnotation xnodeAnnotation) {
+        String elementName = getAnnotationValue(xnodeAnnotation);
+
+        // specific completion proposal for attribute name
+        if (elementName == null) {
+            return;
+        }
+        if (currentNodePath != null && !elementName.startsWith(currentNodePath)) {
+            return;
+        }
+        elementName = currentNodePath == null ? elementName
+                : elementName.substring(currentNodePath.length());
+        if (elementName.toLowerCase().contains(prefix.toLowerCase())
+                && elementName.startsWith("@")) {
+            String replacementString = elementName.substring(1) + "=\"\"";
+            CompletionProposal newProposal;
+            newProposal = new CompletionProposal(replacementString, offset
+                    - prefix.length(), prefix.length(),
+                    replacementString.length() - 1,
+                    SDKPlugin.getDefault().getImageRegistry().get(
+                            "icons/comp/xpoint.gif"), elementName.substring(1)
+                            + " - attribute", null, null);
+            contentAssistRequest.addProposal(newProposal);
+
+        }
     }
 
     @Override
@@ -151,9 +190,7 @@ public class NuxeoXmlComponentProposalComputer extends
             ContentAssistRequest contentAssistRequest,
             ITextRegion completionRegion, IDOMNode treeNode,
             CompletionProposalInvocationContext context) {
-        // TODO suggest elements to add
-        super.addEntityProposals(contentAssistRequest, completionRegion,
-                treeNode, context);
+        addTagNameProposals(contentAssistRequest, 0, context);
     }
 
     @Override
@@ -161,13 +198,58 @@ public class NuxeoXmlComponentProposalComputer extends
             ContentAssistRequest contentAssistRequest, int childPosition,
             CompletionProposalInvocationContext context) {
         int offset = getOffset(context);
-        List<Node> nodePath = getNodePath(contentAssistRequest);
+        List<Node> nodePath = getNodePath(contentAssistRequest, false);
         String prefix = extractPrefix(context.getViewer(), offset);
 
-        // TODO special case if root -> propose extension
+        Node node = nodePath.get(nodePath.size() - 1);
+        // maybe this should be detected in the nodeResolver
+        if ("component".equals(node.getNodeName()) && nodePath.size() == 2) {
+            // can propose extension
+            proposeTag(contentAssistRequest, offset, "extension".length(),
+                    prefix, "extension", "extension", "icons/comp/xpoint.gif",
+                    "Extends Nuxeo by using an extension point provided by the platform.");
+            proposeTag(
+                    contentAssistRequest,
+                    offset,
+                    22,
+                    prefix,
+                    "extension-point",
+                    "extension-point name=\"\"><object class=\"\"/></extension-point>",
+                    "icons/comp/xpoint.gif",
+                    "Create your own extension point that can be extended by other components and plugin. The object class is the extension descriptor that will be mapped to contributions using Nuxeo Xmap");
 
-        ExtensionPointNodeResolver extensionPointNodeResolver = new ExtensionPointNodeResolver();
-        extensionPointNodeResolver.resolve(nodePath, context);
+            proposeTag(contentAssistRequest, offset, 14, prefix,
+                    "documentation", "documentation></documentation>",
+                    "icons/comp/component.gif",
+                    "Defines the current component documentation");
+            proposeTag(
+                    contentAssistRequest,
+                    offset,
+                    22,
+                    prefix,
+                    "implementation",
+                    "implementation class=\"\"/>",
+                    "icons/comp/component.gif",
+                    "Defines an implementation of the current component. Should extends DefaultComponent.");
+            proposeTag(
+                    contentAssistRequest,
+                    offset,
+                    8,
+                    prefix,
+                    "require",
+                    "require></require>",
+                    "icons/comp/component.gif",
+                    "Declares requirement on other components. Declares another existing component (given its unique name) that this component will require to be loaded. Useful when overriding or merging contributions to be sure that of the contributions registrations order");
+            proposeTag(contentAssistRequest, offset, 28, prefix, "service",
+                    "service><provide interface=\"\" /></service>",
+                    "icons/comp/component.gif",
+                    "Declares Services provided by this component");
+
+        }
+
+        ExtensionPointNodeResolver extensionPointNodeResolver = getExtensionPointNodeResolver();
+        extensionPointNodeResolver.resolve(nodePath, context,
+                contentAssistRequest, getExtensionProposalProcessor(context));
         IType nodeDescriptorType = extensionPointNodeResolver.getNodeDescriptorType();
         String currentNodePath = extensionPointNodeResolver.getCurrentNodePath();
         List<IType> descriptorCandidate = extensionPointNodeResolver.getDescriptorCandidates();
@@ -182,35 +264,33 @@ public class NuxeoXmlComponentProposalComputer extends
                 }
                 String xobjectName = getAnnotationValue(xobjectAnnotation);
 
-                contentAssistRequest.addProposal(new CompletionProposal(
-                        xobjectName, offset - prefix.length(), prefix.length(),
-                        xobjectName.length(),
-                        SDKPlugin.getDefault().getImageRegistry().get(
-                                "icons/comp/xpoint.gif"), xobjectName, null,
-                        null));
+                proposeTag(contentAssistRequest, offset, prefix, xobjectName,
+                        "icons/comp/xpoint.gif");
             }
             return;
         }
         if (nodeDescriptorType != null) {
             // propose the current object attribute
-
-            IField[] fields;
+            List<IAnnotatable> annotatableElements = new ArrayList<IAnnotatable>();
             try {
-                fields = nodeDescriptorType.getFields();
+                annotatableElements.addAll(Arrays.asList(nodeDescriptorType.getFields()));
+                annotatableElements.addAll(Arrays.asList(nodeDescriptorType.getMethods()));
             } catch (JavaModelException e) {
                 SDKPlugin.log(
                         IStatus.WARNING,
-                        "exception while trying to get fields from the node type descriptor",
+                        "exception while trying to get fields and methods from the node type descriptor",
                         e);
                 return;
             }
-            for (IField field : fields) {
-                IAnnotation xnodeAnnotation = field.getAnnotation(XNODE);
+
+            for (IAnnotatable annotatableElement : annotatableElements) {
+
+                IAnnotation xnodeAnnotation = annotatableElement.getAnnotation(XNODE);
                 if (xnodeAnnotation == null || !xnodeAnnotation.exists()) {
-                    xnodeAnnotation = field.getAnnotation(XNODEMAP);
+                    xnodeAnnotation = annotatableElement.getAnnotation(XNODEMAP);
                 }
                 if (xnodeAnnotation == null || !xnodeAnnotation.exists()) {
-                    xnodeAnnotation = field.getAnnotation(XNODELIST);
+                    xnodeAnnotation = annotatableElement.getAnnotation(XNODELIST);
                 }
                 if (xnodeAnnotation == null || !xnodeAnnotation.exists()) {
                     continue;
@@ -229,26 +309,30 @@ public class NuxeoXmlComponentProposalComputer extends
                     }
                     elementName = currentNodePath == null ? elementName
                             : elementName.substring(currentNodePath.length());
-                    if (elementName.toLowerCase().contains(prefix.toLowerCase())
+                    if (elementName.toLowerCase().startsWith(
+                            prefix.toLowerCase())
                             && !elementName.startsWith("@")) {
-                        CompletionProposal newProposal;
-                        try {
-                            newProposal = new CompletionProposal(
-                                    elementName,
-                                    offset - prefix.length(),
-                                    prefix.length(),
-                                    elementName.length(),
-                                    SDKPlugin.getDefault().getImageRegistry().get(
-                                            "icons/comp/xpoint.gif"),
-                                    elementName, null,
-                                    field.getAttachedJavadoc(null));
-                            contentAssistRequest.addProposal(newProposal);
-                        } catch (JavaModelException e) {
-                            SDKPlugin.log(
-                                    IStatus.ERROR,
-                                    "An error occured while generating xpoints completion proposal",
-                                    e);
+                        // escaping trailing path, maybe there is somehow a
+                        // better/simpler way to do:
+                        if (elementName.startsWith("/")) {
+                            elementName = elementName.substring(1);
                         }
+                        String originalElement = elementName;
+                        int indexOf = elementName.indexOf("/");
+                        if (indexOf > 0) {
+                            elementName = elementName.substring(0, indexOf);
+                        }
+                        indexOf = elementName.indexOf("@");
+                        if (indexOf > 0) {
+                            elementName = elementName.substring(0, indexOf);
+                        }
+
+                        proposeTag(contentAssistRequest, offset,
+                                elementName.length(), prefix, elementName
+                                        + " - (" + originalElement + ")",
+                                elementName, "icons/comp/xpoint.gif",
+                                elementName + " - (" + originalElement + ")");
+
                     }
                 }
 
@@ -256,6 +340,31 @@ public class NuxeoXmlComponentProposalComputer extends
 
         }
 
+    }
+
+    protected void proposeTag(ContentAssistRequest contentAssistRequest,
+            int offset, int cursorPosition, String prefix,
+            String displayString, String replacementString, String icon,
+            String description) {
+        if (displayString.startsWith(prefix)) {
+            Node currentNode = contentAssistRequest.getNode();
+            if (currentNode.getNodeType() == Node.TEXT_NODE
+                    && !"<".equals(currentNode.getTextContent().trim())) {
+                replacementString = "<" + replacementString;
+                cursorPosition++;
+            }
+            contentAssistRequest.addProposal(new CompletionProposal(
+                    replacementString, offset - prefix.length(),
+                    prefix.length(), cursorPosition,
+                    SDKPlugin.getDefault().getImageRegistry().get(icon),
+                    displayString, null, description));
+        }
+    }
+
+    protected void proposeTag(ContentAssistRequest contentAssistRequest,
+            int offset, String prefix, String elementName, String icon) {
+        proposeTag(contentAssistRequest, offset, elementName.length(), prefix,
+                elementName, elementName, icon, null);
     }
 
     protected int getOffset(CompletionProposalInvocationContext context) {
@@ -276,10 +385,11 @@ public class NuxeoXmlComponentProposalComputer extends
         return (ITextSelection) viewer.getSelectionProvider().getSelection();
     }
 
-    protected List<Node> getNodePath(ContentAssistRequest contentAssistRequest) {
+    protected List<Node> getNodePath(ContentAssistRequest contentAssistRequest,
+            boolean addFirst) {
         Node tmpNode = contentAssistRequest.getNode();
         List<Node> nodePath = new ArrayList<Node>();
-        if (tmpNode.getNodeType() != Node.TEXT_NODE) {
+        if (addFirst) {
             nodePath.add(tmpNode);
         }
         while (tmpNode.getParentNode() != null) {
@@ -358,6 +468,7 @@ public class NuxeoXmlComponentProposalComputer extends
             }
             return javaProject;
         }
+
         return null;
 
     }

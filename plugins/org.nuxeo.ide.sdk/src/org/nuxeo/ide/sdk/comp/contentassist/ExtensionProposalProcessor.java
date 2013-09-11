@@ -1,3 +1,18 @@
+/*
+ * (C) Copyright 2013 Nuxeo SA (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License (LGPL)
+ * version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl.html
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * Contributors: Sun Seng David TAN (sunix@sunix.org)
+ */
 package org.nuxeo.ide.sdk.comp.contentassist;
 
 import java.util.ArrayList;
@@ -29,6 +44,12 @@ import org.nuxeo.ide.sdk.server.ui.DocumentationFormat;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
+/**
+ * Helper to propose available extension that can be used.
+ *
+ * @author Sun Seng David TAN (sunix@sunix.org)
+ *
+ */
 @SuppressWarnings("restriction")
 public class ExtensionProposalProcessor {
 
@@ -38,27 +59,18 @@ public class ExtensionProposalProcessor {
 
     IJavaProject javaproject;
 
-    protected CompletionProposalInvocationContext context;
+    /**
+     * Cache extension point models in the proposal computer (bind to the
+     * current editor) to improve performance.
+     */
+    protected List<ExtensionPointModel> cachedExtensionPointModel = new ArrayList<ExtensionPointModel>();
 
     public ExtensionProposalProcessor(
             CompletionProposalInvocationContext context) {
         javaproject = getJavaProjectForDocument(context.getDocument());
-        this.context = context;
-    }
 
-    /**
-     * Get all the existing extension points and get only the ones that contains
-     * the prefix, add the proposal to the content Assist Request
-     *
-     * @param prefix
-     * @param contentAssistRequest
-     * @param offset
-     */
-    public void findAndAddExtensionProposal(String prefix,
-            ContentAssistRequest contentAssistRequest, int offset) {
-        // directly propose the extension point to select
+        // Caching extension points model to improve performance.
         ComponentRef[] components = componentIndex.getComponents();
-
         for (ComponentRef componentRef : components) {
             ComponentModel componentModel;
             try {
@@ -73,26 +85,41 @@ public class ExtensionProposalProcessor {
             }
             ExtensionPointModel[] xps = componentModel.getExtensionPoints();
             for (ExtensionPointModel extensionPointModel : xps) {
-                if (extensionPointModel.getLabel().toLowerCase().contains(
-                        prefix.toLowerCase())
-                        || prefix.isEmpty()) {
-                    String replacementStr = "target=\""
-                            + extensionPointModel.getComponent()
-                            + "\" point=\"" + extensionPointModel.getName()
-                            + "\" ";
+                cachedExtensionPointModel.add(extensionPointModel);
+            }
+        }
+    }
 
-                    contentAssistRequest.addProposal(new CompletionProposal(
-                            replacementStr,
-                            offset - prefix.length(),
-                            prefix.length(),
-                            replacementStr.length(),
-                            extensionPointModel.getImage(),
-                            extensionPointModel.getLabel(),
-                            null,
-                            DocumentationFormat.format(
-                                    extensionPointModel.getDocumentation()).replaceAll(
-                                    "\n", "<br/>\n")));
-                }
+    /**
+     * Get all the existing extension points and get only the ones that contains
+     * the prefix, add the proposal to the content Assist Request
+     *
+     * @param prefix
+     * @param contentAssistRequest
+     * @param offset
+     */
+    public void findAndAddExtensionProposal(String prefix,
+            ContentAssistRequest contentAssistRequest, int offset) {
+        // directly propose the extension point to select
+        for (ExtensionPointModel extensionPointModel : cachedExtensionPointModel) {
+            if (extensionPointModel.getLabel().toLowerCase().contains(
+                    prefix.toLowerCase())
+                    || prefix.isEmpty()) {
+                String replacementStr = "target=\""
+                        + extensionPointModel.getComponent() + "\" point=\""
+                        + extensionPointModel.getName() + "\" ";
+
+                contentAssistRequest.addProposal(new CompletionProposal(
+                        replacementStr,
+                        offset - prefix.length(),
+                        prefix.length(),
+                        replacementStr.length(),
+                        extensionPointModel.getImage(),
+                        extensionPointModel.getLabel(),
+                        null,
+                        DocumentationFormat.format(
+                                extensionPointModel.getDocumentation()).replaceAll(
+                                "\n", "<br/>\n")));
             }
         }
     }
