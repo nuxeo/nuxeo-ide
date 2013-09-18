@@ -132,7 +132,9 @@ public class ExtensionProposalProcessor {
      */
     public List<IType> getDescriptorCandidates(Node extensionNode) {
         ExtensionPointModel currentExtensionPointModel = getExtensionPointModel(extensionNode);
-
+        if(currentExtensionPointModel == null){
+            return null;
+        }
         // get the possible solutions from descriptors:
         String[] descriptors = currentExtensionPointModel.getContributionTypes();
 
@@ -150,8 +152,17 @@ public class ExtensionProposalProcessor {
 
     protected ExtensionPointModel getExtensionPointModel(Node extensionNode) {
         NamedNodeMap attrs = extensionNode.getAttributes();
-        String targetComp = attrs.getNamedItem("target").getNodeValue();
-        String point = attrs.getNamedItem("point").getNodeValue();
+
+        Node targetNamedItem = attrs.getNamedItem("target");
+        if(targetNamedItem == null){
+            return null;
+        }
+        String targetComp = targetNamedItem.getNodeValue();
+        Node pointNamedItem = attrs.getNamedItem("point");
+        if(pointNamedItem == null){
+            return null;
+        }
+        String point = pointNamedItem.getNodeValue();
 
         ComponentRef componentRef = componentIndex.getComponent(targetComp);
         ComponentModel componentModel;
