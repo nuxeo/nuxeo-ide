@@ -25,3 +25,4 @@ plugins/org.nuxeo.ide.archetype/features/
 plugins/org.nuxeo.ide.qatests/screenshots/
 *.bak
 *.zip
+*.idea
