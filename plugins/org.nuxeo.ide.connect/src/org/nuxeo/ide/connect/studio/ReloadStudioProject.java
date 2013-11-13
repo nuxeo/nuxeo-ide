@@ -16,6 +16,11 @@
  */
 package org.nuxeo.ide.connect.studio;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.eclipse.core.resources.IProject;
 import org.nuxeo.ide.connect.ConnectPlugin;
 import org.nuxeo.ide.connect.StudioProvider;
 import org.nuxeo.ide.sdk.DeploymentChangedListener;
@@ -31,7 +36,13 @@ public class ReloadStudioProject implements DeploymentChangedListener {
     @Override
     public void deploymentChanged(NuxeoSDK sdk, Deployment deployment) {
         StudioProvider provider = ConnectPlugin.getStudioProvider();
-        provider.fireStudioProjectsChanged();
+        List<String> studioProjectNames = new ArrayList<String>();
+        for (IProject project : deployment.getProjects()) {
+            String[] projectStudioBoundIds = provider.getBindingManager().getBinding(
+                    project).getProjectIds();
+            studioProjectNames.addAll(Arrays.asList(projectStudioBoundIds));
+        }
+        provider.getRepositoryManager().handleDeploymentProjectsUpdate(
+                studioProjectNames);
     }
-
 }

@@ -34,7 +34,7 @@ import org.nuxeo.ide.sdk.IConnectProvider;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class StudioProvider {
 
@@ -205,5 +205,9 @@ public class StudioProvider {
         bindingManager.removeBindings();
         // Delete studio projects
         repositoryManager.erase();
+    }
+
+    public RepositoryManager getRepositoryManager() {
+        return repositoryManager;
     }
 }

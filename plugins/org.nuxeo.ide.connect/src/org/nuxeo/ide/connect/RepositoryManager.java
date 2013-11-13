@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -120,6 +121,12 @@ public class RepositoryManager implements IBindingListener, IStudioListener {
     public void handleProjectsUpdate(StudioProvider provider) {
         for (Entry entry : entries.values()) {
             entry.download();
+        }
+    }
+
+    public void handleDeploymentProjectsUpdate(List<String> projectIds) {
+        for (String projectId : projectIds) {
+            entries.get(projectId).doDownload();
         }
     }
 
