@@ -36,5 +36,4 @@ Export-Package: org.nuxeo.ide.sdk,
  org.nuxeo.ide.sdk.ui.widgets
 Import-Package: org.eclipse.equinox.security.storage,
  org.eclipse.wst.xml.core.internal.provisional.document,
- org.eclipse.wst.xml.ui.internal.contentassist,
- org.nuxeo.ide.connect.studio
+ org.eclipse.wst.xml.ui.internal.contentassist

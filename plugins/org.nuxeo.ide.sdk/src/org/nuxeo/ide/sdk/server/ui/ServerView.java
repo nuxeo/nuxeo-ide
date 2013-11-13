@@ -14,7 +14,6 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.nuxeo.ide.common.UI;
-import org.nuxeo.ide.connect.studio.ReloadStudioProject;
 import org.nuxeo.ide.sdk.NuxeoSDK;
 import org.nuxeo.ide.sdk.SDKChangedListener;
 import org.nuxeo.ide.sdk.deploy.Deployment;
@@ -52,7 +51,6 @@ public class ServerView extends ViewPart implements ISelectionProvider,
         selectionListeners = new ListenerList();
         listener = new MyServerLifeCycleListener();
         initServer();
-        NuxeoSDK.addDeploymentChangedListener(new ReloadStudioProject());
         NuxeoSDK.addSDKChangedListener(this);
     }
 
