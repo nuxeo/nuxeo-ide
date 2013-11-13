@@ -16,18 +16,32 @@
  */
 package org.nuxeo.ide.connect;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.nuxeo.ide.common.IOUtils;
 import org.nuxeo.ide.common.UI;
 
-
 public class RepositoryDownloadTask implements IRunnableWithProgress {
 
     protected final RepositoryManager.Entry entry;
+
+    static final String HEADER_PROPERTY = "Last-Modified";
+
+    static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss z";
 
     public RepositoryDownloadTask(RepositoryManager.Entry entry) {
         this.entry = entry;
@@ -36,16 +50,56 @@ public class RepositoryDownloadTask implements IRunnableWithProgress {
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException,
             InterruptedException {
-        monitor.beginTask("Download jar for " + entry.projectId + " on connect", 1);
+        monitor.beginTask(
+                "Download jar for " + entry.projectId + " on connect", 1);
         try {
-            InputStream is = Connector.getDefault().downloadJarArtifact(
+            Map<String, List<String>> header = Connector.getDefault().getHeadJarArtifact(
                     entry.projectId);
-            IOUtils.copyToFile(is, entry.file, true);
+            if (jarUpdated(header)) {
+                InputStream iss = Connector.getDefault().downloadJarArtifact(
+                        entry.projectId);
+                IOUtils.copyToFile(iss, entry.file, true);
+            }
         } catch (Exception e) {
-            UI.showError(
-                    "Cannot download jar for " + entry.projectId + " on connect", e);
+            UI.showError("Cannot download jar for " + entry.projectId
+                    + " on connect", e);
         }
         monitor.done();
+    }
+
+    protected boolean jarUpdated(Map<String, List<String>> header)
+            throws ParseException {
+        File bundle = entry.file;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT,
+                Locale.US);
+        Date date = dateFormat.parse(header.get(HEADER_PROPERTY).get(0).toString());
+        long lastModificationConnect = date.getTime();
+        if (lastModificationConnect > bundle.lastModified()) {
+            bundle.setLastModified(lastModificationConnect);
+            return true;
+        }
+        return false;
+    }
+
+    protected String convertStreamToString(InputStream inputStream)
+            throws IOException {
+        if (inputStream != null) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            try {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(inputStream,
+                                StandardCharsets.UTF_8));
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+            } finally {
+                inputStream.close();
+            }
+            return sb.toString();
+        } else {
+            return "";
+        }
     }
 
 }

@@ -122,6 +122,7 @@ public class NuxeoSDK {
     public static void dispose() {
         sdkChangedListeners = null;
         instance = null;
+        deploymentChangedListeners = null;
     }
 
     public static void addSDKChangedListener(SDKChangedListener listener) {
@@ -187,6 +188,7 @@ public class NuxeoSDK {
         this.controller = new ServerController(info);
         this.compIndexMgr = new ComponentIndexManager(this.root);
         controller.addServerLifeCycleListener(compIndexMgr);
+
     }
 
     protected void destroy() {

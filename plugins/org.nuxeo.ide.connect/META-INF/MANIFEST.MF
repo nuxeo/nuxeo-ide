@@ -20,3 +20,4 @@ Require-Bundle: org.eclipse.ui.forms,
  org.nuxeo.ide.common,
  org.eclipse.jdt.ui,
  org.eclipse.jface.text
+Export-Package: org.nuxeo.ide.connect.studio

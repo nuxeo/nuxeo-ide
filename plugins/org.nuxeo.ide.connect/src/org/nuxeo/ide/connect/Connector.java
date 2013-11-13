@@ -23,6 +23,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.internal.preferences.Base64;
 import org.eclipse.equinox.security.storage.StorageException;
@@ -102,8 +103,18 @@ public class Connector {
     public InputStream downloadJarArtifact(String projectId) throws IOException {
         StudioProvider provider = ConnectPlugin.getStudioProvider();
         StudioProject project = provider.getProject(projectId);
-        URL location = new URL(baseUrl, "maven/" + project.getGAV().formatPath());
+        URL location = new URL(baseUrl, "maven/"
+                + project.getGAV().formatPath());
         return doGet(location);
+    }
+
+    public Map<String, List<String>> getHeadJarArtifact(String projectId)
+            throws IOException {
+        StudioProvider provider = ConnectPlugin.getStudioProvider();
+        StudioProject project = provider.getProject(projectId);
+        URL location = new URL(baseUrl, "maven/"
+                + project.getGAV().formatPath());
+        return doHead(location);
     }
 
     public boolean exportOperationRegistry(String projectId, String reg)
@@ -111,7 +122,8 @@ public class Connector {
         URL url = new URL(baseUrl, "api/projects/" + projectId + "/operations");
         if (auth == null) {
             throw new IOException(
-                    "No authentification info, cannot connect to " + url.toExternalForm());
+                    "No authentification info, cannot connect to "
+                            + url.toExternalForm());
         }
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestProperty("Content-Type", "application/studio-registry");
@@ -149,6 +161,21 @@ public class Connector {
             throw new IOException("Server error: " + status);
         }
         return uc.getInputStream();
+    }
+
+    protected Map<String, List<String>> doHead(URL location) throws IOException {
+        if (auth == null) {
+            throw new IOException(
+                    "No authentification info, cannot connect to " + location);
+        }
+        HttpURLConnection uc = (HttpURLConnection) location.openConnection();
+        uc.setRequestMethod("HEAD");
+        uc.setRequestProperty("Authorization", "Basic " + auth);
+        int status = uc.getResponseCode();
+        if (status > 399) {
+            throw new IOException("Server error: " + status);
+        }
+        return uc.getHeaderFields();
     }
 
 }
