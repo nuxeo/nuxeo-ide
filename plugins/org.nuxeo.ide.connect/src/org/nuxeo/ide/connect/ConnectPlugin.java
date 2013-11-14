@@ -7,8 +7,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nuxeo.ide.common.forms.PreferencesFormData;
-import org.nuxeo.ide.connect.studio.ReloadStudioProject;
-import org.nuxeo.ide.sdk.NuxeoSDK;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -33,7 +31,6 @@ public class ConnectPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
-        NuxeoSDK.addDeploymentChangedListener(new ReloadStudioProject());
     }
 
     public void stop(BundleContext context) throws Exception {
@@ -41,7 +38,6 @@ public class ConnectPlugin extends AbstractUIPlugin {
         plugin = null;
         studioProvider = null;
         super.stop(context);
-        NuxeoSDK.removeDeploymentChangedListener(new ReloadStudioProject());
     }
 
     public BundleContext getContext() {

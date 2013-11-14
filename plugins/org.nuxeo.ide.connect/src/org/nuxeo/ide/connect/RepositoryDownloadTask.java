@@ -47,6 +47,9 @@ public class RepositoryDownloadTask implements IRunnableWithProgress {
         this.entry = entry;
     }
 
+    protected static final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT,
+    		Locale.US);
+    
     @Override
     public void run(IProgressMonitor monitor) throws InvocationTargetException,
             InterruptedException {
@@ -55,30 +58,18 @@ public class RepositoryDownloadTask implements IRunnableWithProgress {
         try {
             Map<String, List<String>> header = Connector.getDefault().getHeadJarArtifact(
                     entry.projectId);
-            if (jarUpdated(header)) {
+            long lastModified = dateFormat.parse(header.get(HEADER_PROPERTY).get(0).toString()).getTime();
+            if (entry.file.lastModified() < lastModified) {
                 InputStream iss = Connector.getDefault().downloadJarArtifact(
                         entry.projectId);
                 IOUtils.copyToFile(iss, entry.file, true);
+                entry.file.setLastModified(lastModified);
             }
         } catch (Exception e) {
             UI.showError("Cannot download jar for " + entry.projectId
                     + " on connect", e);
         }
         monitor.done();
-    }
-
-    protected boolean jarUpdated(Map<String, List<String>> header)
-            throws ParseException {
-        File bundle = entry.file;
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT,
-                Locale.US);
-        Date date = dateFormat.parse(header.get(HEADER_PROPERTY).get(0).toString());
-        long lastModificationConnect = date.getTime();
-        if (lastModificationConnect > bundle.lastModified()) {
-            bundle.setLastModified(lastModificationConnect);
-            return true;
-        }
-        return false;
     }
 
     protected String convertStreamToString(InputStream inputStream)

@@ -1,6 +1,7 @@
 package org.nuxeo.ide.connect;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,12 +10,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.nuxeo.ide.common.IOUtils;
 import org.nuxeo.ide.common.UI;
+import org.nuxeo.ide.sdk.DeploymentChangedListener;
+import org.nuxeo.ide.sdk.NuxeoSDK;
+import org.nuxeo.ide.sdk.deploy.Deployment;
 
-public class RepositoryManager implements IBindingListener, IStudioListener {
+public class RepositoryManager implements IBindingListener, IStudioListener, DeploymentChangedListener {
 
     static final String studioJarSuffix = "-0.0.0-SNAPSHOT.jar";
 
@@ -124,9 +130,30 @@ public class RepositoryManager implements IBindingListener, IStudioListener {
         }
     }
 
-    public void handleDeploymentProjectsUpdate(List<String> projectIds) {
+    @Override
+    public void deploymentChanged(NuxeoSDK sdk, Deployment deployment) {
+    	StudioProvider provider = ConnectPlugin.getStudioProvider();
+    	for (IProject project : deployment.getProjects()) {
+    		StudioProjectBinding binding = provider.getBindingManager().getBinding(
+    				project);
+			for (String eachId:binding.getProjectIds()) {            	
+    			try {
+    				new RepositoryDownloadTask(entries.get(eachId)).run(new NullProgressMonitor());
+    			} catch (InvocationTargetException | InterruptedException cause) {
+    				UI.showError("Cannot reload jar for studio project " + eachId, cause);
+    			}
+    		}
+    	}
+    }
+
+    public void handleProject(List<String> projectIds)  {
         for (String projectId : projectIds) {
-            entries.get(projectId).doDownload();
+            Entry entry = entries.get(projectId);
+            try {
+				new RepositoryDownloadTask(entry).run(new NullProgressMonitor());
+			} catch (InvocationTargetException | InterruptedException e) {
+				UI.showError("Cannot load studio project : " + projectId, e);
+			}
         }
     }
 
@@ -135,4 +162,5 @@ public class RepositoryManager implements IBindingListener, IStudioListener {
         root.mkdirs();
         entries.clear();
     }
+
 }

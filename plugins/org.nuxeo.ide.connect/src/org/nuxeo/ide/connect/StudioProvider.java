@@ -31,6 +31,7 @@ import org.nuxeo.ide.common.IOUtils;
 import org.nuxeo.ide.common.UI;
 import org.nuxeo.ide.connect.studio.StudioProject;
 import org.nuxeo.ide.sdk.IConnectProvider;
+import org.nuxeo.ide.sdk.NuxeoSDK;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
@@ -57,6 +58,7 @@ public class StudioProvider {
         bindingManager = new BindingManager(repositoryManager);
         addStudioListener(bindingManager);
         addStudioListener(repositoryManager);
+        NuxeoSDK.addDeploymentChangedListener(repositoryManager);
         try {
             reload();
         } catch (Exception e) {
@@ -68,6 +70,7 @@ public class StudioProvider {
     }
 
     public void dispose() {
+        NuxeoSDK.removeDeploymentChangedListener(repositoryManager);
         repositoryManager.dispose();
         bindingManager.dispose();
         bindingManager = null;

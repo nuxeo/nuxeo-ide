@@ -35,6 +35,8 @@ public class StudioProjectBinding {
     public static QualifiedName STUDIO_BINDING_P = new QualifiedName(
             "org.nuxeo.ide", "studio.binding");
     
+    public static final StudioProjectBinding EMPTY = new StudioProjectBinding();
+    
     protected String[] projectIds;
 
     /**

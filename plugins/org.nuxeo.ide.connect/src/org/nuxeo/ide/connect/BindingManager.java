@@ -124,19 +124,23 @@ public class BindingManager implements IResourceChangeListener, IStudioListener 
 
     public synchronized StudioProjectBinding getBinding(IProject project) {
         StudioProjectBinding binding = bindings.get(project.getName());
-        if (binding == null) {
-            try {
-                String v = project.getPersistentProperty(StudioProjectBinding.STUDIO_BINDING_P);
-                if (v != null) {
-                    String[] projectIds = StringUtils.split(v, PROJECT_SEP);
-                    binding = new StudioProjectBinding(projectIds);
-                    bindings.put(project.getName(), binding);
-                }
-            } catch (Exception e) {
-                UI.showError("Cannot get studio binding", e);
-            }
+        if (binding != null) {
+        	return binding;
         }
-        return binding;
+		try {
+			String v = project
+					.getPersistentProperty(StudioProjectBinding.STUDIO_BINDING_P);
+			if (v == null) {
+				return StudioProjectBinding.EMPTY;
+			}
+			String[] projectIds = StringUtils.split(v, PROJECT_SEP);
+			binding = new StudioProjectBinding(projectIds);
+			bindings.put(project.getName(), binding);
+			return binding;
+		} catch (Exception e) {
+			UI.showError("Cannot get studio binding", e);
+			return StudioProjectBinding.EMPTY;
+		}
     }
 
     public synchronized StudioProjectBinding[] getLiveBindings() {
