@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.nuxeo.ide.shell;singleton:=true
 Bundle-Version: 1.1.11.qualifier
 Bundle-Activator: org.nuxeo.ide.shell.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  lib/nuxeo-shell-5.5.jar
 Export-Package: org.nuxeo.ide.shell,

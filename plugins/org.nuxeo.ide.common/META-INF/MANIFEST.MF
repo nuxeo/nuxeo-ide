@@ -16,4 +16,4 @@ Export-Package: org.nuxeo.ide.common,
  org.nuxeo.ide.common.forms.widgets,
  org.nuxeo.ide.common.widgets,
  org.nuxeo.ide.common.wizards
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

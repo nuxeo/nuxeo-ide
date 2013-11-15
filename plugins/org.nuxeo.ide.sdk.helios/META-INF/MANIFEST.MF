@@ -4,5 +4,5 @@ Bundle-Name: Nuxeo IDE SDK fragment for helios
 Bundle-SymbolicName: org.nuxeo.ide.sdk.helios;singleton:=true
 Bundle-Version: 1.1.11.qualifier
 Fragment-Host: org.nuxeo.ide.sdk;bundle-version="1.1.10"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.jdt.debug.ui;bundle-version="[3.5.0,3.6.0)"

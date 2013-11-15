@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.nuxeo.ide.connect;singleton:=true
 Bundle-Version: 1.1.11.qualifier
 Bundle-Activator: org.nuxeo.ide.connect.ConnectPlugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/jackson-core-asl-1.8.1.jar,
  .
 Bundle-Vendor: Nuxeo
