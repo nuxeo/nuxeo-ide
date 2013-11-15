@@ -37,7 +37,7 @@
   </scm>
 
   <properties>
-    <tycho-version>0.17.0</tycho-version>
+    <tycho-version>0.18.1</tycho-version>
     <platform-version-name>helios</platform-version-name>
     <wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
     <swtbot-site>http://download.eclipse.org/technology/swtbot/${platform-version-name}/dev-build/update-site</swtbot-site>
