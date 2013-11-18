@@ -120,17 +120,10 @@ public class SelectExportedProjectsPage extends WizardPage {
                 updateCompletionStatus();
             }
         });
-
         for (StudioProject project : studioProjects) {
             combo.add(project.getName());
         }
-
-        if (studioProjects.length > 0) {
-            combo.select(0);
-            studioProjectIndex = 0;
-        } else {
-            studioProjectIndex = -1;
-        }
+        studioProjectIndex = -1;
         updateCompletionStatus();
     }
 
