@@ -22,8 +22,8 @@
 </frame>
 
 <frame label="Parent POM" cols="2" layout="grid" hfill="true">
-    <text>Parent Group Id:</text><textbox id="parentGroupId" hfill="true" value="org.nuxeo.ecm.platform" />
-    <text>Parent Artifact Id:</text><textbox id="parentArtifactId" hfill="true" value="nuxeo-features-parent"/>
+    <text>Parent Group Id:</text><textbox id="parentGroupId" hfill="true" value="" />
+    <text>Parent Artifact Id:</text><textbox id="parentArtifactId" hfill="true" value=""/>
     <text>Parent Version:</text><textbox id="parentVersion" hfill="true"/>
 </frame>
 

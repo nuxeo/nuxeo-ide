@@ -119,9 +119,6 @@ public class NuxeoProjectPage2 extends FormWizardPage<ProjectTemplateContext>
 
         form.setWidgetValueIfEmpty(GROUP_ID, rootPackage);
         form.setWidgetValueIfEmpty(ARTIFACT_ID, projectId);
-        // form.setWidgetValueIfEmpty("maven.artifact.version", version);
         form.setWidgetValueIfEmpty(ARTIFACT_NAME, projectId);
-        form.setWidgetValueIfEmpty(PARENT_VERSION,
-                NuxeoSDK.getDefault().getVersion());
     }
 }
