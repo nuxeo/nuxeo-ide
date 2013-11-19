@@ -23,13 +23,16 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.nuxeo.ide.sdk.NuxeoSDK;
+import org.nuxeo.ide.sdk.templates.Constants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class PomModel extends XmlFile {
 
@@ -177,7 +180,36 @@ public class PomModel extends XmlFile {
             child.setTextContent(artifact.getScope());
             el.appendChild(child);
         }
-    }  
+    }
+
+    /**
+     * @since 1.1.11 - Synchronize SDK version during pom sync process.
+     */
+    public void synchronizeSDKVersion() {
+        Element dependencyManagement = getFirstElement(Constants.DEPENDENCY_MANAGEMENT);
+        if (dependencyManagement == null) {
+            return;
+        }
+        Element dependencies = getFirstElement(dependencyManagement,
+                Constants.DEPENDENCIES);
+        if (dependencies == null) {
+            return;
+        }
+        Element dependency = getFirstElement(dependencies, Constants.DEPENDENCY);
+        while (dependency != null) {
+            Element artifactId = getFirstElement(dependency,
+                    Constants.ARTIFACT_ID);
+            if (Constants.DEPENDENCY_NX_DISTRIB.equals(artifactId.getTextContent().trim())) {
+                Element version = getFirstElement(dependency, Constants.VERSION);
+                if (version == null) {
+                    dependency.appendChild(doc.createElement(Constants.VERSION));
+                    version = getFirstElement(dependency, Constants.VERSION);
+                }
+                version.setTextContent(NuxeoSDK.getDefault().getVersion());
+            }
+            dependency = getNextElementSibling(dependency);
+        }
+    }
 
     protected Element getBuildPlugin(String groupIdContent, String artifactIdContent) {
         Element plugins = getBuildPlugins();

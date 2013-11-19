@@ -228,6 +228,7 @@ public class CollectDependenciesPage extends WizardPage {
         if (artifacts.isEmpty()) {
             return false;
         }
+        pom.synchronizeSDKVersion();
         for (Artifact artifact : artifacts) {
             pom.addDependency(artifact);
         }

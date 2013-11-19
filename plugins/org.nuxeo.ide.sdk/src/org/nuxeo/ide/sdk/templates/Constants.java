@@ -17,10 +17,10 @@
 package org.nuxeo.ide.sdk.templates;
 
 /**
- * The set of built-in keys of a template context
- * 
+ * The set of built-in keys of a template context.
+ *
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public interface Constants {
 
@@ -64,5 +64,15 @@ public interface Constants {
     public final static String IS_EXPERT_MODE = "isExpertMode";
 
     public final static String SDK_VERSION = "sdkVersion";
+
+    public final static String DEPENDENCY = "dependency";
+
+    public final static String DEPENDENCIES = "dependencies";
+
+    public final static String DEPENDENCY_MANAGEMENT = "dependencyManagement";
+
+    public final static String DEPENDENCY_NX_DISTRIB = "nuxeo-distribution";
+
+    public final static String VERSION = "version";
 
 }
