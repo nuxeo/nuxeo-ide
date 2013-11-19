@@ -1,36 +1,42 @@
 <panel cols="1" layout="grid">
 
-<frame label="Artifact Information (GAV)" cols="2" layout="grid" hfill="true">
+  <frame label="Artifact Information (GAV)" cols="2" layout="grid" hfill="true">
     <text>Group Id:</text>
     <textbox id="groupId" hfill="true">
-        <validator type="regex" value="[A-Za-z0-9_]+(.[A-Za-z0-9_]+)*">Not a valid Java package name</validator>
+      <validator type="regex" value="[A-Za-z0-9_]+(.[A-Za-z0-9_]+)*">Not a valid Java package name</validator>
     </textbox>
 
     <text>Artifact Id:</text>
     <textbox id="artifactId" hfill="true">
-        <validator type="regex" value="[A-Za-z0-9_-]+">Field format is [A-Za-z0-9_-]+</validator>
+      <validator type="regex" value="[A-Za-z0-9_-]+">Field format is [A-Za-z0-9_-]+</validator>
     </textbox>
 
     <text>Artifact Version:</text>
-    <textbox id="artifactVersion" hfill="true">
-        <validator type="regex" value="[0-9]*(\.[0-9]+)*(\.[0-9]+)*(-[A-Za-z0-9_]+)*">
-        Version format is x.y.z-qualifier 
-        </validator>
+    <textbox id="artifactVersion" hfill="true" value="1.0-SNAPSHOT">
+      <validator type="regex" value="[0-9]*(\.[0-9]+)*(\.[0-9]+)*(-[A-Za-z0-9_]+)*">
+        Version format is x.y.z-qualifier
+      </validator>
     </textbox>
-    <text colspan="2" halign="right">Leave empty to inherit the POM parent version</text>
+  </frame>
 
-</frame>
+  <frame label="Parent POM (Optional)" cols="2" layout="grid" hfill="true">
+    <text>Parent Group Id:</text>
+    <textbox id="parentGroupId" hfill="true" value=""/>
+    <text>Parent Artifact Id:</text>
+    <textbox id="parentArtifactId" hfill="true" value=""/>
+    <text>Parent Version:</text>
+    <textbox id="parentVersion" hfill="true">
+      <validator type="regex" value="[0-9]*(\.[0-9]+)*(\.[0-9]+)*(-[A-Za-z0-9_]+)*">
+        Version format is x.y.z-qualifier
+      </validator>
+    </textbox>
+  </frame>
 
-<frame label="Parent POM" cols="2" layout="grid" hfill="true">
-    <text>Parent Group Id:</text><textbox id="parentGroupId" hfill="true" value="" />
-    <text>Parent Artifact Id:</text><textbox id="parentArtifactId" hfill="true" value=""/>
-    <text>Parent Version:</text><textbox id="parentVersion" hfill="true"/>
-</frame>
-
-<frame label="Additional Information" cols="2" layout="grid" hfill="true" vfill="true">
-    <text>Name:</text><textbox id="artifactName" hfill="true"/>
+  <frame label="Additional Information" cols="2" layout="grid" hfill="true" vfill="true">
+    <text>Name:</text>
+    <textbox id="artifactName" hfill="true"/>
     <text colspan="2">Description:</text>
-    <textarea id="artifactDescription" colspan="2" hfill="true" vfill="true" />
-</frame>
+    <textarea id="artifactDescription" colspan="2" hfill="true" vfill="true"/>
+  </frame>
 
 </panel>

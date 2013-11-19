@@ -1,23 +1,42 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>${parentGroupId}</groupId>
-    <artifactId>${parentArtifactId}</artifactId>
-    <version>${parentVersion}</version>
-  </parent>
+  <#if parentGroupId??>
+    <parent>
+      <groupId>${parentGroupId}</groupId>
+      <artifactId>${parentArtifactId}</artifactId>
+      <version>${parentVersion}</version>
+    </parent>
+  </#if>
 
   <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId><#if artifactVersion??>
-  <version>${artifactVersion}</version></#if>
+  <artifactId>${artifactId}</artifactId>
+  <#if artifactVersion??>
+    <version>${artifactVersion}</version>
+  </#if>
   <name>${artifactName}</name>
   <description>
     ${artifactDescription}
   </description>
 
+  <#if parentGroupId!?length=0>
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.nuxeo.ecm.distribution</groupId>
+          <artifactId>nuxeo-distribution</artifactId>
+          <scope>import</scope>
+          <type>pom</type>
+          <version>${sdkVersion}</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+  </#if>
+
   <dependencies>
+
     <dependency>
       <groupId>org.nuxeo.common</groupId>
       <artifactId>nuxeo-common</artifactId>
@@ -55,6 +74,7 @@
 
   </dependencies>
 
+  <#if parentGroupId!?length=0>
   <build>
     <plugins>
       <plugin>
@@ -67,8 +87,8 @@
           <classpathContainers>
             <classpathContainer>org.eclipse.jdt.launching.JRE_CONTAINER</classpathContainer>
             <#if isExpertMode == "true">
-            <classpathContainer>org.nuxeo.ide.SDK_CONTAINER</classpathContainer>
-            <classpathContainer>org.nuxeo.ide.SDK_TEST_CONTAINER</classpathContainer>
+              <classpathContainer>org.nuxeo.ide.SDK_CONTAINER</classpathContainer>
+              <classpathContainer>org.nuxeo.ide.SDK_TEST_CONTAINER</classpathContainer>
             </#if>
           </classpathContainers>
         </configuration>
@@ -113,5 +133,6 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
+  </#if>
 
-</project>
+        </project>

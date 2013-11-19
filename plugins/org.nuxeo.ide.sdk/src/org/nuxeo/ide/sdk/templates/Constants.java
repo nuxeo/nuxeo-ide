@@ -63,4 +63,6 @@ public interface Constants {
 
     public final static String IS_EXPERT_MODE = "isExpertMode";
 
+    public final static String SDK_VERSION = "sdkVersion";
+
 }
