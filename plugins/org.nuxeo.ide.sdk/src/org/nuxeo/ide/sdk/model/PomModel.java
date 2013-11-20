@@ -182,7 +182,7 @@ public class PomModel extends XmlFile {
     }
 
     /**
-     * @since 1.1.11 - Synchronize SDK version during pom sync process.
+     * @since 1.2 - Synchronize SDK version during pom sync process.
      */
     public void synchronizeSDKVersion() {
         Element dependencyManagement = getFirstElement(Constants.DEPENDENCY_MANAGEMENT);
