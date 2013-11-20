@@ -1,0 +1,80 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.nuxeo.ecm.distribution</groupId>
+    <artifactId>nuxeo-distribution</artifactId>
+    <version>${parentVersion}</version>
+  </parent>
+
+  <groupId>${mpGroupId}</groupId>
+  <artifactId>parent</artifactId>
+  <packaging>pom</packaging>
+  <name>${mpParentArtifactId}</name>
+  <version>${mpVersion}</version>
+
+  <properties>
+    <${mpVersionVariable}>${mpVersion}</${mpVersionVariable}>
+  </properties>
+
+  <modules>
+    <module>marketplace</module>
+  </modules>
+<#if testEnabled = 'true'>
+
+  <profiles>
+    <profile>
+      <id>ftest</id>
+      <modules>
+        <#if webdriver = 'true'><module>ftest/webdriver</module>
+        </#if><#if selenium = 'true'><module>ftest/selenium</module>
+        </#if><#if funkload = 'true'><module>ftest/funkload</module>
+        </#if><#if cmis = 'true'><module>ftest/cmis</module>
+      </#if></modules>
+    </profile>
+  </profiles>
+</#if>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>${mpGroupId}</groupId>
+        <artifactId>marketplace</artifactId>
+        <version>${r"${"}${mpVersionVariable}${r"}"}</version>
+        <type>zip</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>public</id>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>public-snapshot</id>
+      <url>http://maven.nuxeo.org/nexus/content/groups/public-snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <scm>
+    <connection>scm:git:git://github.com/nuxeo/nuxeo-marketplace-sample.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:nuxeo/nuxeo-marketplace-sample.git</developerConnection>
+    <url>https://github.com/nuxeo/nuxeo-marketplace-sample</url>
+  </scm>
+
+</project>

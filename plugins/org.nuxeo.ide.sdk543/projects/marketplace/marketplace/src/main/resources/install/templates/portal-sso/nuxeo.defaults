@@ -1,0 +1,3 @@
+portal-sso.target=nxserver/config
+
+nuxeo.shared.key=12345678

@@ -1,0 +1,38 @@
+<!-- See documentation at http://doc.nuxeo.com/x/HgIz -->
+<package type="addon" name="${mpName}" version="@VERSION@">
+  <title>${mpTitle}</title>
+  <description>
+    ${mpDescription}
+  </description>
+  <home-page>${mpHomePage}</home-page>
+  <vendor>${mpVendor}</vendor>
+  <installer restart="${mpInstallRestart}" />
+  <uninstaller restart="${mpUninstallRestart}" />
+  <hotreload-support>${mpHotReloadSupport}</hotreload-support>
+  <require-terms-and-conditions-acceptance>${mpRequireTermAndConditionAcceptance}</require-terms-and-conditions-acceptance>
+  <nuxeo-validation>none</nuxeo-validation>
+  <!-- <nuxeo-validation>inprocess</nuxeo-validation> -->
+  <!-- <nuxeo-validation>primary_validation</nuxeo-validation> -->
+  <!-- <nuxeo-validation>nuxeo_certified</nuxeo-validation> -->
+  <!-- <production-state>proto</production-state> -->
+  <production-state>testing</production-state>
+  <!-- <production-state>production_ready</production-state> -->
+  <supported>false</supported>
+  <platforms>
+    <platform>${mpDistribution}-@DISTRIB_VERSION@</platform>
+  </platforms>
+  <!-- Dependencies on other packages -->
+  <!-- <dependencies> -->
+  <!-- <package>another-package:1.0.0:1.0.0</package> -->
+  <!-- </dependencies> -->
+  <!-- Conflicts with other packages -->
+  <!-- <conflicts> -->
+  <!-- <package>a-conflicting-package:1.0.0:1.0.0</package> -->
+  <!-- </conflicts> -->
+  <!-- Provides features of other packages -->
+  <!-- <provides> -->
+  <!-- <package>an-embedded-package:1.0.0:1.0.0</package> -->
+  <!-- </provides> -->
+  <license>${mpLicense}</license>
+  <license-url>${mpLicenseUrl}</license-url>
+</package>

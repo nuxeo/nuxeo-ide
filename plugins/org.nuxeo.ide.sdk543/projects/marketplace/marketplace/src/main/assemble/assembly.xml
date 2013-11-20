@@ -1,0 +1,149 @@
+<#assign artifactPropertiesFilename="artifacts-" + mpName + ".properties"> 
+<#assign testArtifactPropertiesFilename="test-artifacts-" + mpName + ".properties"> 
+<#assign patternSetId=mpName + ".versus." + mpDistribution> 
+<#assign mpVersionVariableWithBrackets = "${" + mpVersionVariable +"}"> 
+<project name="nuxeo-assembly"
+         default="build"
+         xmlns:nx="urn:nuxeo-build"
+         xmlns:artifact="urn:nuxeo-artifact">
+  <taskdef resource="org/nuxeo/build/antlib.xml" uri="urn:nuxeo-build" />
+  <taskdef resource="org/nuxeo/build/artifact/antlib.xml"
+           uri="urn:nuxeo-artifact" />
+  <taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+  <target name="init" unless="init.done">
+    <property name="outdir" value="${r"${maven.project.build.directory}"}" />
+    <antcall target="expand" />
+    <property name="init.done" value="true" />
+  </target>
+
+  <target name="expand">
+    <!-- Include your artifacts in the graph adding your groupId to groupPrefixes -->
+    <artifact:nuxeo-expand includeTestScope="true"
+                           groupPrefixes="${parentGroupId},org.nuxeo,com.nuxeo" />
+    <!-- For Nuxeo IDE being able to use that distribution as a SDK -->
+    <artifact:print output="${r"${outdir}"}/${artifactPropertiesFilename}" mode="sdk" />
+    <artifact:print output="${r"${outdir}"}/${testArtifactPropertiesFilename}"
+                    mode="sdk"
+                    scopes="test" />
+    <!-- Prints the graph for debugging purpose -->
+    <artifact:print output="${r"${outdir}"}/dependency-tree.log" />
+  </target>
+
+  <target name="build"
+          depends="init"
+          description="Build ${mpTitle} Marketplace package">
+    <tstamp />
+    <delete failonerror="false" dir="${r"${outdir}"}/nxr" />
+    <mkdir dir="${r"${outdir}"}/nxr" />
+    <delete failonerror="false" dir="${r"${outdir}"}/marketplace" />
+    <mkdir dir="${r"${outdir}"}/marketplace" />
+    <copy todir="${r"${outdir}"}/marketplace">
+      <fileset dir="src/main/resources" />
+      <filterset>
+        <filter token="VERSION" value="${mpVersionVariableWithBrackets}" />
+        <filter token="DISTRIB_VERSION" value="${r"${nuxeo.distribution.version}"}" />
+      </filterset>
+    </copy>
+    <copy file="${r"${outdir}"}/${artifactPropertiesFilename}"
+          todir="${r"${outdir}"}/marketplace/install" />
+    <copy file="${r"${outdir}"}/${testArtifactPropertiesFilename}"
+          todir="${r"${outdir}"}/marketplace/install" />
+
+    <!-- Base distribution NXR -->
+    <copy todir="${r"${outdir}"}">
+      <artifact:resolveFile key="org.nuxeo.ecm.distribution:${mpDistributionArtifactId}::zip" />
+    </copy>
+
+    <!-- Nuxeo bundles -->
+    <copy todir="${r"${outdir}"}/nxr/bundles" overwrite="true">
+      <artifact:set>
+        <includes>
+          <artifact groupId="org.nuxeo*" scope="!test" type="!pom" />
+          <!-- Include your artifacts using their groupId for instance -->
+          <artifact groupId="com.nuxeo*" scope="!test" type="!pom" />
+          <artifact groupId="${parentGroupId}*" scope="!test" type="!pom" />
+        </includes>
+      </artifact:set>
+    </copy>
+    <!-- Third-party libraries -->
+    <copy todir="${r"${outdir}"}/nxr/lib" overwrite="true">
+      <artifact:set>
+        <includes>
+          <artifact groupId="!org.nuxeo*" scope="!test" />
+          <artifact groupId="!${parentGroupId}*" scope="!test" />
+        </includes>
+        <excludes>
+          <!-- Filter out your artifacts using their groupId for instance -->
+          <artifact groupId="com.nuxeo*" />
+          <artifact groupId="${parentGroupId}*" />
+        </excludes>
+      </artifact:set>
+    </copy>
+    <move todir="${r"${outdir}"}/nxr/lib">
+      <fileset dir="${r"${outdir}"}/nxr/bundles">
+        <include name="nuxeo-generic-wss-front*" />
+        <include name="nuxeo-generic-wss-handler*" />
+      </fileset>
+    </move>
+    <nx:rmdups dir="${r"${outdir}"}/nxr/lib" />
+    <!-- Temporary ZIP Nuxeo NXR to compare with base distribution NXR -->
+    <zip destfile="${r"${outdir}"}/nxr-${mpVersionVariableWithBrackets}.zip"
+         basedir="${r"${outdir}"}/nxr" />
+
+    <!-- Your MP only needs to include files not already provided by the base distribution -->
+    <nx:zipdiff file1="${r"${outdir}"}/nxr-${mpVersionVariableWithBrackets}.zip"
+                file2="${r"${outdir}"}/nuxeo-distribution-cap-${r"${nuxeo.distribution.version}"}.zip"
+                includesfile="${r"${outdir}"}/includes"
+                excludesfile="${r"${outdir}"}/excludesfile"
+                patternsetid="${patternSetId}">
+    </nx:zipdiff>
+    <unzip src="${r"${outdir}"}/nxr-${mpVersionVariableWithBrackets}.zip"
+           dest="${r"${outdir}"}/marketplace/install">
+      <patternset refid="${patternSetId}" />
+    </unzip>
+
+    <!-- Generate install.xml file -->
+    <!-- See documentation at http://doc.nuxeo.com/x/IgIz -->
+    <var name="install.content" value="&lt;install&gt;" />
+    <var name="install.content"
+         value="${r"${install.content}"}${r"${line.separator}"}
+  &lt;update file=&quot;${r"${package.root}"}/install/bundles&quot; todir=&quot;${r"${env.bundles}"}&quot; /&gt;" />
+    <if>
+      <available file="${r"${outdir}"}/marketplace/install/lib" />
+      <then>
+        <var name="install.content"
+             value="${r"${install.content}"}${r"${line.separator}"}
+  &lt;update file=&quot;${r"${package.root}"}/install/lib&quot; todir=&quot;${r"${env.lib}"}&quot; /&gt;" />
+      </then>
+    </if>
+    <var name="install.content"
+         value="${r"${install.content}"}${r"${line.separator}"}
+  &lt;copy file=&quot;${r"${package.root}"}/install/artifacts-sample.properties&quot;${r"${line.separator}"}
+    todir=&quot;${r"${env.server.home}"}/sdk&quot; overwrite=&quot;true&quot; /&gt;${r"${line.separator}"}
+  &lt;copy file=&quot;${r"${package.root}"}/install/${testArtifactPropertiesFilename}&quot;${r"${line.separator}"}
+    todir=&quot;${r"${env.server.home}"}/sdk&quot; overwrite=&quot;true&quot; /&gt;${r"${line.separator}"}" />
+    <!-- Optional: use this if you need your MP to deploy and/or activate a dedicated template -->
+    <if>
+      <available file="${r"${outdir}"}/marketplace/install/templates" />
+      <then>
+        <var name="install.content"
+             value="${r"${install.content}"}${r"${line.separator}"}
+  &lt;copy dir=&quot;${r"${package.root}"}/install/templates&quot; todir=&quot;${r"${env.templates}"}&quot; overwrite=&quot;true&quot; /&gt;${r"${line.separator}"}
+  &lt;config addtemplate=&quot;sample&quot; /&gt;${r"${line.separator}"}" />
+      </then>
+    </if>
+    <var name="install.content"
+         value="${r"${install.content}"}${r"${line.separator}"}
+&lt;/install&gt;${r"${line.separator}"}" />
+    <echo file="${r"${outdir}"}/marketplace/install.xml"
+          message="${r"${install.content}"}" />
+
+    <zip destfile="${r"${outdir}"}/${r"${maven.project.artifactId}"}-${mpVersionVariableWithBrackets}.zip"
+         basedir="${r"${outdir}"}/marketplace" />
+    <artifact:attach file="${r"${outdir}"}/${r"${maven.project.artifactId}"}-${mpVersionVariableWithBrackets}.zip"
+                     target="${r"${maven.project.groupId}"}:${r"${maven.project.artifactId}"}"
+                     type="zip" />
+  </target>
+
+</project>
