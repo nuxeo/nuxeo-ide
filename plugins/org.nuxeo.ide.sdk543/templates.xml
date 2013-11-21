@@ -34,9 +34,9 @@
 
     <transform path="pom.xml" />
     <transform path="marketplace/pom.xml" />
-    <transform path=".classpath" />
-    <transform path=".project" />
+    <transform path="ftest/webdriver/.classpath" />
     <transform path="marketplace/src/main/resources/package.xml" />
+    <transform path=".project" />
     <transform path="marketplace/src/main/assemble/assembly.xml" />
     <!-- LDAP -->
     <transform

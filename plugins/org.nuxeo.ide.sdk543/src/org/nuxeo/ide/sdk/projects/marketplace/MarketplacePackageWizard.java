@@ -23,13 +23,17 @@ import org.nuxeo.ide.sdk.projects.AbstractProjectWizard;
  * @since 1.2
  */
 public class MarketplacePackageWizard extends AbstractProjectWizard {
-	
-	public static final String ID = MarketplacePackageWizard.class.getName();
+
+    public static final String ID = MarketplacePackageWizard.class.getName();
+
+    public MarketplacePackageWizard() {
+        super("marketplace");
+    }
 
     @Override
     protected WizardPage[] createPages() {
-        return new WizardPage[] { new MarketplaceInformationPage(),
-                new EclipseProjectPage() };
+        return new WizardPage[] { new EclipseProjectPage(),
+                new MarketplaceInformationPage() };
     }
 
 }

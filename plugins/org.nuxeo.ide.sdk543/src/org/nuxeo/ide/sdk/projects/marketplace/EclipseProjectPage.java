@@ -16,7 +16,9 @@
  */
 package org.nuxeo.ide.sdk.projects.marketplace;
 
+import org.nuxeo.ide.common.forms.Form;
 import org.nuxeo.ide.sdk.projects.NuxeoProjectPage1;
+import org.nuxeo.ide.sdk.ui.widgets.ProjectChooserWidget;
 
 /**
  * @since 1.2
@@ -24,6 +26,14 @@ import org.nuxeo.ide.sdk.projects.NuxeoProjectPage1;
 public class EclipseProjectPage extends NuxeoProjectPage1 {
 
     public EclipseProjectPage() {
-        super("eclipse-info", "Eclipse Project Information", null);
+        super("marketplace", "Create a Nuxeo Marketplace Package", null);
     }
+
+    @Override
+    public Form createForm() {
+        Form form = super.createForm();
+        form.addWidgetType(ProjectChooserWidget.class);
+        return form;
+    }
+
 }
