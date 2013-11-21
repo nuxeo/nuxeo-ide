@@ -19,6 +19,15 @@
       </wizard>
       <wizard
             category="org.nuxeo.ide.project.newWizards"
+            class="org.nuxeo.ide.sdk.projects.marketplace.MarketplacePackageWizard"
+            icon="icons/marketplace_package.gif"
+            id="org.nuxeo.ide.sdk.projects.marketplace.MarketplacePackageWizard"
+            name="Marketplace Project"
+            preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective,org.eclipse.jdt.ui.JavaBrowsingPerspective,org.eclipse.jdt.ui.JavaHierarchyPerspective"
+            project="true">
+      </wizard>
+      <wizard
+            category="org.nuxeo.ide.project.newWizards"
             class="org.nuxeo.ide.sdk.projects.webengine.WebengineProjectWizard"
             icon="icons/web.gif"
             id="org.nuxeo.ide.sdk.projects.webengine.WebengineProjectWizard"

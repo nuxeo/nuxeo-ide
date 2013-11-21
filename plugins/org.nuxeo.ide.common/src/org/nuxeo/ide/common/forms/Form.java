@@ -278,6 +278,17 @@ public class Form {
         return null;
     }
 
+    /**
+     * @since 1.2
+     */
+    public Boolean getWidgetValueAsBoolean(String id) {
+        UIObject<?> obj = getWidget(id);
+        if (obj instanceof HasValue) {
+            return Boolean.parseBoolean(((HasValue) obj).getValueAsString());
+        }
+        return null;
+    }
+
     public boolean setWidgetValueIfEmpty(String id, Object value) {
         UIObject<?> obj = getWidget(id);
         if (obj instanceof HasValue) {

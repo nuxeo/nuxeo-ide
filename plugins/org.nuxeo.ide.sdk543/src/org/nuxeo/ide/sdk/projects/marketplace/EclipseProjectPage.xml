@@ -1,0 +1,32 @@
+<panel cols="2" layout="grid">
+
+<text>Project Id:</text>
+<textbox id="projectId" hfill="true">
+   <validator type="regex" value="[A-Za-z0-9_-]+">Not a valid Project ID. Format is [A-Za-z0-9_-]+</validator>
+</textbox>
+
+<!-- text>Project Name:</text><textbox id="projectName" hfill="true"/ -->
+
+<text>Root Package:</text>
+<textbox id="package" hfill="true" value="org.nuxeo.sample">
+   <validator type="regex" value="[A-Za-z0-9_]+(.[A-Za-z0-9_]+)*">Not a valid Java package name</validator>
+</textbox>
+
+<text>Project Location:</text><directory id="projectLocation" hfill="true"/>
+
+<!-- frame layout="grid" cols="1" hfill="true" colspan="2" label="Nuxeo Connect">
+<text>Select a Studio Project for configuring your project: (Optional)</text>
+<listbox id="studio" hfill="true" vfill="true"></listbox>    
+</frame-->
+
+<!-- Not enough room for this one - anyway it is not very important 
+<frame hfill="true" colspan="2" label="JRE" layout="grid" cols="2">
+    <text>Select the JRE to use:</text><jre id="jre" />
+</frame>
+-->
+
+<frame hfill="true" colspan="2" label="Working Sets">
+    <widget id="workingSets" />
+</frame>
+
+</panel>

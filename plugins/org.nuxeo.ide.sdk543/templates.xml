@@ -19,6 +19,44 @@
   </template>
 
 
+  <template id="marketplace" src="projects/marketplace">
+    <name>MarketPlace Packaging Project</name>
+    <description>A project builds Marketplace Packaging Project
+    </description>
+
+    <mkdir path="marketplace/src/main/resources/install/templates/" />
+    <mkdir path="marketplace/src/main/resources/install/templates/ldap" />
+    <mkdir path="marketplace/src/main/resources/install/templates/portal-sso" />
+    <mkdir
+      path="marketplace/src/main/resources/install/templates/virtual-users" />
+    <mkdir path="marketplace/src/main/assemble/" />
+    <mkdir path="ftest" />
+
+    <transform path="pom.xml" />
+    <transform path="marketplace/pom.xml" />
+    <transform path=".classpath" />
+    <transform path=".project" />
+    <transform path="marketplace/src/main/resources/package.xml" />
+    <transform path="marketplace/src/main/assemble/assembly.xml" />
+    <!-- LDAP -->
+    <transform
+      path="marketplace/src/main/resources/install/templates/ldap/my-project-ldap-users-directory-config.xml"
+      to="marketplace/src/main/resources/install/templates/ldap/${mpName}-ldap-users-directory-config.xml" />
+    <transform
+      path="marketplace/src/main/resources/install/templates/ldap/my-project-usermanager-config.xml"
+      to="marketplace/src/main/resources/install/templates/ldap/${mpName}-usermanager-config.xml" />
+    <!-- PORTAL SSO -->
+    <transform
+      path="marketplace/src/main/resources/install/templates/portal-sso/my-project-authentication-service-config.xml"
+      to="marketplace/src/main/resources/install/templates/portal-sso/${mpName}-authentication-service-config.xml" />
+    <!-- Virtual Users -->
+    <transform
+      path="marketplace/src/main/resources/install/templates/virtual-users/my-project-virtual-user-config.xml"
+      to="marketplace/src/main/resources/install/templates/virtual-users/${mpName}-virtual-user-config.xml" />
+
+    <select path="" />
+  </template>
+
   <template id="webengine" src="projects/webengine">
     <name>WebEngine Project</name>
     <description>A project defining a WebEngine application</description>
@@ -211,10 +249,6 @@
     <name>Seam Action Bean Component</name>
     <description>A seam action bean</description>
 
-    <dependencies>
-      <dependency groupId="org.jboss.seam" artifactId="jboss-seam" />
-    </dependencies>
-
     <extension src="features/seam/MyAction-extensions.xml" />
     <resourceBundle from="MyAction" to="${package}.${class}" />
     <binaryResource path="web/nuxeo.war/icons/MyAction-action.png"
@@ -227,10 +261,6 @@
   <template id="seam:Controller" src="features/seam/controller">
     <name>Seam Controller Bean Component</name>
     <description>A seam controller bean</description>
-
-    <dependencies>
-      <dependency groupId="org.jboss.seam" artifactId="jboss-seam" />
-    </dependencies>
 
     <extension src="features/seam/MyController-extensions.xml" />
     <resourceBundle from="MyController" to="${package}.${class}" />
