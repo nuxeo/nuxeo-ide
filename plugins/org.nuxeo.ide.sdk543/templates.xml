@@ -34,6 +34,9 @@
 
     <transform path="pom.xml" />
     <transform path="marketplace/pom.xml" />
+    <transform path="ftest/funkload/pom.xml" />
+    <transform path="ftest/selenium/pom.xml" />
+    <transform path="ftest/webdriver/pom.xml" />
     <transform path="ftest/webdriver/.classpath" />
     <transform path="marketplace/src/main/resources/package.xml" />
     <transform path=".project" />

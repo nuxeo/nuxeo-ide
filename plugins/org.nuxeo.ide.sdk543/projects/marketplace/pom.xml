@@ -11,7 +11,7 @@
   <groupId>${mpGroupId}</groupId>
   <artifactId>parent</artifactId>
   <packaging>pom</packaging>
-  <name>${mpParentArtifactId}</name>
+  <name>Nuxeo Marketplace packaging of ${mpMarketplaceArtifactId}</name>
   <version>${mpVersion}</version>
 
   <properties>
@@ -70,11 +70,5 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <scm>
-    <connection>scm:git:git://github.com/nuxeo/nuxeo-marketplace-sample.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com:nuxeo/nuxeo-marketplace-sample.git</developerConnection>
-    <url>https://github.com/nuxeo/nuxeo-marketplace-sample</url>
-  </scm>
 
 </project>
