@@ -16,8 +16,14 @@
  */
 package org.nuxeo.ide.sdk.projects.marketplace;
 
+import org.eclipse.jdt.core.IJavaProject;
+import org.nuxeo.ide.common.UI;
 import org.nuxeo.ide.common.forms.Form;
+import org.nuxeo.ide.sdk.model.PomModel;
 import org.nuxeo.ide.sdk.projects.NuxeoProjectPage1;
+import org.nuxeo.ide.sdk.projects.ProjectTemplateContext;
+import org.nuxeo.ide.sdk.templates.Constants;
+import org.nuxeo.ide.sdk.ui.widgets.ProjectChooser;
 import org.nuxeo.ide.sdk.ui.widgets.ProjectChooserWidget;
 
 /**
@@ -34,6 +40,24 @@ public class EclipseProjectPage extends NuxeoProjectPage1 {
         Form form = super.createForm();
         form.addWidgetType(ProjectChooserWidget.class);
         return form;
+    }
+
+    @Override
+    public void update(ProjectTemplateContext ctx) {
+        super.update(ctx);
+        ProjectChooser projChooser = (ProjectChooser) form.getWidgetControl("project");
+        IJavaProject project = projChooser.getProject();
+        try {
+            PomModel pom = PomModel.getPomModel(project.getProject());
+            ctx.put(MartketplaceWizardConstants.MP_ARTIFACT_ID,
+                    pom.getArtifactId());
+            ctx.put(Constants.PARENT_GROUP_ID, pom.getGroupId());
+            ctx.put(MartketplaceWizardConstants.MP_NAME, pom.getArtifactId());
+        } catch (Exception e) {
+            UI.showError(
+                    "Errors occured while introspecting the project pom model",
+                    e, "Project: " + project.getProject().getName());
+        }
     }
 
 }

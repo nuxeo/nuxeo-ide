@@ -32,6 +32,8 @@ public class MartketplaceWizardConstants {
 
     public static final String MP_VERSION = "mpVersion";
 
+    public static final String DISTRIB_VERSION = "parentVersion";
+
     public static final String MP_VENDOR = "mpVendor";
 
     public static final String MP_DISTRIBUTION = "mpDistribution";

@@ -3,7 +3,7 @@
   <frame label="Nuxeo Distribution Used" cols="2" layout="grid"
          hfill="true">
     <text>Nuxeo Version:</text>
-    <textbox id="parentVersion" hfill="true" readonly="true" value="5.8"/>
+    <textbox id="parentVersion" hfill="true" readonly="true" value=""/>
     <text colspan="2" halign="right">
       Nuxeo distribution version from your current SDK.
     </text>
@@ -20,45 +20,6 @@
     </text>
   </frame>
 
-  <!--
-    <frame label="Project Information" cols="2" layout="grid" hfill="true">
-      <text>Project Title:</text>
-      <textbox id="mpTitle" hfill="true" value="My Project">
-        <validator type="regex" value=".+">Title is required.
-        </validator>
-      </textbox>
-      <text colspan="2"  hfill="true">
-        Title is used for the Marketplace
-        Package name, maven for artifact names.
-      </text>
-
-
-      <text>Project Id:</text>
-      <textbox id="mpName" hfill="true" value="my-project">
-        <validator type="regex" value="[A-Za-z0-9_-]+">Not a valid Package Name.
-          Format is [A-Za-z0-9_-]+
-        </validator>
-      </textbox>
-      <text colspan="2"  hfill="true">
-        ID Marketplace Package Id, and maven for
-        groupId.
-      </text>
-
-      <text>Maven Group Id:</text>
-      <textbox id="parentGroupId" hfill="true" value="org.cie">
-        <validator type="regex" value="[A-Za-z0-9.]+">
-          Not a valid Package Name.
-          Format something like org.nuxeo.sample
-        </validator>
-      </textbox>
-      <text colspan="2" hfill="true">
-        If you want to deploy projects produced
-        with Nuxeo IDE with this Marketplace Package, you can set the same
-        maven groupID.
-      </text>
-
-    </frame>
-  -->
   <frame label="Markeplace Information" cols="2" layout="grid"
          hfill="true">
 
@@ -69,7 +30,7 @@
     </textbox>
 
     <text>Version:</text>
-    <textbox id="mpVersion" hfill="true" value="2.0-SNAPSHOT">
+    <textbox id="mpVersion" hfill="true" value="1.0-SNAPSHOT">
       <validator type="regex"
                  value="[0-9]*(\.[0-9]+)*(\.[0-9]+)*(-[A-Za-z0-9_]+)*">
         Version format is x.y.z-qualifier
