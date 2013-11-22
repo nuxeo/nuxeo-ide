@@ -10,7 +10,7 @@
 
   <artifactId>marketplace</artifactId>
   <packaging>zip</packaging>
-  <name>${mpMarketplaceArtifactId}</name>
+  <name>Marketplace package - ${mpMarketplaceArtifactId}</name>
 
   <dependencies>
     <!-- Base distribution(s) for the MP -->
@@ -18,6 +18,12 @@
       <groupId>org.nuxeo.ecm.distribution</groupId>
       <artifactId>${mpDistributionArtifactId}</artifactId>
       <type>pom</type>
+    </dependency>
+    <!-- Additional bundles to be deployed by the MP -->
+    <dependency>
+      <groupId>${parentGroupId}</groupId>
+      <artifactId>${mpMarketplaceArtifactId}</artifactId>
+      <version>${bundleVersion}</version>
     </dependency>
   </dependencies>
 
