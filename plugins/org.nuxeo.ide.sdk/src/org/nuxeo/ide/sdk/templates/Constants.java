@@ -36,6 +36,9 @@ public interface Constants {
 
     public final static String PROJECT_PACKAGE = "package";
 
+    // Bypass package setting if not needed as for marketplace
+    public final static String BYPASS_PACKAGE = "bypass";
+
     public final static String DEFAULT_PROJECT_PACKAGE = "org.nuxeo.sample";
 
     /**

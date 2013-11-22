@@ -32,6 +32,8 @@ public class MartketplaceWizardConstants {
 
     public static final String MP_VERSION = "mpVersion";
 
+    public static final String BUNDLE_VERSION = "bundleVersion";
+
     public static final String DISTRIB_VERSION = "parentVersion";
 
     public static final String MP_VENDOR = "mpVendor";
@@ -69,11 +71,6 @@ public class MartketplaceWizardConstants {
      * LICENSE_URL.get(MP_LICENSE)
      */
     public static final String MP_LICENSE_URL = "mpLicenseUrl";
-
-    /**
-     * Nuxeo Marketplace Parent Project for ${mpTitle}
-     */
-    public static final String MP_PARENT_ARTIFACT_ID = "mpParentArtifactId";
 
     /**
      * Nuxeo Marketplace packaging Project for ${mpTitle}

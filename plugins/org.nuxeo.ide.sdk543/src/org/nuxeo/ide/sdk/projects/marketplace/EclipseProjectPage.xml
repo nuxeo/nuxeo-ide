@@ -7,11 +7,6 @@
       <validator type="regex" value="[A-Za-z0-9_-]+">Not a valid Project ID. Format is [A-Za-z0-9_-]+</validator>
     </textbox>
 
-    <text>Root Package:</text>
-    <textbox id="package" value="org.nuxeo.sample" hfill="true">
-      <validator type="regex" value="[A-Za-z0-9_]+(.[A-Za-z0-9_]+)*">Not a valid Java package name</validator>
-    </textbox>
-
     <text>Project Location:</text>
     <directory id="projectLocation"/>
 
