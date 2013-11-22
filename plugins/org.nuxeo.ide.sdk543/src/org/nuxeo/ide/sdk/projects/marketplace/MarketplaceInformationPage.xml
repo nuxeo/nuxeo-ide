@@ -1,138 +1,125 @@
-<panel cols="2" layout="grid">
+<panel cols="1" layout="grid">
 
-	<frame label="Nuxeo Distribution Used" cols="2" layout="grid"
-		hfill="true">
-		<text>Nuxeo Distribution:</text>
-		<combo id="mpDistribution" hfill="true" readonly="true" value="dm">
-			coreserver,
-			cap,
-			dm,
-			dam,
-			social-collaboration
-		</combo>
-		<text colspan="2" halign="right">
-			Set the Nuxeo distribution supported by
-			your Marketplace Package.
-		</text>
+  <frame label="Nuxeo Distribution Used" cols="2" layout="grid"
+         hfill="true">
+    <text>Nuxeo Version:</text>
+    <textbox id="parentVersion" hfill="true" readonly="true" value="5.8"/>
+    <text colspan="2" halign="right">
+      Nuxeo distribution version from your current SDK.
+    </text>
+    <text>Nuxeo Distribution:</text>
+    <combo id="mpDistribution" hfill="true" readonly="true" value="dm">
+      coreserver,
+      cap,
+      dm,
+      dam,
+      social-collaboration
+    </combo>
+    <text colspan="2" halign="right">
+      Set the Nuxeo distribution supported by your Marketplace Package.
+    </text>
+  </frame>
 
-		<text>Nuxeo Version:</text>
-		<textbox id="parentVersion" hfill="true" value="5.6">
-			<validator type="regex"
-				value="[0-9]*(\.[0-9]+)*(\.[0-9]+)*(-[A-Za-z0-9_]+)*">Not a valid Nuxeo version.
-			</validator>
-		</textbox>
-		<text colspan="2" halign="right">
-			Set the Nuxeo distribution version
-			supported by the Marketplace Package.
-		</text>
-
-	</frame>
-
-
-	<frame label="Project Information" cols="2" layout="grid" hfill="true">
-		<text>Project Title:</text>
-		<textbox id="mpTitle" hfill="true" value="My Project">
-			<validator type="regex" value=".+">Title is required.
-			</validator>
-		</textbox>
-		<text colspan="2" halign="right">
-			Title is used for the Marketplace
-			Package name, maven for artifact names.
-		</text>
+  <!--
+    <frame label="Project Information" cols="2" layout="grid" hfill="true">
+      <text>Project Title:</text>
+      <textbox id="mpTitle" hfill="true" value="My Project">
+        <validator type="regex" value=".+">Title is required.
+        </validator>
+      </textbox>
+      <text colspan="2"  hfill="true">
+        Title is used for the Marketplace
+        Package name, maven for artifact names.
+      </text>
 
 
-		<text>Project Id:</text>
-		<textbox id="mpName" hfill="true" value="my-project">
-			<validator type="regex" value="[A-Za-z0-9_-]+">Not a valid Package Name.
-				Format is [A-Za-z0-9_-]+
-			</validator>
-		</textbox>
-		<text colspan="2" halign="right">
-			ID Marketplace Package Id, and maven for
-			groupId.
-		</text>
+      <text>Project Id:</text>
+      <textbox id="mpName" hfill="true" value="my-project">
+        <validator type="regex" value="[A-Za-z0-9_-]+">Not a valid Package Name.
+          Format is [A-Za-z0-9_-]+
+        </validator>
+      </textbox>
+      <text colspan="2"  hfill="true">
+        ID Marketplace Package Id, and maven for
+        groupId.
+      </text>
 
-		<text>Maven Group Id:</text>
-		<textbox id="parentGroupId" hfill="true" value="org.cie">
-			<validator type="regex" value="[A-Za-z0-9.]+">
-				Not a valid Package Name.
-				Format something like org.nuxeo.sample
-			</validator>
-		</textbox>
-		<text colspan="2" halign="right">
-			If you want to deploy projects produced
-			with Nuxeo IDE with this Marketplace Package, you can set the same
-			maven groupID.
-		</text>
+      <text>Maven Group Id:</text>
+      <textbox id="parentGroupId" hfill="true" value="org.cie">
+        <validator type="regex" value="[A-Za-z0-9.]+">
+          Not a valid Package Name.
+          Format something like org.nuxeo.sample
+        </validator>
+      </textbox>
+      <text colspan="2" hfill="true">
+        If you want to deploy projects produced
+        with Nuxeo IDE with this Marketplace Package, you can set the same
+        maven groupID.
+      </text>
 
-	</frame>
+    </frame>
+  -->
+  <frame label="Markeplace Information" cols="2" layout="grid"
+         hfill="true">
 
-	<frame label="Markeplace Information" cols="2" layout="grid"
-		hfill="true">
+    <text>Home Page:</text>
+    <textbox id="mpHomePage" hfill="true" value="http://www.cie.com">
+      <validator type="regex" value="(^$|^https?://.+$)">Not a valid URL. Waiting for http[s]://something
+      </validator>
+    </textbox>
 
-		<text>Home Page:</text>
-		<textbox id="mpHomePage" hfill="true" value="http://www.cie.com">
-			<validator type="regex" value="(^$|^https?://.+$)">Not a valid URL. Waiting for
-				http[s]://something
-			</validator>
-		</textbox>
+    <text>Version:</text>
+    <textbox id="mpVersion" hfill="true" value="2.0-SNAPSHOT">
+      <validator type="regex"
+                 value="[0-9]*(\.[0-9]+)*(\.[0-9]+)*(-[A-Za-z0-9_]+)*">
+        Version format is x.y.z-qualifier
+      </validator>
+    </textbox>
 
-		<text>Version:</text>
-		<textbox id="mpVersion" hfill="true" value="2.0-SNAPSHOT">
-			<validator type="regex"
-				value="[0-9]*(\.[0-9]+)*(\.[0-9]+)*(-[A-Za-z0-9_]+)*">
-				Version format is x.y.z-qualifier
-			</validator>
-		</textbox>
+    <text>Description:</text>
+    <textarea id="mpDescription" colspan="2" hfill="true" vfill="true" value=""/>
 
-		<text>Description:</text>
-		<textarea id="mpDescription" colspan="2" hfill="true" vfill="true" value=""/>
+    <text>Vendor:</text>
+    <textbox id="mpVendor" hfill="true" value="Personnal"/>
 
-		<text>Vendor:</text>
-		<textbox id="mpVendor" hfill="true" value="Personnal"/>
+    <text>License:</text>
+    <combo id="mpLicense" hfill="true" readonly="true" value="LGPL 2.1">
+      LGPL 2.1,
+      EPL 1.0,
+      AL 2.0,
+      AL 1.1,
+      AL 2.0,
+      BSD 2,
+      BSD 3,
+      CC BY 2.5,
+      CDDL 1.0,
+      CDDL 1.1,
+      LGPL 3,
+      MIT,
+      W3C,
+      Other
+    </combo>
+  </frame>
 
-		<text>License:</text>
-		<combo id="mpLicense" hfill="true" readonly="true" value="LGPL 2.1">
-			LGPL 2.1,
-			EPL 1.0,
-			AL 2.0,
-			AL 1.1,
-			AL 2.0,
-			BSD 2,
-			BSD 3,
-			CC BY 2.5,
-			CDDL 1.0,
-			CDDL 1.1,
-			LGPL 3,
-			MIT,
-			W3C,
-			Other
-		</combo>
-	</frame>
+  <panel cols="2" layout="grid" hfill="true" vfill="true">
 
-	<frame label="Markeplace Deployment Information" cols="2" layout="grid"
-		hfill="true">
-		<text>MP Installation need restart</text>
-		<checkbox id="mpInstallRestart" colspan="2" value="false" />
+    <frame label="Markeplace Deployment Information" cols="2" layout="grid"
+           hfill="true">
+      <text>MP Installation:</text>
+      <checkbox id="mpInstallRestart" colspan="2" value="false">needs restart</checkbox>
+      <checkbox id="mpUninstallRestart" colspan="2" value="false">doesn't need to restart</checkbox>
+      <checkbox id="mpHotReloadSupport" colspan="2" value="false">supports Hot Reload</checkbox>
+      <checkbox id="mpRequireTermAndConditionAcceptance" colspan="2" value="false">requires Term And Condition
+        Acceptance
+      </checkbox>
+    </frame>
 
-		<text>MP Installation don't need to restart</text>
-		<checkbox id="mpUninstallRestart" colspan="2" value="false" />
-		<!-- <textbox id="mpUninstallRestart" hfill="true" /> -->
-		<text>MP Installation Support Hot Reload</text>
-		<checkbox id="mpHotReloadSupport" colspan="2" />
-		<!-- <textbox id="mpHotReloadSupport" hfill="true" /> -->
-
-		<text>MP Installation Require Term And Condition Acceptance</text>
-		<checkbox id="mpRequireTermAndConditionAcceptance" colspan="2" />
-
-	</frame>
-
-	<frame label="Tests generations" cols="2" layout="grid" hfill="true">
-
+    <frame label="Tests generations" layout="grid" hfill="true">
+      <text>Select test framework(s):</text>
       <checkbox id="webdriver" colspan="2" value="false">Webdriver</checkbox>
       <checkbox id="selenium" colspan="2" value="false">Selenium</checkbox>
       <checkbox id="funkload" colspan="2" value="false">FunkLoad</checkbox>
       <checkbox id="cmis" colspan="2" value="false">CMIS</checkbox>
-
-	</frame>
+    </frame>
+  </panel>
 </panel>
