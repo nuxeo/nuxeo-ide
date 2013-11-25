@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -122,6 +123,7 @@ public class StudioProvider {
         if (file.exists()) {
             FileInputStream in = new FileInputStream(file);
             List<StudioProject> result = StudioProject.readProjects(in);
+            Collections.sort(result);
             projects = result.toArray(new StudioProject[result.size()]);
             repositoryManager.reload();
         } else {

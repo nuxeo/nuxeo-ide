@@ -91,7 +91,7 @@ public class ConnectPreferencePage extends FormPreferencePage implements
         org.eclipse.swt.widgets.List list = (org.eclipse.swt.widgets.List) form.getWidgetControl("projects");
         list.removeAll();
         for (StudioProject project : provider.getProjects()) {
-            list.add(project.getId());
+            list.add(project.getName());
             prefs.addProject(project);
         }
     }
@@ -118,7 +118,7 @@ public class ConnectPreferencePage extends FormPreferencePage implements
         }
         org.eclipse.swt.widgets.List list = ((org.eclipse.swt.widgets.List) form.getWidgetControl("projects"));
         for (StudioProject project : prefs.getProjects()) {
-            list.add(project.getId());
+            list.add(project.getName());
         }
     }
 
