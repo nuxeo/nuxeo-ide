@@ -20,21 +20,13 @@
 
   <modules>
     <module>marketplace</module>
+    <#if testEnabled = 'true'>
+       <#if webdriver = 'true'><module>ftest/webdriver</module></#if>
+       <#if selenium = 'true'><module>ftest/selenium</module></#if>
+       <#if funkload = 'true'><module>ftest/funkload</module></#if>
+       <#if cmis = 'true'><module>ftest/cmis</module></#if>
+    </#if>
   </modules>
-<#if testEnabled = 'true'>
-
-  <profiles>
-    <profile>
-      <id>ftest</id>
-      <modules>
-        <#if webdriver = 'true'><module>ftest/webdriver</module>
-        </#if><#if selenium = 'true'><module>ftest/selenium</module>
-        </#if><#if funkload = 'true'><module>ftest/funkload</module>
-        </#if><#if cmis = 'true'><module>ftest/cmis</module>
-      </#if></modules>
-    </profile>
-  </profiles>
-</#if>
 
   <dependencyManagement>
     <dependencies>
