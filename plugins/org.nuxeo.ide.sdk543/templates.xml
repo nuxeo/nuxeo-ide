@@ -30,17 +30,10 @@
     <mkdir
       path="marketplace/src/main/resources/install/templates/virtual-users" />
     <mkdir path="marketplace/src/main/assemble/" />
-    <mkdir path="ftest" />
 
     <transform path="pom.xml" />
     <transform path="marketplace/pom.xml" />
-    <transform path="ftest/funkload/pom.xml" />
-    <transform path="ftest/funkload/itests.xml" />
-    <transform path="ftest/selenium/pom.xml" />
-    <transform path="ftest/selenium/itests.xml" />
-    <transform path="ftest/webdriver/pom.xml" />
-    <transform path="ftest/webdriver/itests.xml" />
-    <transform path="ftest/webdriver/.classpath" />
+
     <transform path="marketplace/src/main/resources/package.xml" />
     <transform path=".project" />
     <transform path="marketplace/src/main/assemble/assembly.xml" />
@@ -62,6 +55,41 @@
 
     <select path="" />
   </template>
+
+  <template id="webdriver" src="projects/marketplace/ftest/webdriver">
+    <name>Webdriver Project</name>
+    <description>A project builds Webdriver Project
+    </description>
+    <mkdir path="src" />
+    <transform path="pom.xml" />
+    <transform path="itests.xml" />
+    <transform path=".classpath" />
+    <transform path=".project" />
+    <select path="" />
+  </template>
+
+  <template id="selenium" src="projects/marketplace/ftest/selenium">
+    <name>Selenium Project</name>
+    <description>A project builds Selenium Project
+    </description>
+    <mkdir path="selenium" />
+    <transform path="pom.xml" />
+    <transform path="itests.xml" />
+    <transform path=".project" />
+    <select path="" />
+  </template>
+
+  <template id="funkload" src="projects/marketplace/ftest/funkload">
+    <name>Funkload Project</name>
+    <description>A project builds Funkload Project
+    </description>
+    <mkdir path="funkload" />
+    <transform path="pom.xml" />
+    <transform path="itests.xml" />
+    <transform path=".project" />
+    <select path="" />
+  </template>
+
 
   <template id="webengine" src="projects/webengine">
     <name>WebEngine Project</name>
