@@ -156,13 +156,10 @@ public class NuxeoProjectPage1 extends FormWizardPage<ProjectTemplateContext>
         String v = ctx.setProperty(form, PROJECT_ID, ARTIFACT_ID, ARTIFACT_NAME);
         ctx.put(PROJECT_NAME, v);
         ctx.setProperty(form, PROJECT_ID, ARTIFACT_ID, ARTIFACT_NAME);
-        // Bypass package setting if not needed as for marketplace
-        if (ctx.get(BYPASS_PACKAGE) == null) {
-            v = ctx.setProperty(form, PROJECT_PACKAGE);
-            int i = v.lastIndexOf('.');
-            if (i > 0) {
-                ctx.put(GROUP_ID, v.substring(0, i));
-            }
+        v = ctx.setProperty(form, PROJECT_PACKAGE);
+        int i = v.lastIndexOf('.');
+        if (i > 0) {
+            ctx.put(GROUP_ID, v.substring(0, i));
         }
         // TODO
         // ctx.setStudioProject(getStudioProject());

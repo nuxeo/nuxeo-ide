@@ -34,7 +34,7 @@ public class EclipseProjectPage extends NuxeoProjectPage1 {
     public EclipseProjectPage() {
         super("marketplace", "Create a Nuxeo Marketplace Package", null);
     }
-    
+
     @Override
     public Form createForm() {
         Form form = super.createForm();
@@ -44,7 +44,6 @@ public class EclipseProjectPage extends NuxeoProjectPage1 {
 
     @Override
     public void update(ProjectTemplateContext ctx) {
-        ctx.put(Constants.BYPASS_PACKAGE, "true");
         super.update(ctx);
         ProjectChooser projChooser = (ProjectChooser) form.getWidgetControl("project");
         IJavaProject project = projChooser.getProject();
@@ -54,7 +53,6 @@ public class EclipseProjectPage extends NuxeoProjectPage1 {
                     pom.getArtifactId());
             ctx.put(Constants.PARENT_GROUP_ID, pom.getGroupId());
             ctx.put(MartketplaceWizardConstants.MP_NAME, pom.getArtifactId());
-            ctx.put(MartketplaceWizardConstants.BUNDLE_VERSION, pom.getArtifactVersion());
         } catch (Exception e) {
             UI.showError(
                     "Errors occured while introspecting the project pom model",
