@@ -1,7 +1,14 @@
-<#assign artifactPropertiesFilename="artifacts-" + mpName + ".properties"> 
-<#assign testArtifactPropertiesFilename="test-artifacts-" + mpName + ".properties"> 
-<#assign patternSetId=mpName + ".versus." + mpDistribution> 
-<#assign mpVersionVariableWithBrackets = "${" + mpVersionVariable +"}"> 
+<#if false>
+  <!-- WARNING:
+  - maven.project.artifactId
+  - nuxeo.distribution.version
+  - outdir
+  are ant variables escaped (${r) no parsed by freemarker -->
+</#if>
+<#assign artifactPropertiesFilename="artifacts-" + mpName + ".properties">
+<#assign testArtifactPropertiesFilename="test-artifacts-" + mpName + ".properties">
+<#assign patternSetId=mpName + ".versus." + mpDistribution>
+<#assign mpVersionVariableWithBrackets = "${" + mpVersionVariable +"}">
 <project name="nuxeo-assembly"
          default="build"
          xmlns:nx="urn:nuxeo-build"
@@ -10,12 +17,13 @@
   <taskdef resource="org/nuxeo/build/artifact/antlib.xml"
            uri="urn:nuxeo-artifact" />
   <taskdef resource="net/sf/antcontrib/antlib.xml" />
-
+  <#noparse>
   <target name="init" unless="init.done">
-    <property name="outdir" value="${r"${maven.project.build.directory}"}" />
+    <property name="outdir" value="${maven.project.build.directory}" />
     <antcall target="expand" />
     <property name="init.done" value="true" />
   </target>
+  </#noparse>
 
   <target name="expand">
     <!-- Include your artifacts in the graph adding your groupId to groupPrefixes -->
@@ -103,41 +111,43 @@
       <patternset refid="${patternSetId}" />
     </unzip>
 
-    <!-- Generate install.xml file -->
-    <!-- See documentation at http://doc.nuxeo.com/x/IgIz -->
-    <var name="install.content" value="&lt;install&gt;" />
-    <var name="install.content"
-         value="${r"${install.content}"}${r"${line.separator}"}
-  &lt;update file=&quot;${r"${package.root}"}/install/bundles&quot; todir=&quot;${r"${env.bundles}"}&quot; /&gt;" />
-    <if>
-      <available file="${r"${outdir}"}/marketplace/install/lib" />
-      <then>
-        <var name="install.content"
-             value="${r"${install.content}"}${r"${line.separator}"}
-  &lt;update file=&quot;${r"${package.root}"}/install/lib&quot; todir=&quot;${r"${env.lib}"}&quot; /&gt;" />
-      </then>
-    </if>
-    <var name="install.content"
-         value="${r"${install.content}"}${r"${line.separator}"}
-  &lt;copy file=&quot;${r"${package.root}"}/install/artifacts-sample.properties&quot;${r"${line.separator}"}
-    todir=&quot;${r"${env.server.home}"}/sdk&quot; overwrite=&quot;true&quot; /&gt;${r"${line.separator}"}
-  &lt;copy file=&quot;${r"${package.root}"}/install/${testArtifactPropertiesFilename}&quot;${r"${line.separator}"}
-    todir=&quot;${r"${env.server.home}"}/sdk&quot; overwrite=&quot;true&quot; /&gt;${r"${line.separator}"}" />
-    <!-- Optional: use this if you need your MP to deploy and/or activate a dedicated template -->
-    <if>
-      <available file="${r"${outdir}"}/marketplace/install/templates" />
-      <then>
-        <var name="install.content"
-             value="${r"${install.content}"}${r"${line.separator}"}
-  &lt;copy dir=&quot;${r"${package.root}"}/install/templates&quot; todir=&quot;${r"${env.templates}"}&quot; overwrite=&quot;true&quot; /&gt;${r"${line.separator}"}
-  &lt;config addtemplate=&quot;sample&quot; /&gt;${r"${line.separator}"}" />
-      </then>
-    </if>
-    <var name="install.content"
-         value="${r"${install.content}"}${r"${line.separator}"}
-&lt;/install&gt;${r"${line.separator}"}" />
-    <echo file="${r"${outdir}"}/marketplace/install.xml"
-          message="${r"${install.content}"}" />
+  <#noparse>
+      <!-- Generate install.xml file -->
+      <!-- See documentation at http://doc.nuxeo.com/x/IgIz -->
+      <var name="install.content" value="&lt;install&gt;" />
+      <var name="install.content"
+           value="${install.content}${line.separator}
+    &lt;update file=&quot;${package.root}/install/bundles&quot; todir=&quot;${env.bundles}&quot; /&gt;" />
+      <if>
+        <available file="${outdir}/marketplace/install/lib" />
+        <then>
+          <var name="install.content"
+               value="${install.content}${line.separator}
+    &lt;update file=&quot;${package.root}/install/lib&quot; todir=&quot;${env.lib}&quot; /&gt;" />
+        </then>
+      </if>
+      <var name="install.content"
+           value="${install.content}${line.separator}
+    &lt;copy file=&quot;${package.root}/install/artifacts-sample.properties&quot;${line.separator}
+      todir=&quot;${env.server.home}/sdk&quot; overwrite=&quot;true&quot; /&gt;${line.separator}
+    &lt;copy file=&quot;${package.root}/install/${testArtifactPropertiesFilename}&quot;${line.separator}
+      todir=&quot;${env.server.home}/sdk&quot; overwrite=&quot;true&quot; /&gt;${line.separator}" />
+      <!-- Optional: use this if you need your MP to deploy and/or activate a dedicated template -->
+      <if>
+        <available file="${outdir}/marketplace/install/templates" />
+        <then>
+          <var name="install.content"
+               value="${install.content}${line.separator}
+    &lt;copy dir=&quot;${package.root}/install/templates&quot; todir=&quot;${env.templates}&quot; overwrite=&quot;true&quot; /&gt;${line.separator}
+    &lt;config addtemplate=&quot;sample&quot; /&gt;${line.separator}" />
+        </then>
+      </if>
+      <var name="install.content"
+           value="${install.content}${line.separator}
+  &lt;/install&gt;${line.separator}" />
+      <echo file="${outdir}/marketplace/install.xml"
+            message="${install.content}" />
+  </#noparse>
 
     <zip destfile="${r"${outdir}"}/${r"${maven.project.artifactId}"}-${mpVersionVariableWithBrackets}.zip"
          basedir="${r"${outdir}"}/marketplace" />
