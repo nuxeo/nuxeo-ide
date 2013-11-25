@@ -3,7 +3,7 @@
   - maven.project.artifactId
   - nuxeo.distribution.version
   - outdir
-  are ant variables escaped (${r) no parsed by freemarker -->
+  are ant variables escaped no parsed by freemarker -->
 </#if>
 <#assign artifactPropertiesFilename="artifacts-" + mpName + ".properties">
 <#assign testArtifactPropertiesFilename="test-artifacts-" + mpName + ".properties">

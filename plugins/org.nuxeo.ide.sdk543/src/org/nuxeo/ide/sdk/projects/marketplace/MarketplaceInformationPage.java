@@ -99,6 +99,7 @@ public class MarketplaceInformationPage extends
             ctx.setProperty(MP_LICENSE_URL, LICENSE_URL.get(license));
         }
 
+        ctx.setProperty(MP_DISTRIBUTION, distribution);
         ctx.setProperty(MP_GROUPID, parentGroupId + ".marketplace");
         ctx.setProperty(MP_POM_VERSION_VARIABLE, "marketplace." + name
                 + ".version");
@@ -110,6 +111,5 @@ public class MarketplaceInformationPage extends
                 || form.getWidgetValueAsBoolean(FUNKLOAD_ENABLED)
                 || form.getWidgetValueAsBoolean(CMIS_ENABLED);
         ctx.setProperty(TEST_ENABLED, testEnabled.toString());
-
     }
 }

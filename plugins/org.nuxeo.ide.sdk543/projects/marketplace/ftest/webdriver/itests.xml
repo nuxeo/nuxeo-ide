@@ -1,3 +1,4 @@
+<#assign mpVersionVariableWithBrackets = "${" + mpVersionVariable +"}">
 <project name="nuxeo-sample-tests"
          xmlns:nx="urn:nuxeo-build"
          xmlns:artifact="urn:nuxeo-artifact">
@@ -7,22 +8,22 @@
   <taskdef resource="net/sf/antcontrib/antlib.xml" />
 
   <!-- Base distribution (nuxeo-cap, nuxeo-dm, ...) -->
-  <property name="wizard.preset" value="nuxeo-cap" />
-
+  <property name="wizard.preset" value="nuxeo-${mpDistribution}" />
+<#noparse>
   <property name="out.dir" value="${maven.project.build.directory}" />
   <unzip dest="${out.dir}/" overwrite="false">
     <artifact:resolveFile key="org.nuxeo:nuxeo-ftest::zip" />
   </unzip>
   <import file="${out.dir}/nuxeo-ftest.xml" />
-
+</#noparse>
   <!-- Instruction for installing the MP to be tested -->
   <property name="mp.install"
-            value="file:${out.dir}/marketplace-${marketplace.sample.version}.zip" />
+            value="file:${r"${out.dir}"}/marketplace-${mpVersionVariableWithBrackets}.zip" />
   <!-- Override default prepare-environment target to make it download your MP -->
   <target name="prepare-environment"
           depends="_init,prepare-db,prepare-tomcat,prepare-jboss">
-    <copy todir="${out.dir}">
-      <artifact:resolveFile key="org.nuxeo.marketplace.sample:marketplace::zip" />
+    <copy todir="${r"${out.dir}"}">
+      <artifact:resolveFile key="${mpGroupId}:marketplace::zip" />
     </copy>
   </target>
 
