@@ -1,5 +1,0 @@
-virtual-users.target=nxserver/config
-
-nuxeo.default.administrator.login=Administrator
-nuxeo.default.administrator.password=Administrator
-nuxeo.default.administrator.group=administrators

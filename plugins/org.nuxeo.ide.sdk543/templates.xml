@@ -24,11 +24,6 @@
     <description>A project builds Marketplace Packaging Project
     </description>
 
-    <mkdir path="marketplace/src/main/resources/install/templates/" />
-    <mkdir path="marketplace/src/main/resources/install/templates/ldap" />
-    <mkdir path="marketplace/src/main/resources/install/templates/portal-sso" />
-    <mkdir
-      path="marketplace/src/main/resources/install/templates/virtual-users" />
     <mkdir path="marketplace/src/main/assemble/" />
     <mkdir path="ftest" />
 
@@ -45,21 +40,6 @@
     <transform path="marketplace/src/main/resources/package.xml" />
     <transform path=".project" />
     <transform path="marketplace/src/main/assemble/assembly.xml" />
-    <!-- LDAP -->
-    <transform
-      path="marketplace/src/main/resources/install/templates/ldap/my-project-ldap-users-directory-config.xml"
-      to="marketplace/src/main/resources/install/templates/ldap/${mpName}-ldap-users-directory-config.xml" />
-    <transform
-      path="marketplace/src/main/resources/install/templates/ldap/my-project-usermanager-config.xml"
-      to="marketplace/src/main/resources/install/templates/ldap/${mpName}-usermanager-config.xml" />
-    <!-- PORTAL SSO -->
-    <transform
-      path="marketplace/src/main/resources/install/templates/portal-sso/my-project-authentication-service-config.xml"
-      to="marketplace/src/main/resources/install/templates/portal-sso/${mpName}-authentication-service-config.xml" />
-    <!-- Virtual Users -->
-    <transform
-      path="marketplace/src/main/resources/install/templates/virtual-users/my-project-virtual-user-config.xml"
-      to="marketplace/src/main/resources/install/templates/virtual-users/${mpName}-virtual-user-config.xml" />
 
     <select path="" />
   </template>
