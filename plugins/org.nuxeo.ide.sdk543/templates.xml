@@ -30,9 +30,17 @@
     <mkdir
       path="marketplace/src/main/resources/install/templates/virtual-users" />
     <mkdir path="marketplace/src/main/assemble/" />
+    <mkdir path="ftest" />
 
     <transform path="pom.xml" />
     <transform path="marketplace/pom.xml" />
+
+    <transform path="ftest/funkload/pom.xml" />
+    <transform path="ftest/funkload/itests.xml" />
+    <transform path="ftest/selenium/pom.xml" />
+    <transform path="ftest/selenium/itests.xml" />
+    <transform path="ftest/webdriver/pom.xml" />
+    <transform path="ftest/webdriver/itests.xml" />
 
     <transform path="marketplace/src/main/resources/package.xml" />
     <transform path=".project" />
