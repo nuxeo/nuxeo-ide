@@ -23,7 +23,7 @@
     <dependency>
       <groupId>${parentGroupId}</groupId>
       <artifactId>${mpMarketplaceArtifactId}</artifactId>
-      <version>${bundleVersion}</version>
+      <version>${mpVersion}</version>
     </dependency>
   </dependencies>
 
