@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -33,6 +34,7 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -41,10 +43,11 @@ import org.nuxeo.ide.sdk.comp.ComponentIndex;
 import org.nuxeo.ide.sdk.comp.ComponentIndexManager;
 import org.nuxeo.ide.sdk.deploy.Deployment;
 import org.nuxeo.ide.sdk.index.Index;
+import org.nuxeo.ide.sdk.java.ClasspathEditor;
+import org.nuxeo.ide.sdk.java.SDKClasspathEntriesProvider;
+import org.nuxeo.ide.sdk.java.SDKClasspathContainer;
+import org.nuxeo.ide.sdk.java.SDKClasspathFixer;
 import org.nuxeo.ide.sdk.server.ServerController;
-import org.nuxeo.ide.sdk.ui.NuxeoNature;
-import org.nuxeo.ide.sdk.ui.SDKClassPathBuilder;
-import org.nuxeo.ide.sdk.ui.SDKClassPathContainerInitializer;
 import org.osgi.service.prefs.BackingStoreException;
 
 /**
@@ -53,7 +56,7 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public class NuxeoSDK {
 
-    /**
+	/**
      * The Nuxeo SDK instance on the active Eclipse Workspace.
      */
     private static volatile NuxeoSDK instance = null;
@@ -62,11 +65,22 @@ public class NuxeoSDK {
 
     private static ListenerList deploymentChangedListeners = new ListenerList();
 
-    static void initialize() throws BackingStoreException {
+    public SDKClasspathContainer mainClasspathContainer = new SDKClasspathContainer(SDKClasspathContainer.MAIN_ID, "main");
+    
+    public SDKClasspathContainer testClasspathContainer = new SDKClasspathContainer(SDKClasspathContainer.TEST_ID, "test libraries");
+    
+    public SDKClasspathContainer userlibClasspathContainer = new SDKClasspathContainer(SDKClasspathContainer.USERLIB_ID, "user libraries");
+    
+    public static SDKClasspathFixer cpFixer;
+    
+    static void initialize() throws BackingStoreException, CoreException {
         SDKInfo info = SDKRegistry.getDefaultSDK();
         if (info != null) {
             instance = new NuxeoSDK(info);
         }
+        reload();
+        cpFixer = new SDKClasspathFixer();
+        cpFixer.registerSelf();
     }
 
     public static NuxeoSDK getDefault() {
@@ -106,23 +120,24 @@ public class NuxeoSDK {
         if (sdk != null) {
             synchronized (sdk) {
                 sdk.compIndexMgr.flushCache();
-                sdk.classpath = null;
-                sdk.testClasspath = null;
                 sdk.index = null;
                 sdk.testIndex = null;
             }
         }
         try {
-            reloadSDKClasspathContainer();
+        	reloadSDKClasspathContainer();
         } catch (CoreException e) {
-            UI.showError("Failed to rebuild Nuxeo Projects", e);
+        	UI.showError("Failed to rebuild Nuxeo Projects", e);
         }
     }
 
     public static void dispose() {
+        cpFixer.unregisterSelf();
+        cpFixer = null;
         sdkChangedListeners = null;
         instance = null;
         deploymentChangedListeners = null;
+        
     }
 
     public static void addSDKChangedListener(SDKChangedListener listener) {
@@ -168,19 +183,8 @@ public class NuxeoSDK {
     protected volatile Index index;
 
     protected volatile Index testIndex;
-
-    /**
-     * SDK classpath cache
-     */
-    protected volatile IClasspathEntry[] classpath;
-
-    protected volatile IClasspathEntry[] testClasspath;
-
-    // /**
-    // * Class index (class -> artifact). ONly initialized at demand. Used to
-    // * generate maven dependencies.
-    // */
-    // protected volatile Index index;
+    
+    protected SDKClasspathEntriesProvider cpEntriesProvider;
 
     public NuxeoSDK(SDKInfo info) {
         this.info = info;
@@ -188,7 +192,6 @@ public class NuxeoSDK {
         this.controller = new ServerController(info);
         this.compIndexMgr = new ComponentIndexManager(this.root);
         controller.addServerLifeCycleListener(compIndexMgr);
-
     }
 
     protected void destroy() {
@@ -281,32 +284,8 @@ public class NuxeoSDK {
         return new File(root, "sdk/tests");
     }
 
-    public IClasspathEntry[] getClasspathEntries() {
-        IClasspathEntry[] cache = classpath;
-        if (cache == null) {
-            synchronized (this) {
-                cache = classpath;
-                if (cache == null) {
-                    classpath = SDKClassPathBuilder.build(this);
-                    cache = classpath;
-                }
-            }
-        }
-        return cache;
-    }
-
-    public IClasspathEntry[] getTestClasspathEntries() {
-        IClasspathEntry[] cache = testClasspath;
-        if (cache == null) {
-            synchronized (this) {
-                cache = testClasspath;
-                if (cache == null) {
-                    testClasspath = SDKClassPathBuilder.buildTests(this);
-                    cache = testClasspath;
-                }
-            }
-        }
-        return cache;
+    public IClasspathEntry[] getClasspathEntries(SDKClasspathContainer which) {
+        return cpEntriesProvider.getEntries(which);
     }
 
     /**
@@ -318,38 +297,31 @@ public class NuxeoSDK {
     }
 
     public static void rebuildProjects() {
-        doBuildOperation(IncrementalProjectBuilder.FULL_BUILD, null);
+        doBuildOperation(IncrementalProjectBuilder.FULL_BUILD);
     }
 
     public static void rebuildNuxeoProjects() throws CoreException {
-        List<IProject> nxProjects = getNuxeoProjects();
-        if (!nxProjects.isEmpty()) {
-            doBuildOperation(IncrementalProjectBuilder.FULL_BUILD, nxProjects);
-        }
+        IProject[] nxProjects = getNuxeoProjects();
+        doBuildOperation(IncrementalProjectBuilder.FULL_BUILD, nxProjects);
     }
 
     public static void rebuildNuxeoProject(IProject project)
             throws CoreException {
-        List<IProject> nxProjects = getNuxeoProjects();
-        if (!nxProjects.isEmpty()) {
             doBuildOperation(IncrementalProjectBuilder.FULL_BUILD,
-                    Collections.singletonList(project));
-        }
+                    new IProject[] { project });
     }
 
     private static void doBuildOperation(final int buildType,
-            final List<IProject> projects) {
+            final IProject... projects) {
         Job buildJob = new Job("Building Workspace") {
             protected IStatus run(IProgressMonitor monitor) {
                 int ticks = 100;
                 String message = "Rebuilding All ...";
-                if (projects != null) {
-                    ticks = projects.size();
+                    ticks = projects.length;
                     message = "Rebuilding Nuxeo Projects ...";
-                }
                 monitor.beginTask(message, ticks);
                 try {
-                    if (projects == null) {
+                    if (projects.length == 0) {
                         ResourcesPlugin.getWorkspace().build(buildType,
                                 new SubProgressMonitor(monitor, 100));
                     } else {
@@ -374,36 +346,38 @@ public class NuxeoSDK {
         buildJob.schedule();
     }
 
-    public static List<IProject> getNuxeoProjects() throws CoreException {
-        ArrayList<IProject> nxProjects = new ArrayList<IProject>();
-        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-            if (project.hasNature(NuxeoNature.ID)) {
-                nxProjects.add(project);
-            }
-        }
-        return nxProjects;
-    }
-
-    public static List<IJavaProject> getNuxeoJavaProjects()
+    public static IProject[] getNuxeoProjects()
             throws CoreException {
-        ArrayList<IJavaProject> nxProjects = new ArrayList<IJavaProject>();
-        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-            if (project.isOpen() && project.hasNature(NuxeoNature.ID)) {
-                nxProjects.add(JavaCore.create(project));
+        ArrayList<IProject> nxProjects = new ArrayList<IProject>();
+        for (IProject eachProject : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+            if (eachProject.isOpen() && eachProject.hasNature(NuxeoNature.ID)) {
+                nxProjects.add(eachProject);
             }
         }
-        return nxProjects;
+        return nxProjects.toArray(new IProject[nxProjects.size()]);
     }
 
     public static void reloadSDKClasspathContainer() throws CoreException {
-        List<IJavaProject> nxProjects = getNuxeoJavaProjects();
-        if (!nxProjects.isEmpty()) {
-            SDKClassPathContainerInitializer initializer = new SDKClassPathContainerInitializer();
-            initializer.initialize(nxProjects.toArray(new IJavaProject[nxProjects.size()]));
-        }
+		IProject projects[] = getNuxeoProjects();
+		
+		if (instance != null) {
+			instance.recycleContainers();
+		}
+		
+		for (IProject eachProject:projects) {
+		    NuxeoNature.get(eachProject).reloadClasspath();
+		}
+
+	}
+
+    protected void recycleContainers() throws CoreException {
+    	mainClasspathContainer = new SDKClasspathContainer(SDKClasspathContainer.MAIN_ID, "main");       
+        testClasspathContainer = new SDKClasspathContainer(SDKClasspathContainer.TEST_ID, "test libraries");        
+        userlibClasspathContainer = new SDKClasspathContainer(SDKClasspathContainer.USERLIB_ID, "user libraries");
+        cpEntriesProvider = new SDKClasspathEntriesProvider(this);
     }
 
-    public URL getRemoteLocation(String path) {
+	public URL getRemoteLocation(String path) {
         return info.getRemoteLocation(path);
     }
 

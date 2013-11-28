@@ -45,16 +45,9 @@
 
 
    <extension
-         point="org.eclipse.jdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="org.nuxeo.ide.sdk.ui.SDKClassPathContainerInitializer"
-            id="org.nuxeo.ide.SDK_CONTAINER">
-      </classpathContainerInitializer>
-   </extension>
-   <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage
-            class="org.nuxeo.ide.sdk.ui.SDKClassPathContainerPage"
+            class="org.nuxeo.ide.sdk.ui.SDKClasspathContainerPage"
             id="org.nuxeo.ide.SDK_CONTAINER"
             name="Nuxeo SDK">
       </classpathContainerPage>
@@ -62,16 +55,29 @@
    <extension
          point="org.eclipse.jdt.core.classpathContainerInitializer">
       <classpathContainerInitializer
-            class="org.nuxeo.ide.sdk.ui.SDKClassPathContainerInitializer"
+            class="org.nuxeo.ide.sdk.java.SDKClasspathContainerInitializer"
+            id="org.nuxeo.ide.SDK_CONTAINER">
+      </classpathContainerInitializer>
+      <classpathContainerInitializer
+            class="org.nuxeo.ide.sdk.java.SDKTestClasspathContainerInitializer"
             id="org.nuxeo.ide.SDK_TEST_CONTAINER">
+      </classpathContainerInitializer>
+      <classpathContainerInitializer
+            class="org.nuxeo.ide.sdk.java.SDKUserlibClasspathContainerInitializer"
+            id="org.nuxeo.ide.SDK_USERLIB_CONTAINER">
       </classpathContainerInitializer>
    </extension>
    <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage
-            class="org.nuxeo.ide.sdk.ui.SDKTestClassPathContainerPage"
+            class="org.nuxeo.ide.sdk.ui.SDKTestClasspathContainerPage"
             id="org.nuxeo.ide.SDK_TEST_CONTAINER"
             name="Nuxeo SDK (Tests)">
+      </classpathContainerPage>
+      <classpathContainerPage
+            class="org.nuxeo.ide.sdk.ui.SDKUserlibClasspathContainerPage"
+            id="org.nuxeo.ide.SDK_USERLIB_CONTAINER"
+            name="Nuxeo SDK (User Libraries)">
       </classpathContainerPage>
    </extension>
 
@@ -80,7 +86,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.nuxeo.ide.sdk.ui.NuxeoNature">
+               class="org.nuxeo.ide.sdk.NuxeoNature">
          </run>
       </runtime>
       <requires-nature id="org.eclipse.jdt.core.javanature" />

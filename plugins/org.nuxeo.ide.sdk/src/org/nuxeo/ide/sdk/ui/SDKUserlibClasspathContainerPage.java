@@ -18,20 +18,16 @@ package org.nuxeo.ide.sdk.ui;
 
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.nuxeo.ide.sdk.NuxeoSDK;
+import org.nuxeo.ide.sdk.java.SDKClasspathContainer;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
  * 
  */
-public class SDKTestClassPathContainerPage extends SDKClassPathContainerPage {
+public class SDKUserlibClasspathContainerPage extends SDKClasspathContainerPage {
 
-    public SDKTestClassPathContainerPage() {
-        super("NuxeoSDKTest", "Nuxeo SDK (Tests)", null);
-    }
-
-    @Override
-    protected IClasspathEntry[] getClasspath(NuxeoSDK sdk) {
-        return sdk.getTestClasspathEntries();
+    public SDKUserlibClasspathContainerPage() {
+        super(NuxeoSDK.getDefault().userlibClasspathContainer, "NuxeoSDKUserlib", null);
     }
 
 }

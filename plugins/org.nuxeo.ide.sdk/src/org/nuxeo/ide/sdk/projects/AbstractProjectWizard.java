@@ -25,9 +25,10 @@ import org.nuxeo.ide.common.wizards.AbstractWizard;
 import org.nuxeo.ide.sdk.NuxeoSDK;
 import org.nuxeo.ide.sdk.SDKRegistry;
 import org.nuxeo.ide.sdk.java.ClasspathEditor;
+import org.nuxeo.ide.sdk.java.SDKClasspathContainer;
 import org.nuxeo.ide.sdk.templates.Constants;
 import org.nuxeo.ide.sdk.templates.TemplateRegistry;
-import org.nuxeo.ide.sdk.ui.SDKClassPathContainer;
+import org.nuxeo.ide.sdk.ui.SDKClassPathContainerEntryPage;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
@@ -68,9 +69,11 @@ public abstract class AbstractProjectWizard extends
         ctx.put(Constants.TARGET_VERSION, version);
         ctx.put(Constants.SDK_VERSION, version);
         ctx.put(Constants.BUNDLE_VERSION, osgiVersion);
-        ctx.put(Constants.CLASSPATH_CONTAINER, SDKClassPathContainer.ID);
+        ctx.put(Constants.CLASSPATH_CONTAINER, SDKClasspathContainer.MAIN_ID);
         ctx.put(Constants.TEST_CLASSPATH_CONTAINER,
-                SDKClassPathContainer.ID_TESTS);
+        		SDKClasspathContainer.TEST_ID);
+        ctx.put(Constants.USERLIB_CLASSPATH_CONTAINER,
+        		SDKClasspathContainer.USERLIB_ID);
         return ctx;
     }
 
@@ -92,17 +95,6 @@ public abstract class AbstractProjectWizard extends
         CreateProjectFromTemplate op = new CreateProjectFromTemplate(ctx);
         if (!CreateProjectFromTemplate.run(getShell(), getContainer(), op)) {
             return false;
-        }
-        // Check Expert Mode
-        if (!SDKRegistry.getWorkspacePreferences().getBoolean(
-                "useSDKClasspath", Boolean.TRUE)) {
-            // If expert mode activated - Remove Nuxeo SDK Containers
-            ClasspathEditor editor = new ClasspathEditor(op.getProject());
-            List<String> containers = new LinkedList<String>();
-            containers.add(SDKClassPathContainer.ID);
-            containers.add(SDKClassPathContainer.ID_TESTS);
-            editor.removeContainers(containers);
-            editor.flush();
         }
         return true;
     }

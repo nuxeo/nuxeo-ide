@@ -38,11 +38,15 @@ import org.nuxeo.ide.common.UI;
 import org.nuxeo.ide.sdk.NuxeoSDK;
 import org.nuxeo.ide.sdk.index.MavenDownloader;
 import org.nuxeo.ide.sdk.index.MavenDownloader.FileRef;
+import org.nuxeo.ide.sdk.java.SDKClasspathContainer;
 import org.nuxeo.ide.sdk.model.Artifact;
+import org.nuxeo.ide.sdk.ui.widgets.SDKTableViewerFactory.SDKContentProvider;
 
-public class SDKClassPathContainerPage extends WizardPage implements
+public class SDKClasspathContainerPage extends WizardPage implements
         IClasspathContainerPage {
 
+	protected SDKClasspathContainer container;
+	
     protected IClasspathEntry[] cp;
 
     protected Label srcLabel;
@@ -55,21 +59,18 @@ public class SDKClassPathContainerPage extends WizardPage implements
 
     protected PostModificationTimer timer;
 
-    public SDKClassPathContainerPage() {
-        this("NuxeoSDK", "Nuxeo SDK", null);
+    public SDKClasspathContainerPage() {
+        this( NuxeoSDK.getDefault().mainClasspathContainer, "NuxeoSDK", null);
     }
 
-    public SDKClassPathContainerPage(String pageName) {
+    public SDKClasspathContainerPage(String pageName) {
         super(pageName);
     }
 
-    public SDKClassPathContainerPage(String pageName, String title,
+    public SDKClasspathContainerPage(SDKClasspathContainer container, String pageName, 
             ImageDescriptor titleImage) {
-        super(pageName, title, titleImage);
-    }
-
-    protected IClasspathEntry[] getClasspath(NuxeoSDK sdk) {
-        return sdk.getClasspathEntries();
+        super(pageName, container.desc, titleImage);
+        this.container = container;
     }
 
     @Override
@@ -120,7 +121,7 @@ public class SDKClassPathContainerPage extends WizardPage implements
 
         NuxeoSDK sdk = NuxeoSDK.getDefault();
         if (sdk != null) {
-            cp = getClasspath(sdk);
+            cp =  container.getClasspathEntries();
             tv.setInput(cp);
         }
 

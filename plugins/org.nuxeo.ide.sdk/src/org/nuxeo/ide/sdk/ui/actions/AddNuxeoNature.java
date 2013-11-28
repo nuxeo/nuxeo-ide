@@ -27,11 +27,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.nuxeo.ide.common.AddNaturesAction;
 import org.nuxeo.ide.common.UI;
+import org.nuxeo.ide.sdk.NuxeoNature;
 import org.nuxeo.ide.sdk.NuxeoSDK;
+import org.nuxeo.ide.sdk.SDKPlugin;
 import org.nuxeo.ide.sdk.SDKRegistry;
 import org.nuxeo.ide.sdk.java.ClasspathEditor;
-import org.nuxeo.ide.sdk.ui.NuxeoNature;
-import org.nuxeo.ide.sdk.ui.SDKClassPathContainer;
+import org.nuxeo.ide.sdk.java.SDKClasspathContainer;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * "Convert to Nuxeo Project" action
@@ -55,7 +57,7 @@ public class AddNuxeoNature extends AddNaturesAction {
                 "useSDKClasspath", Boolean.TRUE)) {
             return;
         }
-        applyClasspath(project);
+        NuxeoNature.get(project).addClasspath();
     }
 
     protected void createSourceFolder(IProject project, String path,
@@ -64,27 +66,6 @@ public class AddNuxeoNature extends AddNaturesAction {
         if (!folder.exists()) {
             folder.create(true, false, monitor);
         }
-    }
-
-    protected void applyClasspath(IProject project) throws CoreException {
-        ClasspathEditor editor = new ClasspathEditor(project);
-        // Add Nuxeo Containers
-        List<String> containers = new LinkedList<String>();
-        containers.add(SDKClassPathContainer.ID);
-        containers.add(SDKClassPathContainer.ID_TESTS);
-        editor.addContainers(containers);
-        editor.flush();
-        // removes classpath entries that exist in The SDK
-        try {
-            editor.removeDuplicates();
-            editor.setLibsAsSdkUserLibs();
-            editor.flush();
-        } catch (Exception e) {
-            UI.showError(
-                    "Errors occured while removing maven duplicates classpath entries",
-                    e, "Error cleaning duplicates entries");
-        }
-
     }
 
 }

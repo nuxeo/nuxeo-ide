@@ -96,6 +96,9 @@ public class SDKFormData implements FormData {
      */
     protected void CreateSDKLink(IProject sdkProject, IWorkspace workspace,
             IPathVariableManager pathMan) throws CoreException {
+    	if (true) {
+    		return;
+    	}
         try {
             IPath pathFromVariable = pathMan.getValue(Constants.NXSDK_BROWSER_LINK_FOLDER);
             IFolder sdkLink = sdkProject.getFolder(Constants.NXSDK_BROWSER_LINK_FOLDER);

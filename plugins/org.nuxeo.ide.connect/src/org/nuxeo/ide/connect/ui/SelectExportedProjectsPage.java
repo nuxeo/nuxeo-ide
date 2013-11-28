@@ -32,8 +32,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.nuxeo.ide.connect.ConnectPlugin;
 import org.nuxeo.ide.connect.studio.StudioProject;
+import org.nuxeo.ide.sdk.NuxeoNature;
 import org.nuxeo.ide.sdk.deploy.ProjectViewProvider;
-import org.nuxeo.ide.sdk.ui.NuxeoNature;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>

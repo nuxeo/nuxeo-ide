@@ -36,7 +36,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.nuxeo.ide.common.UI;
 import org.nuxeo.ide.common.wizards.AbstractWizard;
-import org.nuxeo.ide.sdk.ui.NuxeoNature;
+import org.nuxeo.ide.sdk.NuxeoNature;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>

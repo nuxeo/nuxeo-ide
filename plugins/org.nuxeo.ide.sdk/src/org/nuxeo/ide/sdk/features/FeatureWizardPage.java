@@ -21,7 +21,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Composite;
 import org.nuxeo.ide.common.forms.Form;
 import org.nuxeo.ide.common.wizards.FormWizardPage;
-import org.nuxeo.ide.sdk.ui.NuxeoNature;
+import org.nuxeo.ide.sdk.NuxeoNature;
 import org.nuxeo.ide.sdk.ui.widgets.ObjectChooser;
 import org.nuxeo.ide.sdk.ui.widgets.PackageChooser;
 import org.nuxeo.ide.sdk.ui.widgets.PackageChooserWidget;

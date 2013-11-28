@@ -19,6 +19,8 @@
 package org.nuxeo.ide.sdk.java;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,9 +28,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarFile;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IAccessRule;
@@ -37,6 +41,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.nuxeo.ide.common.JarUtils;
 import org.nuxeo.ide.common.UI;
 import org.nuxeo.ide.sdk.NuxeoSDK;
 import org.nuxeo.ide.sdk.model.M2PomModelProvider;
@@ -98,7 +103,7 @@ public class ClasspathEditor {
      * @param containers
      * @throws JavaModelException
      */
-    public void addContainers(List<String> containers)
+    public void addContainers(String[] containers)
             throws JavaModelException {
         for (String container : containers) {
             IClasspathEntry classPathEntry = JavaCore.newContainerEntry(
@@ -139,11 +144,12 @@ public class ClasspathEditor {
     }
 
     public void flush() throws JavaModelException {
-        if (dirty) {
-            java.setRawClasspath(
-                    entries.toArray(new IClasspathEntry[entries.size()]), null);
+        if (!dirty) {
+        	return;
         }
-        dirty = false;
+		java.setRawClasspath(
+				entries.toArray(new IClasspathEntry[entries.size()]), null);
+		dirty = false;
     }
 
     /**
@@ -152,7 +158,7 @@ public class ClasspathEditor {
      * @param containers
      * @throws JavaModelException
      */
-    public void removeContainers(List<String> containers) {
+    public void removeContainers(String[] containers) {
         for (String container : containers) {
             IClasspathEntry classPathEntry = JavaCore.newContainerEntry(
                     new Path(container), new IAccessRule[0], null, false);
@@ -161,59 +167,67 @@ public class ClasspathEditor {
         dirty = true;
     }
 
+    protected String artifactKey(IClasspathEntry entry) throws Exception {
+        IPath jarPath = JavaCore.getResolvedClasspathEntry(entry).getPath();
+        IPath pomPath = jarPath.removeFileExtension().addFileExtension("pom");
+        File pomFile = pomPath.toFile();
+        if (!pomFile.exists()) {
+            pomFile = JarUtils.getPom(jarPath.toFile());
+        }
+        PomModel pomModel = new PomModel(pomFile);
+        return pomModel.getGroupId() + ":" + pomModel.getArtifactId();
+    }
+    
+    protected String artifactKey(String gav) {
+        int twoDotIndex = 0;
+        for (int i = 0; i < 2; i++) {
+            twoDotIndex = gav.indexOf(':', twoDotIndex + 1);
+        }
+        return gav.substring(0, twoDotIndex);
+    }
+    
     /**
      * Removing classpath entries that are in already in the containers. This
      * method is intended to be called after a mvn eclipse:eclipse
-     *
-     * @param containers
-     * @throws Exception
      */
-    public void removeDuplicates() throws Exception {
-        // Get the classpath entries "lib"
-        // get only the one that are in the m2libs
-        // convert them as Dependency objects
-        // check if they are part of the containers, if yes, remove
-        Map<String, IClasspathEntry> mavenentries = new HashMap<String, IClasspathEntry>();
-        for (IClasspathEntry iClasspathEntry : entries) {
-            String libFilePath = JavaCore.getResolvedClasspathEntry(
-                    iClasspathEntry).getPath().toString();
-            // checking if this is comming from the m2repository
-            M2PomModelProvider m2PomModelProvider = new M2PomModelProvider(
-                    libFilePath);
+    protected void removeDuplicates()  {
+        
+        // classpath index
+        Map<String, IClasspathEntry> cpIndex = new HashMap<String, IClasspathEntry>();
+        List<IClasspathEntry> duplicateEntries = new ArrayList<IClasspathEntry>();
+        for (IClasspathEntry each : entries) {
+            if (each.getEntryKind() != IClasspathEntry.CPE_VARIABLE) {
+                continue;
+            }         
+            String key;
             try {
-                PomModel model = m2PomModelProvider.getPomModel();
-                if (model != null) {
-                    mavenentries.put(
-                            model.getGroupId() + ":" + model.getArtifactId()
-                                    + ":" + model.getArtifactVersion(),
-                            iClasspathEntry);
-                }
-            } catch (Exception e) {
-                UI.showError("Failed to parse associated pom", e);
+                key = artifactKey(each);
+            } catch (Exception cause) {
+                UI.showWarning("cannot compute artifact key for " + each
+                        + ", skipping");
+                continue;
+            }           
+            if (cpIndex.containsKey(key)) {
+                UI.showWarning("classpath contains duplicate entries for "
+                        + key + ", keeping last " + each);
+                duplicateEntries.add(each);
+                continue;
             }
+            cpIndex.put(key, each);
         }
+        entries.removeAll(duplicateEntries);
 
-        Collection<String> artifactIndex = NuxeoSDK.getDefault().getArtifactIndex().getIndex().values();
-        // merge the sdk test as well
-        // avoid unsupportedOperationException
-        artifactIndex = new ArrayList<String>(artifactIndex);
-        artifactIndex.addAll(NuxeoSDK.getDefault().getTestArtifactIndex().getIndex().values());
+        // sdk index
+        Collection<String> sdkIndex = new ArrayList<String>();
+        sdkIndex.addAll(NuxeoSDK.getDefault().getArtifactIndex().getIndex().values());
+        sdkIndex.addAll(NuxeoSDK.getDefault().getTestArtifactIndex().getIndex().values());
 
-        for (String indexArtifactEntry : artifactIndex) {
-            // The index looks like
-            // "artifactId:groupId:version:other:maven:info", get the index of
-            // the third ':' character to match our key
-            // "artifactId:groupId:version"
-            int twoDotIndex = 0;
-            for (int i = 0; i < 3; i++) {
-                twoDotIndex = indexArtifactEntry.indexOf(':', twoDotIndex + 1);
-            }
-            CharSequence mavenid = indexArtifactEntry.subSequence(0,
-                    twoDotIndex);
-
-            // Removing duplicates
-            if (mavenentries.containsKey(mavenid)) {
-                entries.remove(mavenentries.get(mavenid));
+        // cleanup
+        for (String each : sdkIndex) {
+            String key = artifactKey(each);
+            if (cpIndex.containsKey(key)) {
+                IClasspathEntry entry = cpIndex.get(key);
+                entries.remove(entry);
                 dirty = true;
             }
         }
@@ -223,9 +237,9 @@ public class ClasspathEditor {
      * Check into the classpath entries and add all as a NuxeoSDK UserLib (can
      * be deployed in the sdk)
      *
-     * @throws BackingStoreException
      */
-    public void setLibsAsSdkUserLibs() throws BackingStoreException {
+    public void setLibsAsSdkUserLibs() throws CoreException, BackingStoreException {
+        removeDuplicates();
         UserLibPreferences prefs = UserLibPreferences.load();
         ArrayList<IClasspathEntry> entriesToRemove = new ArrayList<IClasspathEntry>();
         for (IClasspathEntry iClasspathEntry : entries) {
@@ -260,7 +274,7 @@ public class ClasspathEditor {
 
         if (prefs.isModified()) {
             prefs.save();
-            NuxeoSDK.reload();
+            NuxeoSDK.reloadSDKClasspathContainer();
         }
 
     }

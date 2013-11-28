@@ -23,9 +23,10 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.nuxeo.ide.common.RemoveNaturesAction;
+import org.nuxeo.ide.sdk.NuxeoNature;
+import org.nuxeo.ide.sdk.NuxeoSDK;
 import org.nuxeo.ide.sdk.java.ClasspathEditor;
-import org.nuxeo.ide.sdk.ui.NuxeoNature;
-import org.nuxeo.ide.sdk.ui.SDKClassPathContainer;
+import org.nuxeo.ide.sdk.java.SDKClasspathContainer;
 
 /**
  * Fake remove nature - used as an example
@@ -42,14 +43,8 @@ public class RemoveNuxeoNature extends RemoveNaturesAction {
     @Override
     public void uninstall(IProject project, String natureId)
             throws CoreException {
+        NuxeoNature.get(project).removeClasspath();
         super.uninstall(project, natureId);
-        // Remove Nuxeo SDK Containers
-        ClasspathEditor editor = new ClasspathEditor(project);
-        List<String> containers = new LinkedList<String>();
-        containers.add(SDKClassPathContainer.ID);
-        containers.add(SDKClassPathContainer.ID_TESTS);
-        editor.removeContainers(containers);
-        editor.flush();
     }
 
 }

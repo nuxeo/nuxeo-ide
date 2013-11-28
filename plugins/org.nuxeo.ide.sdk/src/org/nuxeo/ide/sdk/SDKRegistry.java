@@ -146,7 +146,7 @@ public class SDKRegistry {
 
     public static void setUseSDKClasspath(Boolean useSDKClasspath)
             throws CoreException {
-        Boolean oldUseSdk = useSDKClasspath();
+    	Boolean oldUseSdk = useSDKClasspath();
         Preferences prefs = getWorkspacePreferences();
         prefs.putBoolean("useSDKClasspath",
                 useSDKClasspath == null ? Boolean.TRUE : useSDKClasspath);

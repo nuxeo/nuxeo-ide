@@ -14,11 +14,16 @@
  * Contributors:
  *     bstefanescu
  */
-package org.nuxeo.ide.sdk.ui;
+package org.nuxeo.ide.sdk;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
+import org.nuxeo.ide.sdk.java.ClasspathEditor;
+import org.nuxeo.ide.sdk.java.SDKClasspathContainer;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * A meta Project Nature marking projects as being handled by Nuxeo IDE.
@@ -32,6 +37,10 @@ public class NuxeoNature implements IProjectNature {
         return project.isOpen() && project.isNatureEnabled(ID);
     }
 
+    public static NuxeoNature get(IProject project) throws CoreException {
+        return (NuxeoNature)project.getNature(ID);
+    }
+    
     public final static String ID = "org.nuxeo.ide.NuxeoNature";
 
     protected IProject project;
@@ -100,5 +109,33 @@ public class NuxeoNature implements IProjectNature {
         // project.setDescription(desc, null);
         // }
     }
+    
+    public void addClasspath() throws CoreException {
+        ClasspathEditor editor = new ClasspathEditor(project);
+        editor.addContainers(SDKClasspathContainer.IDS);
+        editor.flush();
+        try {
+            editor.setLibsAsSdkUserLibs();
+        } catch (BackingStoreException cause) {
+            throw SDKPlugin.coreException("Cannot load user libraries preferences", cause);
+        }
+        editor.flush();
+    }
 
+    public void reloadClasspath() throws JavaModelException {
+        ClasspathEditor editor = new ClasspathEditor(project);
+        editor.removeContainers(SDKClasspathContainer.IDS);
+        editor.flush();
+        if (NuxeoSDK.getDefault() != null) {
+            editor.addContainers(SDKClasspathContainer.IDS);
+            editor.flush();
+        }        
+    }
+    
+    public void removeClasspath() throws JavaModelException {
+        ClasspathEditor editor = new ClasspathEditor(project);
+        editor.removeContainers(SDKClasspathContainer.IDS);
+        editor.flush();
+    }
+    
 }

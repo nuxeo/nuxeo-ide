@@ -16,6 +16,9 @@
  */
 package org.nuxeo.ide.sdk;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -23,6 +26,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.nuxeo.ide.common.forms.PreferencesFormData;
+import org.nuxeo.ide.sdk.java.SDKClasspathFixer;
 import org.nuxeo.ide.sdk.templates.TemplateManager;
 import org.osgi.framework.BundleContext;
 
@@ -42,7 +46,7 @@ public class SDKPlugin extends AbstractUIPlugin {
     protected IConnectProvider connectProvider;
     
     protected IEclipseAdapter eclipseAdapter;
-
+    
     /**
      * The constructor
      */
@@ -97,6 +101,18 @@ public class SDKPlugin extends AbstractUIPlugin {
         return plugin;
     }
 
+    public static CoreException coreException(String message, Throwable cause) {
+    	return new CoreException(statusError(message, cause));
+    }
+    
+    public static IStatus statusError(String message, Throwable cause) {
+        return new Status(Status.ERROR, PLUGIN_ID,  message, cause);
+    }
+    
+    public static IStatus statusOk(String message) {
+        return new Status(Status.OK, PLUGIN_ID, message);
+    }
+    
     /**
      *
      * @param status a status value from {@link IStatus}

@@ -45,9 +45,7 @@ public class M2PomModelProvider {
             File pom = new File(libFilePath.substring(0,
                     libFilePath.length() - 3) + "pom");
             if (pom.isFile()) {
-                PomModel model = new PomModel(pom);
-                return model;
-
+                return new PomModel(pom);
             }
         }
         return null;

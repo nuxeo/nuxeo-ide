@@ -23,8 +23,17 @@ package org.nuxeo.ide.common;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -62,7 +71,7 @@ public final class JarUtils {
             return null;
         }
     }
-
+    
     public static Manifest getDirectoryManifest(File file) throws IOException {
         FileInputStream fis = null;
         try {
@@ -95,4 +104,76 @@ public final class JarUtils {
         }
     }
 
+
+    public static File getPom(File file) throws IOException {
+        if (file.isDirectory()) {
+            return getDirectoryPom(file);
+        } else {
+            return getJarPom(file);
+        }
+    }
+
+    protected static class PomFinder extends SimpleFileVisitor<Path> {
+        
+        protected Path pom;
+
+        boolean inMetaInf;
+        
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir,
+                BasicFileAttributes attrs) throws IOException {
+            if (inMetaInf) {
+                return FileVisitResult.CONTINUE;
+            }
+            if ("meta-inf".equals(dir.getFileName().toString().toLowerCase())) {
+                inMetaInf = true;
+                return FileVisitResult.CONTINUE;
+            } 
+            return FileVisitResult.SKIP_SUBTREE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+                throws IOException {
+            if (inMetaInf) {
+                if ("meta-inf".equals(dir.getFileName().toString().toLowerCase())) {
+                    return FileVisitResult.TERMINATE;
+                }
+            }
+            return FileVisitResult.CONTINUE;
+        }
+        
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                throws IOException {
+            if (!"pom.properties".equals(file.getFileName().toString())) {
+                return FileVisitResult.CONTINUE;
+            }
+            pom = file;
+            return FileVisitResult.TERMINATE;
+        }
+        
+    }
+    public static File getDirectoryPom(File file) throws IOException {
+        PomFinder finder = new PomFinder();
+        Files.walkFileTree(Paths.get(file.toURI()), finder);
+        if (finder.pom == null) {
+            throw new FileNotFoundException("Cannot find pom in " + file.getName());
+        }
+        return finder.pom.toFile();
+    }
+    
+    public static File getJarPom(File file) throws IOException {
+        try (JarFile jar = new JarFile(file)) {
+            Enumeration<JarEntry> it = jar.entries();
+            while (it.hasMoreElements()) {
+                JarEntry each = it.nextElement();
+                if (each.getName().endsWith("/pom.xml")) {
+                    return new File(file.getPath().concat("!").concat(
+                            each.getName()));
+                }
+            }
+        }
+        throw new FileNotFoundException("Cannot find pom in " + file.getName());
+    }
 }

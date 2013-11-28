@@ -30,8 +30,8 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.nuxeo.ide.common.StringUtils;
 import org.nuxeo.ide.common.UI;
 import org.nuxeo.ide.sdk.IConnectProvider;
+import org.nuxeo.ide.sdk.NuxeoNature;
 import org.nuxeo.ide.sdk.java.ClasspathEditor;
-import org.nuxeo.ide.sdk.ui.NuxeoNature;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>

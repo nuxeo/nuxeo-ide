@@ -37,10 +37,10 @@ import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
 import org.eclipse.ltk.core.refactoring.participants.ResourceChangeChecker;
 import org.eclipse.ltk.core.refactoring.resource.RenameResourceChange;
 import org.nuxeo.ide.common.IOUtils;
+import org.nuxeo.ide.sdk.NuxeoNature;
 import org.nuxeo.ide.sdk.SDKPlugin;
 import org.nuxeo.ide.sdk.model.ExtensionModel;
 import org.nuxeo.ide.sdk.model.ManifestWriter;
-import org.nuxeo.ide.sdk.ui.NuxeoNature;
 
 ;
 

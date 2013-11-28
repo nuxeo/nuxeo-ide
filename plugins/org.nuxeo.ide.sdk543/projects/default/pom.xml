@@ -89,6 +89,7 @@
             <#if isExpertMode == "true">
               <classpathContainer>org.nuxeo.ide.SDK_CONTAINER</classpathContainer>
               <classpathContainer>org.nuxeo.ide.SDK_TEST_CONTAINER</classpathContainer>
+              <classpathContainer>org.nuxeo.ide.SDK_USERLIB_CONTAINER</classpathContainer>
             </#if>
           </classpathContainers>
         </configuration>
