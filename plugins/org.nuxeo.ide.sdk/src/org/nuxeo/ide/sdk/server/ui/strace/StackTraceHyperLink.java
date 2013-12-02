@@ -53,7 +53,7 @@ public class StackTraceHyperLink extends JavaStackTraceHyperlink {
                 Object result = null;
                 try {
                     // search for the type in the workspace
-                    result = SDKPlugin.getDefault().getEclipseAdapter().findTypeInWorkspace(typeName);
+                    result = OpenTypeAction.findTypeInWorkspace(typeName, true);
                     searchCompleted(result, typeName, lineNumber, null);
                 } catch (CoreException e) {
                     searchCompleted(null, typeName, lineNumber, e.getStatus());

@@ -18,16 +18,11 @@
     <module>plugins/org.nuxeo.ide.common</module>
     <module>plugins/org.nuxeo.ide.connect</module>
     <module>plugins/org.nuxeo.ide.sdk</module>
-    <module>plugins/org.nuxeo.ide.sdk.helios</module>
-    <module>plugins/org.nuxeo.ide.sdk.juno</module>
     <module>plugins/org.nuxeo.ide.sdk543</module>
     <module>plugins/org.nuxeo.ide.shell</module>
-    <module>features/org.nuxeo.ide.sdk.helios.feature</module>
-    <module>features/org.nuxeo.ide.sdk.juno.feature</module>
     <module>features/org.nuxeo.ide.sdk.feature</module>
     <module>features/org.nuxeo.ide.shell.feature</module>
     <module>sites/org.nuxeo.ide.site</module>
-    <module>sites/org.nuxeo.ide.site.helios</module>
   </modules>
 
   <scm>
@@ -38,10 +33,10 @@
 
   <properties>
     <tycho-version>0.18.1</tycho-version>
-    <platform-version-name>helios</platform-version-name>
+    <platform-version-name>kepler</platform-version-name>
     <wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
-    <swtbot-site>http://download.eclipse.org/technology/swtbot/${platform-version-name}/dev-build/update-site</swtbot-site>
-    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository</orbit-site>
+    <swtbot-site>http://download.eclipse.org/technology/swtbot/releases/2.1.1/</swtbot-site>
+    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository</orbit-site>
   </properties>
 
   <profiles>
@@ -52,49 +47,16 @@
       </properties>
     </profile>
     <profile>
-      <id>platform-helios</id>
+      <id>platform-kepler</id>
       <activation>
         <property>
           <name>platform-version-name</name>
-          <value>helios</value>
+          <value>kepler</value>
         </property>
       </activation>
       <properties>
-        <platform-version>[3.6,3.7)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</swtbot-site>
-      </properties>
-      <repositories>
-	<repository>
-	  <id>eclipse-juno</id>
-	  <layout>p2</layout>
-          <url>http://download.eclipse.org/releases/juno</url>
-	</repository>
-      </repositories>
-    </profile>
-    <profile>
-      <id>platform-indigo</id>
-      <activation>
-        <property>
-          <name>platform-version-name</name>
-          <value>indigo</value>
-        </property>
-      </activation>
-      <properties>
-        <platform-version>[3.7,3.8)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</swtbot-site>
-      </properties>
-    </profile>
-    <profile>
-      <id>platform-juno</id>
-      <activation>
-        <property>
-          <name>platform-version-name</name>
-          <value>juno</value>
-        </property>
-      </activation>
-      <properties>
-        <platform-version>[4.2,4.3)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</swtbot-site>
+        <platform-version>[4.3,4.4)</platform-version>
+        <swtbot-site>http://download.eclipse.org/technology/swtbot/releases/2.1.1/</swtbot-site>
       </properties>
     </profile>
   </profiles>
@@ -110,16 +72,6 @@
       <releases>
         <enabled>true</enabled>
       </releases>
-    </repository>
-    <repository>
-      <id>helios</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/helios</url>
-    </repository>
-    <repository>
-      <id>juno</id>
-      <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/juno</url>
     </repository>
     <repository>
       <id>kepler</id>
@@ -187,11 +139,6 @@
 	<plugin>
 	  <groupId>org.eclipse.tycho</groupId>
 	  <artifactId>target-platform-configuration</artifactId>
-	  <version>${tycho-version}</version>
-	</plugin>
-	<plugin>
-	  <groupId>org.eclipse.tycho</groupId>
-	  <artifactId>tycho-packaging-plugin</artifactId>
 	  <version>${tycho-version}</version>
 	</plugin>
 	<plugin>
@@ -277,10 +224,6 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-director-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-packaging-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

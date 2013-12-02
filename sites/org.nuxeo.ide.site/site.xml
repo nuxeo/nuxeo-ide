@@ -6,9 +6,6 @@
    <feature url="features/org.nuxeo.ide.sdk.feature_1.1.11.qualifier.jar" id="org.nuxeo.ide.sdk.feature" version="1.1.11.qualifier">
       <category name="ide"/>
    </feature>
-   <feature url="features/org.nuxeo.ide.sdk.juno.feature_1.1.11.qualifier.jar" id="org.nuxeo.ide.sdk.juno.feature" version="1.1.11.qualifier">
-      <category name="ide"/>
-   </feature>
    <category-def name="ide" label="Nuxeo IDE">
       <description>
          Provides wizards and tools to develop Nuxeo projects

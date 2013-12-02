@@ -2,7 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="org.nuxeo.ide.sdk.connect_provider" name="connect-provider" schema="schema/org.nuxeo.ide.connect_provider.exsd"/>
-   <extension-point id="org.nuxeo.ide.sdk.eclipse_adapter" name="eclipse-adapter" schema="schema/org.nuxeo.ide.eclipse_adapter.exsd"/>
 
     <extension
        point="org.eclipse.ui.preferencePages">
