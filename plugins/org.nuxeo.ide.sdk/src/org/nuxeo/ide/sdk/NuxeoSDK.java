@@ -77,8 +77,8 @@ public class NuxeoSDK {
         SDKInfo info = SDKRegistry.getDefaultSDK();
         if (info != null) {
             instance = new NuxeoSDK(info);
+            instance.recycleContainers();
         }
-        reload();
         cpFixer = new SDKClasspathFixer();
         cpFixer.registerSelf();
     }
