@@ -2,7 +2,7 @@
 <feature
       id="org.nuxeo.ide.shell.feature"
       label="%featureName"
-      version="1.2.0.R12x_v20131205_1418"
+      version="1.2.1.qualifier"
       provider-name="%providerName">
 
    <description>
