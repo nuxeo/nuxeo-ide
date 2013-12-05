@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Nuxeo IDE QA Tests
 Bundle-SymbolicName: org.nuxeo.ide.qatests
-Bundle-Version: 1.1.11.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.nuxeo.ide.qatests.Activator
 Bundle-Vendor: Nuxeo
 Require-Bundle: org.eclipse.core.runtime,
