@@ -35,10 +35,10 @@ if [ $operation = release ]; then
 elif [ $operation = after-release ]; then
   next_maven=${major}.${minor}.$((micro+1))-SNAPSHOT
   next_osgi=${major}.${minor}.$((micro+1)).qualifier
-elif [ $operation = minor-branch]; then
+elif [ $operation = minor-branch ]; then
   next_maven=${major}.$((minor+1)).0${mvn_label}
   next_osgi=${major}.$((minor+1)).0${osgi_label}
-elif [ $operation = major-branch]; then
+elif [ $operation = major-branch ]; then
   next_maven=$((major+1)).0.0${mvn_label}
   next_osgi=$((major+1)).0.0${osgi_label}
 fi
@@ -296,12 +296,12 @@ diff -r b872b22ad3d5 -r 927d1d313a1d sites/org.nuxeo.ide.site/site.xml
 @@ -1,9 +1,9 @@
  <?xml version="1.0" encoding="UTF-8"?>
  <site>
--   <feature url="features/org.nuxeo.ide.shell_${previous_osgi}.jar" id="org.nuxeo.ide.shell" version="${previous_osgi}">
-+   <feature url="features/org.nuxeo.ide.shell_${next_osgi}.jar" id="org.nuxeo.ide.shell" version="${next_osgi}">
+-   <feature url="features/org.nuxeo.ide.shell.feature_${previous_osgi}.jar" id="org.nuxeo.ide.shell.feature" version="${previous_osgi}">
++   <feature url="features/org.nuxeo.ide.shell.feature_${next_osgi}.jar" id="org.nuxeo.ide.shell.feature" version="${next_osgi}">
        <category name="shell"/>
     </feature>
--   <feature url="features/org.nuxeo.ide.sdk_${previous_osgi}.jar" id="org.nuxeo.ide.sdk" version="${previous_osgi}">
-+   <feature url="features/org.nuxeo.ide.sdk_${next_osgi}.jar" id="org.nuxeo.ide.sdk" version="${next_osgi}">
+-   <feature url="features/org.nuxeo.ide.sdk.feature_${previous_osgi}.jar" id="org.nuxeo.ide.sdk.feature" version="${previous_osgi}">
++   <feature url="features/org.nuxeo.ide.sdk.feature_${next_osgi}.jar" id="org.nuxeo.ide.sdk.feature" version="${next_osgi}">
        <category name="ide"/>
     </feature>
     <category-def name="ide" label="Nuxeo IDE">
