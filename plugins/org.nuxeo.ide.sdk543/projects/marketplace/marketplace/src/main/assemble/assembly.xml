@@ -77,14 +77,13 @@
     <!-- Third-party libraries -->
     <copy todir="${r"${outdir}"}/nxr/lib" overwrite="true">
       <artifact:set>
-        <includes>
-          <artifact groupId="!org.nuxeo*" scope="!test" />
-          <artifact groupId="!${parentGroupId}*" scope="!test" />
-        </includes>
         <excludes>
           <!-- Filter out your artifacts using their groupId for instance -->
           <artifact groupId="com.nuxeo*" />
+          <artifact groupId="org.nuxeo*" />
+          <artifact type="pom" />
           <artifact groupId="${parentGroupId}*" />
+          <artifact scope="test" />
         </excludes>
       </artifact:set>
     </copy>
