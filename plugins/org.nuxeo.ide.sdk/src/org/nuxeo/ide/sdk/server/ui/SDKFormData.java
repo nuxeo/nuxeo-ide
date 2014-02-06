@@ -36,7 +36,7 @@ import org.nuxeo.ide.sdk.templates.Constants;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class SDKFormData implements FormData {
 
@@ -61,7 +61,7 @@ public class SDKFormData implements FormData {
 
     /**
      * Set a resource variable in Eclipse and create the related project
-     * 
+     *
      * @param variableResourceName (value of the variable)
      * @param pathValue (value of the resource variable)
      */
@@ -88,7 +88,7 @@ public class SDKFormData implements FormData {
 
     /**
      * Create SDK link resource for browsing it
-     * 
+     *
      * @param sdkProject
      * @param workspace
      * @param pathMan
@@ -96,9 +96,6 @@ public class SDKFormData implements FormData {
      */
     protected void CreateSDKLink(IProject sdkProject, IWorkspace workspace,
             IPathVariableManager pathMan) throws CoreException {
-    	if (true) {
-    		return;
-    	}
         try {
             IPath pathFromVariable = pathMan.getValue(Constants.NXSDK_BROWSER_LINK_FOLDER);
             IFolder sdkLink = sdkProject.getFolder(Constants.NXSDK_BROWSER_LINK_FOLDER);
@@ -120,7 +117,7 @@ public class SDKFormData implements FormData {
 
     /**
      * Create the related project for displaying the resource in a folder
-     * 
+     *
      * @param variableResourceName
      * @param workspace
      * @return
@@ -141,8 +138,9 @@ public class SDKFormData implements FormData {
             try {
                 IFolder subFolder = newProjectHandle.getFolder(variableResourceName);
                 newProjectHandle.open(null);
-                if (!subFolder.exists())
+                if (!subFolder.exists()) {
                     subFolder.create(false, false, null);
+                }
             } catch (Exception e) {
                 UI.showError("Unable to create a new folder in the project: "
                         + e);
@@ -157,7 +155,8 @@ public class SDKFormData implements FormData {
     protected void folderExcluder(IProject project, String location)
             throws CoreException {
         IResource folder = project.getFolder(location);
-        if (folder.exists())
+        if (folder.exists()) {
             folder.setDerived(true, null);
+        }
     }
 }
