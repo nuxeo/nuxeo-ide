@@ -24,7 +24,7 @@
          hfill="true">
 
     <text>Home Page:</text>
-    <textbox id="mpHomePage" hfill="true" value="http://www.cie.com">
+    <textbox id="mpHomePage" hfill="true" value="http://www.example.com">
       <validator type="regex" value="(^$|^https?://.+$)">Not a valid URL. Waiting for http[s]://something
       </validator>
     </textbox>
@@ -41,7 +41,7 @@
     <textarea id="mpDescription" colspan="2" hfill="true" vfill="true" value=""/>
 
     <text>Vendor:</text>
-    <textbox id="mpVendor" hfill="true" value="Personnal"/>
+    <textbox id="mpVendor" hfill="true" value="Personal"/>
 
     <text>License:</text>
     <combo id="mpLicense" hfill="true" readonly="true" value="LGPL 2.1">
@@ -70,9 +70,7 @@
       <checkbox id="mpInstallRestart" colspan="2" value="false">needs restart</checkbox>
       <checkbox id="mpUninstallRestart" colspan="2" value="false">doesn't need to restart</checkbox>
       <checkbox id="mpHotReloadSupport" colspan="2" value="false">supports Hot Reload</checkbox>
-      <checkbox id="mpRequireTermAndConditionAcceptance" colspan="2" value="false">requires Term And Condition
-        Acceptance
-      </checkbox>
+      <checkbox id="mpRequireTermAndConditionAcceptance" colspan="2" value="false">requires Terms And Conditions Acceptance</checkbox>
     </frame>
 
     <frame label="Tests generations" layout="grid" hfill="true">
