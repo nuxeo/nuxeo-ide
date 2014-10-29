@@ -7,17 +7,6 @@
     <text colspan="2" halign="right">
       Nuxeo distribution version from your current SDK.
     </text>
-    <text>Nuxeo Distribution:</text>
-    <combo id="mpDistribution" hfill="true" readonly="true" value="dm">
-      coreserver,
-      cap,
-      dm,
-      dam,
-      social-collaboration
-    </combo>
-    <text colspan="2" halign="right">
-      Set the Nuxeo distribution supported by your Marketplace Package.
-    </text>
   </frame>
 
   <frame label="Markeplace Information" cols="2" layout="grid"

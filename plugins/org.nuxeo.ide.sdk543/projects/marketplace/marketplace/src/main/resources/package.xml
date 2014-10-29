@@ -19,12 +19,14 @@
   <!-- <production-state>production_ready</production-state> -->
   <supported>false</supported>
   <platforms>
-    <platform>${mpDistribution}-@DISTRIB_VERSION@</platform>
+    <platform>cap-@DISTRIB_VERSION@</platform>
   </platforms>
   <!-- Dependencies on other packages -->
   <!-- <dependencies> -->
+  <!-- <package>${mpDistribution}:@DISTRIB_VERSION@</package> -->
   <!-- <package>another-package:1.0.0:1.0.0</package> -->
   <!-- </dependencies> -->
+
   <!-- Conflicts with other packages -->
   <!-- <conflicts> -->
   <!-- <package>a-conflicting-package:1.0.0:1.0.0</package> -->
@@ -33,6 +35,7 @@
   <!-- <provides> -->
   <!-- <package>an-embedded-package:1.0.0:1.0.0</package> -->
   <!-- </provides> -->
+
   <license>${mpLicense}</license>
   <license-url>${mpLicenseUrl}</license-url>
 </package>
