@@ -16,7 +16,7 @@
     <!-- Base distribution(s) for the MP -->
     <dependency>
       <groupId>org.nuxeo.ecm.distribution</groupId>
-      <artifactId>${mpDistributionArtifactId}</artifactId>
+      <artifactId>nuxeo-distribution-cap</artifactId>
       <type>pom</type>
     </dependency>
     <!-- Additional bundles to be deployed by the MP -->
@@ -28,24 +28,13 @@
   </dependencies>
 
   <build>
-    <!-- Copy pluginManagement from org.nuxeo:nuxeo-ecm if not inheriting -->
-    <!-- <pluginManagement> -->
-    <!-- <plugins> -->
-    <!-- <plugin> -->
-    <!-- <groupId>org.nuxeo.build</groupId> -->
-    <!-- <artifactId>ant-assembly-maven-plugin</artifactId> -->
-    <!-- <version>${ant.assembly.version}</version> -->
-    <!-- <extensions>true</extensions> -->
-    <!-- </plugin> -->
-    <!-- </plugins> -->
-    <!-- </pluginManagement> -->
     <plugins>
       <plugin>
         <groupId>org.nuxeo.build</groupId>
         <artifactId>ant-assembly-maven-plugin</artifactId>
         <configuration>
           <buildFiles>
-            <buildFile>${basedir}/src/main/assemble/assembly.xml</buildFile>
+            <buildFile>src/main/assemble/assembly.xml</buildFile>
           </buildFiles>
         </configuration>
       </plugin>
