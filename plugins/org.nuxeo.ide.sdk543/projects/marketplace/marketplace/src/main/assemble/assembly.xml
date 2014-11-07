@@ -28,7 +28,7 @@
   <target name="expand">
     <!-- Include your artifacts in the graph adding your groupId to groupPrefixes -->
     <artifact:nuxeo-expand includeTestScope="true"
-                           groupPrefixes="${parentGroupId},org.nuxeo,com.nuxeo" />
+                           groupPrefixes="${parentGroupId},org.nuxeo" />
     <!-- For Nuxeo IDE being able to use that distribution as a SDK -->
     <artifact:print output="${r"${outdir}"}/${artifactPropertiesFilename}" mode="sdk" />
     <artifact:print output="${r"${outdir}"}/${testArtifactPropertiesFilename}"
@@ -68,10 +68,12 @@
       <artifact:set>
         <includes>
           <artifact groupId="org.nuxeo*" scope="!test" type="!pom" />
-          <!-- Include your artifacts using their groupId for instance -->
-          <artifact groupId="com.nuxeo*" scope="!test" type="!pom" />
           <artifact groupId="${parentGroupId}*" scope="!test" type="!pom" />
+          <artifact groupId="nuxeo-studio" scope="!test" type="!pom" />
         </includes>
+        <excludes>
+          <artifact groupId="org.nuxeo.lib"/>
+        </excludes>
       </artifact:set>
     </copy>
     <!-- Third-party libraries -->
@@ -79,20 +81,17 @@
       <artifact:set>
         <excludes>
           <!-- Filter out your artifacts using their groupId for instance -->
-          <artifact groupId="com.nuxeo*" />
           <artifact groupId="org.nuxeo*" />
           <artifact type="pom" />
           <artifact groupId="${parentGroupId}*" />
+          <artifact groupId="nuxeo-studio"/>
           <artifact scope="test" />
         </excludes>
+        <includes>
+          <artifact groupId="org.nuxeo.lib" scope="!test" type="!pom"/>
+        </includes>
       </artifact:set>
     </copy>
-    <move todir="${r"${outdir}"}/nxr/lib">
-      <fileset dir="${r"${outdir}"}/nxr/bundles">
-        <include name="nuxeo-generic-wss-front*" />
-        <include name="nuxeo-generic-wss-handler*" />
-      </fileset>
-    </move>
     <nx:rmdups dir="${r"${outdir}"}/nxr/lib" />
     <!-- Temporary ZIP Nuxeo NXR to compare with base distribution NXR -->
     <zip destfile="${r"${outdir}"}/nxr-${mpVersionVariableWithBrackets}.zip"
@@ -144,14 +143,13 @@
       <var name="install.content"
            value="${install.content}${line.separator}
   &lt;/install&gt;${line.separator}" />
-      <echo file="${outdir}/marketplace/install.xml"
+      <echo level="info" file="${outdir}/marketplace/install.xml"
             message="${install.content}" />
   </#noparse>
 
     <zip destfile="${r"${outdir}"}/${r"${maven.project.artifactId}"}-${mpVersionVariableWithBrackets}.zip"
          basedir="${r"${outdir}"}/marketplace" />
     <artifact:attach file="${r"${outdir}"}/${r"${maven.project.artifactId}"}-${mpVersionVariableWithBrackets}.zip"
-                     target="${r"${maven.project.groupId}"}:${r"${maven.project.artifactId}"}"
                      type="zip" />
   </target>
 
