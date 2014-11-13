@@ -32,8 +32,8 @@
   </scm>
 
   <properties>
-    <tycho-version>0.18.1</tycho-version>
-    <platform-version-name>kepler</platform-version-name>
+    <tycho-version>0.21.0</tycho-version>
+    <platform-version-name>luna</platform-version-name>
     <wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
     <swtbot-site>http://download.eclipse.org/technology/swtbot/releases/2.1.1/</swtbot-site>
     <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20130827064939/repository</orbit-site>
@@ -47,15 +47,15 @@
       </properties>
     </profile>
     <profile>
-      <id>platform-kepler</id>
+      <id>platform-luna</id>
       <activation>
         <property>
           <name>platform-version-name</name>
-          <value>kepler</value>
+          <value>luna</value>
         </property>
       </activation>
       <properties>
-        <platform-version>[4.3,4.4)</platform-version>
+        <platform-version>[4.5,4.6)</platform-version>
         <swtbot-site>http://download.eclipse.org/technology/swtbot/releases/2.1.1/</swtbot-site>
       </properties>
     </profile>
@@ -74,9 +74,9 @@
       </releases>
     </repository>
     <repository>
-      <id>kepler</id>
+      <id>luna</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/kepler</url>
+      <url>http://download.eclipse.org/releases/luna</url>
     </repository>
     <repository>
       <id>swtbot</id>
