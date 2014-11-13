@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Project Templates for Nuxeo 5.4.3
 Bundle-SymbolicName: org.nuxeo.ide.sdk543;singleton:=true
-Bundle-Version: 1.2.3.qualifier
+Bundle-Version: 1.2.3.R12x_v20141113_1414
 Bundle-Vendor: Nuxeo
 Fragment-Host: org.nuxeo.ide.sdk
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
