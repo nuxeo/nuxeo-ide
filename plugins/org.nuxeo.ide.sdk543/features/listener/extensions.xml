@@ -4,7 +4,7 @@
     point="listener">
 
     <listener name="${name}" async="${async?string}" postCommit="${postCommit?string}"
-      class="${package}.${className}" order="${order}">
+      class="${package}.${className}" priority="${order}">
       <#list selectedEvents as event>
       <event>${event}</event>
       </#list>
