@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.nuxeo.ide</groupId>
     <artifactId>org.nuxeo.ide.tycho</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.4.R12x_v20141120_1114</version>
     <relativePath>../..</relativePath>
   </parent>
 
@@ -63,12 +63,12 @@
             <dependency> 
               <type>p2-installable-unit</type>
               <artifactId>org.nuxeo.ide.sdk.feature.group</artifactId>
-              <version>1.2.4.qualifier</version>
+              <version>1.2.4.R12x_v20141120_1114</version>
             </dependency>
             <dependency> 
               <type>p2-installable-unit</type>
               <artifactId>org.nuxeo.ide.shell.feature.group</artifactId>
-              <version>1.2.4.qualifier</version>
+              <version>1.2.4.R12x_v20141120_1114</version>
             </dependency>
            </dependencies>
         </configuration>
