@@ -16,9 +16,12 @@
 package org.nuxeo.ide.jdt;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.jdt.internal.corext.fix.CleanUpConstants;
@@ -27,6 +30,9 @@ import org.eclipse.jdt.internal.corext.fix.CleanUpPreferenceUtil;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.preferences.PreferencesAccess;
 import org.eclipse.jdt.internal.ui.preferences.PropertyAndPreferencePage;
+import org.eclipse.jdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
+import org.eclipse.jdt.internal.ui.preferences.formatter.ProfileManager.Profile;
+import org.eclipse.jdt.internal.ui.preferences.formatter.ProfileStore;
 import org.eclipse.jdt.internal.ui.viewsupport.ProjectTemplateStore;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jdt.ui.cleanup.CleanUpOptions;
@@ -47,6 +53,7 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.ui.preferences.IWorkingCopyManager;
 import org.eclipse.ui.preferences.WorkingCopyManager;
 import org.osgi.service.prefs.BackingStoreException;
+import org.xml.sax.InputSource;
 
 import org.nuxeo.ide.common.UI;
 
@@ -76,10 +83,44 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
 
     private PreferencesAccess fAccess;
 
+    /**
+     * @since 1.2.5
+     */
+    public static final String NUXEO_FORMATTER_XML = "nuxeo_formatter.xml";
+
+    /**
+     * @since 1.2.5
+     */
+    public static final String NUXEO_CLEANUPS_XML = "nuxeo_cleanups.xml";
+
+    /**
+     * @since 1.2.5
+     */
+    public static final String JAVASCRIPT_CLEANUPS_XML = "javascript-cleanup.xml";
+
+    /**
+     * @since 1.2.5
+     */
+    public static final String JAVASCRIPT_FORMATTER_XML = "javascript-formatter.xml";
+
+    /**
+     * @since 1.2.5
+     */
+    public static final String NUXEO_CODETEMPLATES_XML = "nuxeo_codetemplates.xml";
+
+    /**
+     * @since 1.2.5
+     */
+    public static final String JAVASCRIPT_CODETEMPLATES_XML = "javascript-codetemplates.xml";
+
+    /**
+     * @since 1.2.5
+     */
+    public static final String NUXEO_JAVAEDITOR_TEMPLATES_XML = "nuxeo_javaeditortemplates.xml";
+
     @Override
     protected Control createPreferenceContent(Composite composite) {
-        // Reusing Eclipse JDT configuration block to setup our custom
-        // configuration
+        // Reusing Eclipse JDT configuration block to setup our custom configuration
         // Preparing access to preference store
         IPreferencePageContainer container = getContainer();
         IWorkingCopyManager workingCopyManager;
@@ -98,11 +139,11 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
         pageContainer.setLayout(new GridLayout(1, false));
 
         Label text = new Label(pageContainer, SWT.NONE);
-        text.setText("Set Nuxeo contributors default java development settings: formatter, cleanup, cleanup on save, code templates and Java editor code templates");
+        text.setText("Nuxeo development settings: formatter, cleanup and code templates.");
         text.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false));
 
         Button button = new Button(pageContainer, SWT.NONE);
-        button.setText("Setting Nuxeo contributors settings");
+        button.setText("Set Nuxeo preferences");
         button.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
         button.addSelectionListener(new SelectionListener() {
@@ -119,12 +160,55 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
     }
 
     protected void performNuxeoConfigurationImport() {
-        cleanupConfigurationBlock.setNuxeoCleanupProfile();
-        codeFormatterConfigurationBlock.setNuxeoCodeFormatterProfile();
-        importNuxeoTemplates();
+        // Java
+        setProfile(cleanupConfigurationBlock, NUXEO_CLEANUPS_XML);
+        setProfile(codeFormatterConfigurationBlock, NUXEO_FORMATTER_XML);
+        importNuxeoTemplates(NUXEO_CODETEMPLATES_XML);
         importNuxeoJavaEditorTemplates();
-        // set save participant preference for cleanup
         setCleanupSaveParticipant();
+        // JavaScript
+        setProfile(cleanupConfigurationBlock, JAVASCRIPT_CLEANUPS_XML);
+        setProfile(codeFormatterConfigurationBlock, JAVASCRIPT_FORMATTER_XML);
+        importNuxeoTemplates(JAVASCRIPT_CODETEMPLATES_XML);
+        // set save participant preference for cleanup
+    }
+
+    /**
+     * @param configurationBlock
+     * @param nuxeoCleanupsXml
+     * @since 1.2.5
+     */
+    protected void setProfile(NuxeoProfileConfigurationBlock configurationBlock, String file) {
+        List<Profile> profiles = null;
+        PreferenceFilesStreamProvider preferenceFilesStreamProvider = new PreferenceFilesStreamProvider(file);
+        try {
+            profiles = ProfileStore.readProfilesFromStream(new InputSource(
+                    preferenceFilesStreamProvider.getInputStream()));
+        } catch (CoreException e) {
+            try {
+                profiles = ProfileStore.readProfilesFromStream(new InputSource(
+                        preferenceFilesStreamProvider.getInputStreamFromCP()));
+            } catch (CoreException e1) {
+                UI.showError("An error occurred while reading profile " + file, e);
+            }
+        }
+        if (profiles == null || profiles.isEmpty()) {
+            return;
+        }
+        Iterator<Profile> iter = profiles.iterator();
+        while (iter.hasNext()) {
+            final CustomProfile profile = (CustomProfile) iter.next();
+            if (!configurationBlock.getProfileVersioner().getProfileKind().equals(profile.getKind())) {
+                UI.showError("Not the same profile kind", "Not the same profile kind");
+                return;
+            }
+            if (profile.getVersion() > configurationBlock.getProfileVersioner().getCurrentVersion()) {
+                UI.showError("Profile version too new", "Profile version too new");
+                return;
+            }
+            configurationBlock.getProfileVersioner().update(profile);
+            configurationBlock.getProfileManager().addProfile(profile);
+        }
     }
 
     @Override
@@ -142,12 +226,12 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
         return PROP_ID;
     }
 
-    protected void importNuxeoTemplates() {
+    protected void importNuxeoTemplates(String templateFile) {
         TemplatePersistenceData[] datas;
         try {
-            datas = readTemplatesFrom("nuxeo_codetemplates.xml");
-        } catch (IOException e1) {
-            UI.showError("An error occurred while importing nuxeo templates", e1);
+            datas = readTemplatesFrom(templateFile);
+        } catch (IOException e) {
+            UI.showError("An error occurred while importing nuxeo templates", e);
             return;
         }
 
@@ -170,7 +254,7 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
     protected void importNuxeoJavaEditorTemplates() {
         TemplatePersistenceData[] datas;
         try {
-            datas = readTemplatesFrom("nuxeo_javaeditortemplates.xml");
+            datas = readTemplatesFrom(NUXEO_JAVAEDITOR_TEMPLATES_XML);
         } catch (IOException e1) {
             UI.showError("An error occurred while importing nuxeo templates", e1);
             return;
@@ -220,7 +304,7 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
             datas = reader.read(preferenceFilesStreamProvider.getInputStream(), null);
         } catch (IOException e) {
             // fallback
-            datas = reader.read(preferenceFilesStreamProvider.getFallbackStream(), null);
+            datas = reader.read(preferenceFilesStreamProvider.getInputStreamFromCP(), null);
         }
         return datas;
 

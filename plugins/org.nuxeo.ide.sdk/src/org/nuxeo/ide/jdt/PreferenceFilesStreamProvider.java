@@ -13,20 +13,28 @@
  *
  * Contributors:
  *     Sun Seng David TAN <stan@nuxeo.com>
+ *     jcarsique
  */
 package org.nuxeo.ide.jdt;
 
 import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 
 import org.nuxeo.ide.common.UI;
+import org.nuxeo.ide.sdk.NuxeoSDK;
 
 /**
- * Knows how to retrieve an input stream of a preference file. Default implementation will try to get it from the
- * "tools" folder of the "nuxeo" project in the current workspace or from the current classpath if it can't find it.
+ * Default implementation will try to get the preferences files in order from:
+ * <ul>
+ * <li>the "sdk/tools" folder in the configured Nuxeo SDK</li>
+ * <li>the "nuxeo/tools" folder in the current workspace</li>
+ * <li>the current classpath (ie embedded in the current plugin)</li>
+ * </ul>
  */
 public class PreferenceFilesStreamProvider {
 
@@ -37,21 +45,30 @@ public class PreferenceFilesStreamProvider {
     }
 
     public InputStream getInputStream() {
-        try {
-            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                    new Path("/nuxeo/tools/" + preferenceFileName));
-            if (file.exists()) {
-                return file.getContents();
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        if (NuxeoSDK.getDefault() != null) {
+            IFile prefIFile = root.getFile(Path.fromOSString(NuxeoSDK.getDefault().getToolsDir().resolve(
+                    preferenceFileName).toString()));
+            try {
+                return prefIFile.getContents();
+            } catch (CoreException e) {
+                UI.showError("Resource not found in Nuxeo SDK tools directory", e);
             }
-        } catch (Exception e) {
-            UI.showWarning("An error occurred while setting " + preferenceFileName
-                    + " from nuxeo/tools folder, fallback to the default one");
         }
 
-        return getFallbackStream();
+        IFile prefIFile = root.getFile(new Path("/nuxeo/tools/" + preferenceFileName));
+        if (prefIFile.exists()) {
+            try {
+                return prefIFile.getContents();
+            } catch (CoreException e) {
+                UI.showError("Resource not found in Nuxeo sources directory", e);
+            }
+        }
+
+        return getInputStreamFromCP();
     }
 
-    public InputStream getFallbackStream() {
+    public InputStream getInputStreamFromCP() {
         return PreferenceFilesStreamProvider.class.getResourceAsStream(preferenceFileName);
     }
 

@@ -38,21 +38,23 @@ public class SDKInfo {
 
     public static final String SDK_PATH = "sdk";
 
-    public static final String SDK_COMPONENTS_PATH = "sdk/components.index";
+    public static final String SDK_COMPONENTS_PATH = SDK_PATH + "components.index";
 
-    public static final String SDK_SOURCES_PATH = "sdk/sources";
+    public static final String SDK_SOURCES_PATH = SDK_PATH + "sources";
 
-    public static final String SDK_TESTS_PATH = "sdk/tests";
+    public static final String SDK_TESTS_PATH = SDK_PATH + "tests";
 
-    public static final String SDK_DISTRIB_PATH = "sdk/distribution.properties";
+    public static final String SDK_DISTRIB_PATH = SDK_PATH + "distribution.properties";
 
     public static final String SDK_ARTIFACTS_FILE = "artifacts.properties";
 
-    public static final String SDK_ARTIFACTS_PATH = "sdk/artifacts.*.properties";
+    public static final String SDK_ARTIFACTS_PATH = SDK_PATH + "artifacts.*.properties";
 
     public static final String SDK_TEST_ARTIFACTS_FILE = "test-artifacts.properties";
 
-    public static final String SDK_TEST_ARTIFACTS_PATH = "sdk/test-artifacts.*.properties";
+    public static final String SDK_TEST_ARTIFACTS_PATH = SDK_PATH + "test-artifacts.*.properties";
+
+    public static final String SDK_TOOLS_PATH = SDK_PATH + "tools";
 
     protected String id;
 

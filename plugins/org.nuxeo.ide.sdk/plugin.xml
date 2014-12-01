@@ -25,7 +25,7 @@
       </page>
       <page
          id="org.nuxeo.ide.jdt.preferences"
-         name="Contributors cleanup, templates and formatter preferences"
+         name="Coding Rules"
          class="org.nuxeo.ide.jdt.NuxeoJdtPreferencePage"
          category="org.nuxeo.ide.prefs">
       </page>

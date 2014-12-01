@@ -19,6 +19,8 @@ package org.nuxeo.ide.sdk;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IProject;
@@ -370,4 +372,10 @@ public class NuxeoSDK {
         return info.getPid();
     }
 
+    /**
+     * @since 1.2.5
+     */
+    public Path getToolsDir() {
+        return Paths.get(info.getPath(), SDKInfo.SDK_TOOLS_PATH);
+    }
 }
