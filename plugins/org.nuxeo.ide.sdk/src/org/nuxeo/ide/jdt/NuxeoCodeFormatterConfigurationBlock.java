@@ -1,10 +1,10 @@
 /*
- * (C) Copyright 2013 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2013-2014 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
  * (LGPL) version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
+ * http://www.gnu.org/licenses/lgpl-2.1.html
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -29,21 +29,19 @@ import org.eclipse.jdt.internal.ui.preferences.formatter.ProfileManager;
 import org.eclipse.jdt.internal.ui.preferences.formatter.ProfileManager.CustomProfile;
 import org.eclipse.jdt.internal.ui.preferences.formatter.ProfileManager.Profile;
 import org.eclipse.jdt.internal.ui.preferences.formatter.ProfileStore;
-import org.nuxeo.ide.common.UI;
 import org.xml.sax.InputSource;
 
+import org.nuxeo.ide.common.UI;
+
 /**
- * Code formatter configuration block with a method that set Nuxeo's formatter
- * configuration.
+ * Code formatter configuration block with a method that set Nuxeo's formatter configuration.
  *
  * @author Sun Seng David TAN <stan@nuxeo.com>
  */
 @SuppressWarnings("restriction")
-public class NuxeoCodeFormatterConfigurationBlock extends
-        CodeFormatterConfigurationBlock {
+public class NuxeoCodeFormatterConfigurationBlock extends CodeFormatterConfigurationBlock {
 
-    public NuxeoCodeFormatterConfigurationBlock(IProject project,
-            PreferencesAccess access) {
+    public NuxeoCodeFormatterConfigurationBlock(IProject project, PreferencesAccess access) {
         super(project, access);
     }
 
@@ -69,12 +67,10 @@ public class NuxeoCodeFormatterConfigurationBlock extends
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    protected ProfileManager createProfileManager(List profiles,
-            IScopeContext context, PreferencesAccess access,
-            IProfileVersioner profileVersioner) {
+    protected ProfileManager createProfileManager(List profiles, IScopeContext context, PreferencesAccess access,
+            IProfileVersioner aProfileVersioner) {
         // just keeping the private variable at creation time
-        profileManager = super.createProfileManager(profiles, context, access,
-                profileVersioner);
+        profileManager = super.createProfileManager(profiles, context, access, aProfileVersioner);
         return profileManager;
     }
 
@@ -92,9 +88,7 @@ public class NuxeoCodeFormatterConfigurationBlock extends
                 profiles = profileStore.readProfilesFromStream(new InputSource(
                         preferenceFilesStreamProvider.getFallbackStream()));
             } catch (CoreException e1) {
-                UI.showError(
-                        "An error occured while reading Nuxeo Cleanup profiles",
-                        e);
+                UI.showError("An error occurred while reading Nuxeo Cleanup profiles", e);
             }
         }
         if (profiles == null || profiles.isEmpty()) {
@@ -105,14 +99,12 @@ public class NuxeoCodeFormatterConfigurationBlock extends
             final CustomProfile profile = (CustomProfile) iter.next();
 
             if (!profileVersioner.getProfileKind().equals(profile.getKind())) {
-                UI.showError("Not the same profile kind",
-                        "Not the same profile kind");
+                UI.showError("Not the same profile kind", "Not the same profile kind");
                 return;
             }
 
             if (profile.getVersion() > profileVersioner.getCurrentVersion()) {
-                UI.showError("Profile version too new",
-                        "Profile version too new");
+                UI.showError("Profile version too new", "Profile version too new");
                 return;
             }
             profileVersioner.update(profile);

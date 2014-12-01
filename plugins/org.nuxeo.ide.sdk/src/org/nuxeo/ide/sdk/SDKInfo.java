@@ -1,10 +1,10 @@
 /*
- * (C) Copyright 2006-2011 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2006-2014 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the GNU Lesser General Public License
  * (LGPL) version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
+ * http://www.gnu.org/licenses/lgpl-2.1.html
  *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -33,7 +33,6 @@ import org.nuxeo.ide.common.UI;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- *
  */
 public class SDKInfo {
 
@@ -69,8 +68,7 @@ public class SDKInfo {
         this.name = name;
         this.path = path;
         this.version = version;
-        String rawid = new StringBuilder(256).append(version).append('#').append(
-                path).toString();
+        String rawid = new StringBuilder(256).append(version).append('#').append(path).toString();
         try {
             // the id should not contain '/' so we encode it.
             this.id = URLEncoder.encode(rawid, "UTF-8");
@@ -111,9 +109,9 @@ public class SDKInfo {
         return new StringBuilder(64).append(name).append(" ").append(version).toString();
     }
 
-    public URL getRemoteLocation(String path) {
+    public URL getRemoteLocation(String aPath) {
         try {
-            return new URL("http://localhost:8080/nuxeo/" + path);
+            return new URL("http://localhost:8080/nuxeo/" + aPath);
         } catch (MalformedURLException e) {
             throw new Error("Cannot build server home location", e);
         }
@@ -154,8 +152,7 @@ public class SDKInfo {
         }
     }
 
-    protected void generateSDKTemplate(File templates, File sdkTemp)
-            throws IOException {
+    protected void generateSDKTemplate(File templates, File sdkTemp) throws IOException {
         sdkTemp.mkdirs();
         createDefaults(sdkTemp);
         enabledDevClassloader(new File(templates, "default"), sdkTemp);
@@ -166,39 +163,33 @@ public class SDKInfo {
     protected void createDefaults(File sdkTemp) throws IOException {
         File defaults = new File(sdkTemp, "nuxeo.defaults");
         defaults.createNewFile();
-        IOUtils.writeFile(defaults,
-                "nuxeo.templats.include=default\nsdk.target=.\n");
+        IOUtils.writeFile(defaults, "nuxeo.templats.include=default\nsdk.target=.\n");
     }
 
-    protected void enableSeamHotReload(File templates, File sdkTemp)
-            throws IOException {
+    protected void enableSeamHotReload(File templates, File sdkTemp) throws IOException {
         File config = new File(sdkTemp, "nxserver/config");
         config.mkdirs();
         File seamDebugMarker = new File(config, "seam-debug.properties");
         seamDebugMarker.createNewFile();
     }
 
-    protected void enabledDevClassloader(File defTemp, File sdkTemp)
-            throws IOException {
+    protected void enabledDevClassloader(File defTemp, File sdkTemp) throws IOException {
         File src = new File(defTemp, "conf/Catalina/localhost/nuxeo.xml");
         File dst = new File(sdkTemp, "conf/Catalina/localhost/nuxeo.xml");
         dst.getParentFile().mkdirs();
         String content = IOUtils.readFile(src);
         int i = content.indexOf("<Loader");
         if (i > -1) {
-            content = content.substring(0, i)
-                    + "\n  <Valve className=\"org.nuxeo.runtime.tomcat.dev.DevValve\" />\n"
+            content = content.substring(0, i) + "\n  <Valve className=\"org.nuxeo.runtime.tomcat.dev.DevValve\" />\n"
                     + content.substring(i);
         }
-        content = content.replace(
-                "org.nuxeo.runtime.tomcat.NuxeoWebappClassLoader",
+        content = content.replace("org.nuxeo.runtime.tomcat.NuxeoWebappClassLoader",
                 "org.nuxeo.runtime.tomcat.dev.NuxeoDevWebappClassLoader");
 
         IOUtils.writeFile(dst, content);
     }
 
-    protected void enableLoaderTimer(File templates, File sdkTemp)
-            throws IOException, FileNotFoundException {
+    protected void enableLoaderTimer(File templates, File sdkTemp) throws IOException, FileNotFoundException {
         String pathLoaderConf = "launcher.properties";
         File srcLoaderFile = new File(templates, pathLoaderConf);
         File dstNxserver = new File(sdkTemp, "nxserver");
@@ -210,8 +201,7 @@ public class SDKInfo {
         String prop = loaderProps.getProperty(key);
         if (prop == null || !"true".equals(prop)) {
             loaderProps.setProperty(key, "true");
-            loaderProps.store(new FileOutputStream(dstLoaderFilef),
-                    "enabled timer");
+            loaderProps.store(new FileOutputStream(dstLoaderFilef), "enabled timer");
         }
     }
 
@@ -236,8 +226,7 @@ public class SDKInfo {
 
     public static SDKInfo loadSDK(File dir) throws IOException {
         if (!dir.isDirectory()) {
-            throw new FileNotFoundException(
-                    "The given file is not a directory: " + dir);
+            throw new FileNotFoundException("The given file is not a directory: " + dir);
         }
         File file = new File(dir, SDK_DISTRIB_PATH);
         String version = null;
@@ -250,8 +239,7 @@ public class SDKInfo {
             } finally {
                 in.close();
             }
-            version = props.getProperty("org.nuxeo.distribution.version",
-                    "0.0.0");
+            version = props.getProperty("org.nuxeo.distribution.version", "0.0.0");
             name = props.getProperty("org.nuxeo.distribution.name", name);
         } else {
             version = getVersionFromBundles(new File(dir, "nxserver/bundles"));
@@ -272,8 +260,7 @@ public class SDKInfo {
         }
         for (String name : list) {
             if (name.startsWith("nuxeo-common-") && name.endsWith(".jar")) {
-                return name.substring("nuxeo-common-".length(), name.length()
-                        - ".jar".length());
+                return name.substring("nuxeo-common-".length(), name.length() - ".jar".length());
             }
         }
         return null;

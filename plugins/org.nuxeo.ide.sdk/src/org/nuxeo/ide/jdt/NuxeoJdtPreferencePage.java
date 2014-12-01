@@ -1,10 +1,10 @@
 /*
- * (C) Copyright 2013 Nuxeo SA (http://nuxeo.com/) and contributors.
+ * (C) Copyright 2013-2014 Nuxeo SA (http://nuxeo.com/) and contributors.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License (LGPL)
  * version 2.1 which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/lgpl.html
+ * http://www.gnu.org/licenses/lgpl-2.1.html
  *
  * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -46,12 +46,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.ui.preferences.IWorkingCopyManager;
 import org.eclipse.ui.preferences.WorkingCopyManager;
-import org.nuxeo.ide.common.UI;
 import org.osgi.service.prefs.BackingStoreException;
 
+import org.nuxeo.ide.common.UI;
+
 /**
- * Preference page with a button that perform Nuxeo contributors java editor
- * settings.
+ * Preference page with a button that perform Nuxeo contributors java editor settings.
  * <ul>
  * <li>cleanup</p>
  * <li>code template</li>
@@ -89,10 +89,8 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
             workingCopyManager = new WorkingCopyManager(); // non shared
         }
         fAccess = PreferencesAccess.getWorkingCopyPreferences(workingCopyManager);
-        cleanupConfigurationBlock = new NuxeoCleanUpConfigurationBlock(
-                getProject(), fAccess);
-        codeFormatterConfigurationBlock = new NuxeoCodeFormatterConfigurationBlock(
-                getProject(), fAccess);
+        cleanupConfigurationBlock = new NuxeoCleanUpConfigurationBlock(getProject(), fAccess);
+        codeFormatterConfigurationBlock = new NuxeoCodeFormatterConfigurationBlock(getProject(), fAccess);
         templateStore = new ProjectTemplateStore(getProject());
 
         // building pageContainer
@@ -101,13 +99,11 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
 
         Label text = new Label(pageContainer, SWT.NONE);
         text.setText("Set Nuxeo contributors default java development settings: formatter, cleanup, cleanup on save, code templates and Java editor code templates");
-        text.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true,
-                false));
+        text.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false));
 
         Button button = new Button(pageContainer, SWT.NONE);
         button.setText("Setting Nuxeo contributors settings");
-        button.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false,
-                false));
+        button.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
         button.addSelectionListener(new SelectionListener() {
             @Override
@@ -151,7 +147,7 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
         try {
             datas = readTemplatesFrom("nuxeo_codetemplates.xml");
         } catch (IOException e1) {
-            UI.showError("An error occured while importing nuxeo templates", e1);
+            UI.showError("An error occurred while importing nuxeo templates", e1);
             return;
         }
 
@@ -176,7 +172,7 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
         try {
             datas = readTemplatesFrom("nuxeo_javaeditortemplates.xml");
         } catch (IOException e1) {
-            UI.showError("An error occured while importing nuxeo templates", e1);
+            UI.showError("An error occurred while importing nuxeo templates", e1);
             return;
         }
         for (int i = 0; i < datas.length; i++) {
@@ -187,7 +183,7 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
 
     protected void updateJavaEditorTemplate(TemplatePersistenceData data) {
         TemplateStore javaEditorTemplateStore = JavaPlugin.getDefault().getTemplateStore();
-        // Commented, weird behaviour, template data is null
+        // Commented, weird behavior, template data is null
         // Template oldTemplate =
         // javaEditorTemplateStore.findTemplate(data.getTemplate().getName());
         // if (oldTemplate != null) {
@@ -203,36 +199,28 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
         Set<String> keys = JavaPlugin.getDefault().getCleanUpRegistry().getDefaultOptions(
                 CleanUpConstants.DEFAULT_SAVE_ACTION_OPTIONS).getKeys();
         for (String key : keys) {
-            node.put(CleanUpPreferenceUtil.SAVE_PARTICIPANT_KEY_PREFIX + key,
-                    node.get(key, CleanUpOptions.FALSE));
+            node.put(CleanUpPreferenceUtil.SAVE_PARTICIPANT_KEY_PREFIX + key, node.get(key, CleanUpOptions.FALSE));
         }
-        node.putBoolean(EDITOR_SAVE_PARTICIPANT_PREFIX
-                + CleanUpPostSaveListener.POSTSAVELISTENER_ID, true);
+        node.putBoolean(EDITOR_SAVE_PARTICIPANT_PREFIX + CleanUpPostSaveListener.POSTSAVELISTENER_ID, true);
         node.putBoolean(CleanUpPreferenceUtil.SAVE_PARTICIPANT_KEY_PREFIX
                 + CleanUpConstants.CLEANUP_ON_SAVE_ADDITIONAL_OPTIONS, true);
         try {
             fAccess.applyChanges();
         } catch (BackingStoreException e) {
-            UI.showError(
-                    "An error occured while appliying Nuxeo post save cleanup changes",
-                    e);
+            UI.showError("An error occurred while applying Nuxeo post save cleanup changes", e);
         }
 
     }
 
-    protected TemplatePersistenceData[] readTemplatesFrom(String fileName)
-            throws IOException {
+    protected TemplatePersistenceData[] readTemplatesFrom(String fileName) throws IOException {
         TemplateReaderWriter reader = new TemplateReaderWriter();
-        PreferenceFilesStreamProvider preferenceFilesStreamProvider = new PreferenceFilesStreamProvider(
-                fileName);
+        PreferenceFilesStreamProvider preferenceFilesStreamProvider = new PreferenceFilesStreamProvider(fileName);
         TemplatePersistenceData[] datas;
         try {
-            datas = reader.read(preferenceFilesStreamProvider.getInputStream(),
-                    null);
+            datas = reader.read(preferenceFilesStreamProvider.getInputStream(), null);
         } catch (IOException e) {
             // fallback
-            datas = reader.read(
-                    preferenceFilesStreamProvider.getFallbackStream(), null);
+            datas = reader.read(preferenceFilesStreamProvider.getFallbackStream(), null);
         }
         return datas;
 
