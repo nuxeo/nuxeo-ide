@@ -36,7 +36,7 @@ import org.nuxeo.ide.common.UI;
  */
 public class SDKInfo {
 
-    public static final String SDK_PATH = "sdk";
+    public static final String SDK_PATH = "sdk/";
 
     public static final String SDK_COMPONENTS_PATH = SDK_PATH + "components.index";
 
@@ -73,7 +73,7 @@ public class SDKInfo {
         String rawid = new StringBuilder(256).append(version).append('#').append(path).toString();
         try {
             // the id should not contain '/' so we encode it.
-            this.id = URLEncoder.encode(rawid, "UTF-8");
+            id = URLEncoder.encode(rawid, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             UI.showError("UTF-8 not supported for encoding IDs", e);
         }

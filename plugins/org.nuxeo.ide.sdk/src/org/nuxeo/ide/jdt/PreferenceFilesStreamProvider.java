@@ -23,10 +23,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-
 import org.nuxeo.ide.common.UI;
 import org.nuxeo.ide.sdk.NuxeoSDK;
+import org.nuxeo.ide.sdk.SDKPlugin;
 
 /**
  * Default implementation will try to get the preferences files in order from:
@@ -49,10 +50,15 @@ public class PreferenceFilesStreamProvider {
         if (NuxeoSDK.getDefault() != null) {
             IFile prefIFile = root.getFile(Path.fromOSString(NuxeoSDK.getDefault().getToolsDir().resolve(
                     preferenceFileName).toString()));
-            try {
-                return prefIFile.getContents();
-            } catch (CoreException e) {
-                UI.showError("Resource not found in Nuxeo SDK tools directory", e);
+            if (prefIFile.exists()) {
+                try {
+                    return prefIFile.getContents();
+                } catch (CoreException e) {
+                    UI.showError("Error loading resource in Nuxeo SDK tools directory", e);
+                }
+            } else {
+                SDKPlugin.log(IStatus.INFO,
+                        String.format("Resource '%s' not found in Nuxeo SDK tools directory", preferenceFileName));
             }
         }
 
@@ -61,8 +67,11 @@ public class PreferenceFilesStreamProvider {
             try {
                 return prefIFile.getContents();
             } catch (CoreException e) {
-                UI.showError("Resource not found in Nuxeo sources directory", e);
+                UI.showError("Error loading resource in Nuxeo sources directory", e);
             }
+        } else {
+            SDKPlugin.log(IStatus.INFO,
+                    String.format("Resource '%s' not found in Nuxeo sources directory", preferenceFileName));
         }
 
         return getInputStreamFromCP();

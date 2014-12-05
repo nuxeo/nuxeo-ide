@@ -139,7 +139,8 @@ public class NuxeoJdtPreferencePage extends PropertyAndPreferencePage {
         pageContainer.setLayout(new GridLayout(1, false));
 
         Label text = new Label(pageContainer, SWT.NONE);
-        text.setText("Nuxeo development settings: formatter, cleanup and code templates.");
+        text.setText("Nuxeo development settings: formatter, cleanup and code templates.\n"
+                + "Please click on the button below then cancel the Preferences window.");
         text.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false));
 
         Button button = new Button(pageContainer, SWT.NONE);
