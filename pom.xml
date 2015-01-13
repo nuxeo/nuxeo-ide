@@ -26,9 +26,9 @@
   </modules>
 
   <scm>
-    <connection>scm:hg:http://hg.nuxeo.org/tools/nuxeo-ide</connection>
-    <developerConnection>scm:git:git@github.com:nuxeo/nuxeo-ide.git</developerConnection>
-    <url>http://hg.nuxeo.org/nuxeo/</url>
+    <connection>scm:git:https://github.com/nuxeo/nuxeo-ide</connection>
+    <developerConnection>git@github.com:nuxeo/nuxeo-ide.git</developerConnection>
+    <url>https://github.com/nuxeo/nuxeo-ide</url>
   </scm>
 
   <properties>
