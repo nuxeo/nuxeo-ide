@@ -9,9 +9,9 @@ import org.nuxeo.ide.qatests.dialogs.DialogBot;
 import org.nuxeo.ide.qatests.dialogs.DialogOperation;
 import org.nuxeo.ide.qatests.widgets.ServiceChooserBot;
 
-public class SeamServiceCreationWizardBot extends DialogBot {
+public class NuxeoProjectCreationWizardBot extends DialogBot {
 
-    public SeamServiceCreationWizardBot(SWTWorkbenchBot workbench) {
+    public NuxeoProjectCreationWizardBot(SWTWorkbenchBot workbench) {
         super(workbench, "New Nuxeo Artifact");
     }
 

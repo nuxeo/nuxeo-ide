@@ -10,11 +10,11 @@ import org.nuxeo.ide.qatests.Bot;
 import org.nuxeo.ide.qatests.wizards.SDKPreferenceBot;
 
 public class NuxeoPreferencesBot extends DialogBot {
-    
+
     protected SWTBotTreeItem nuxeo;
-    
+
     protected SWTBotButton ok;
-    
+
     public NuxeoPreferencesBot(SWTWorkbenchBot workbench) {
         super(workbench, "Preferences");
     }
@@ -26,30 +26,30 @@ public class NuxeoPreferencesBot extends DialogBot {
         nuxeo = tree.getTreeItem("Nuxeo");
         ok = workbench.button("OK");
     }
-    
+
     public enum Choice {
-        
+
         SDK(SDKPreferenceBot.class, "Nuxeo SDK");
-        
+
         protected final Class<? extends Bot> botClass;
-        
+
         protected final String name;
-        
+
         Choice(Class<? extends Bot> botClass, String name) {
             this.botClass = botClass;
             this.name = name;
         }
     }
-    
+
     protected static HashMap<Class<? extends Bot>, Choice> choices =
             new HashMap<Class<? extends Bot>, Choice>();
-    
+
     static {
         for (Choice p:Choice.values()) {
             choices.put(p.botClass, p);
         }
     }
-    
+
     protected <T extends Bot> T newBot(Class<T> botClass) {
         try {
             return botClass.getConstructor(new Class<?>[] { SWTWorkbenchBot.class }).newInstance(workbench);
@@ -57,7 +57,7 @@ public class NuxeoPreferencesBot extends DialogBot {
            throw new Error("Cannot instanciate bot of class " + botClass.getName(), e);
         }
     }
-    
+
     public <T extends Bot> T  select(Class<T> botClass) {
         Choice choice = choices.get(botClass);
         nuxeo.select(choice.name);

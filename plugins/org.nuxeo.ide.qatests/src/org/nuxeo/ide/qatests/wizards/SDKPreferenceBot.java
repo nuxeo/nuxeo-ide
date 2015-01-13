@@ -15,29 +15,29 @@ import org.nuxeo.ide.qatests.Bot;
 import org.nuxeo.ide.sdk.SDKInfo;
 import org.nuxeo.ide.sdk.server.ui.SDKTableWidget;
 
-public class SDKPreferenceBot  implements Bot {
+public class SDKPreferenceBot implements Bot {
 
     protected final SWTWorkbenchBot workbench;
-        
+
     protected final SWTBotTable sdks;
-        
+
     public SDKPreferenceBot(SWTWorkbenchBot workbench) {
         this.workbench = workbench;
-        this.sdks = workbench.table();    
-    }  
-    
+        this.sdks = workbench.table();
+    }
+
     public void addSDK(final File home) throws IOException {
         final SDKInfo info = SDKInfo.loadSDK(home);
         UIThreadRunnable.asyncExec(SWTUtils.display(), new VoidResult() {
             public void run() {
-                SDKTableWidget w = (SDKTableWidget)sdks.widget.getData("org.eclipse.swtbot.widget.owner");
+                SDKTableWidget w = (SDKTableWidget) sdks.widget.getData("org.eclipse.swtbot.widget.owner");
                 CheckboxTableViewer v = w.getViewer();
-                v.add(info);                
+                v.add(info);
             }
         });
-        
+
     }
-    
+
     public boolean selectSDK(File home) throws IOException {
         String path = home.getPath();
         int count = sdks.rowCount();
@@ -50,13 +50,12 @@ public class SDKPreferenceBot  implements Bot {
         }
         return false;
     }
-    
+
     public void addAndSelect(File home) throws IOException {
         if (selectSDK(home) == false) {
             addSDK(home);
         }
         selectSDK(home);
     }
-    
 
 }
