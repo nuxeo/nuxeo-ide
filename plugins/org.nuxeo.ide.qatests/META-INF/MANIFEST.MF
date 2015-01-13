@@ -6,15 +6,14 @@ Bundle-Version: 1.2.5.qualifier
 Bundle-Activator: org.nuxeo.ide.qatests.Activator
 Bundle-Vendor: Nuxeo
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.swtbot.eclipse.core;bundle-version="2.0.4",
- org.eclipse.swtbot.eclipse.finder;bundle-version="2.0.4",
- org.eclipse.swtbot.junit4_x;bundle-version="2.0.4",
- org.eclipse.swtbot.swt.finder;bundle-version="2.0.4",
- org.hamcrest;bundle-version="1.1.0",
- org.junit;bundle-version="4.8.2",
+ org.eclipse.swtbot.eclipse.core,
+ org.eclipse.swtbot.eclipse.finder,
+ org.eclipse.swtbot.junit4_x,
+ org.eclipse.swtbot.swt.finder,
+ org.junit,
  org.eclipse.ui,
  org.apache.log4j,
  org.nuxeo.ide.sdk,
  org.nuxeo.ide.common
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
