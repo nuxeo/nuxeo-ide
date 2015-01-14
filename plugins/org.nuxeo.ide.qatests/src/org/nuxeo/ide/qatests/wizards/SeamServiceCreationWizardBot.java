@@ -1,3 +1,18 @@
+/*
+ * (C) Copyright 2015 Nuxeo SA (http://nuxeo.com/) and contributors.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the GNU Lesser General Public License
+ * (LGPL) version 2.1 which accompanies this distribution, and is available at
+ * http://www.gnu.org/licenses/lgpl-2.1.html
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * Contributors: Nuxeo contributors
+ */
 package org.nuxeo.ide.qatests.wizards;
 
 import static org.junit.Assert.assertTrue;
@@ -24,9 +39,8 @@ public class SeamServiceCreationWizardBot extends DialogBot {
     SWTBotText bean;
 
     SWTBotButton browseSrv;
-    
+
     SWTBotButton finish;
-    
 
     @Override
     protected void handleActivation() {
@@ -49,13 +63,15 @@ public class SeamServiceCreationWizardBot extends DialogBot {
     }
 
     public void selectServiceByName(String name) {
-        ServiceChooserBot chooser = ServiceChooserBot.asyncOpen(workbench, ServiceChooserBot.class, new DialogOperation<ServiceChooserBot>() {
+        ServiceChooserBot chooser = DialogBot.asyncOpen(workbench,
+                ServiceChooserBot.class,
+                new DialogOperation<ServiceChooserBot>() {
 
-            @Override
-            public void run(ServiceChooserBot dialog) {
-                browseSrv.click();
-            }
-        });
+                    @Override
+                    public void run(ServiceChooserBot dialog) {
+                        browseSrv.click();
+                    }
+                });
         chooser.selectByName(name);
         assertTrue(srv.getText().contains(name));
     }
