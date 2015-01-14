@@ -1,7 +1,7 @@
 <panel cols="1" layout="grid">
 
 <text hfill="true" wrap="true" trim="false">Select a Nuxeo SDK for using in your Nuxeo projects. 
-If not SDKs are available, then click on 'Download' button to download the SDK of your choice 
+If no SDKs are available, then click on 'Download' button to download the SDK of your choice 
 and then install it into Eclipse by using the 'Add' button.
 Note that the selected SDK becomes the default SDK in your current Eclipse Workspace.
 
