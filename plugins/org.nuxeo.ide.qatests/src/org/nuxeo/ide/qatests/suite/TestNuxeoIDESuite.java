@@ -20,9 +20,10 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.nuxeo.ide.qatests.suite.usecases.TestProjectCreation;
 import org.nuxeo.ide.qatests.suite.usecases.TestSDKConfiguration;
+import org.nuxeo.ide.qatests.suite.usecases.TestSeamWizard;
 
 @RunWith(Suite.class)
-@SuiteClasses({ TestSDKConfiguration.class, TestProjectCreation.class })
+@SuiteClasses({ TestSDKConfiguration.class, TestProjectCreation.class, TestSeamWizard.class })
 public class TestNuxeoIDESuite {
 
 }
