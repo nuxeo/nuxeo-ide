@@ -13,34 +13,21 @@
  *
  * Contributors: Nuxeo contributors
  */
-package org.nuxeo.ide.qatests.usecases;
-
-import static org.junit.Assert.assertNotNull;
-
-import java.io.File;
-import java.io.IOException;
+package org.nuxeo.ide.qatests.suite;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
 import org.nuxeo.ide.qatests.dialogs.DialogOperation;
 import org.nuxeo.ide.qatests.dialogs.NewNuxeoArtifactDialogBot;
 import org.nuxeo.ide.qatests.dialogs.NuxeoPreferencesBot;
 import org.nuxeo.ide.qatests.perspectives.NuxeoPerspectiveBot;
-import org.nuxeo.ide.qatests.wizards.NuxeoProjectCreationWizardBot;
-import org.nuxeo.ide.qatests.wizards.SDKPreferenceBot;
 
-@RunWith(SWTBotJunit4ClassRunner.class)
-public class TestNuxeoIDESuite {
+public class NuxeoIDEWorkbench {
 
-    SWTWorkbenchBot workbench = new SWTWorkbenchBot();
+    protected SWTWorkbenchBot workbench = new SWTWorkbenchBot();
 
     public class OpenNewNuxeoArtifact implements
             DialogOperation<NewNuxeoArtifactDialogBot> {
@@ -76,37 +63,6 @@ public class TestNuxeoIDESuite {
                 }
             }
         }
-    }
-
-    @Before
-    public void configureSDK() throws IOException {
-        // Open Nuxeo Perspective
-        DialogBot.asyncOpen(workbench, NuxeoPerspectiveBot.class,
-                new OpenNuxeoPerspective());
-        // Open Preferences
-        NuxeoPreferencesBot preferences = DialogBot.asyncOpen(workbench,
-                NuxeoPreferencesBot.class, new OpenNuxeoPreferences());
-        // Choose SDK
-        SDKPreferenceBot sdk = preferences.select(SDKPreferenceBot.class);
-        File home = new File("/Users/vladimirpasquier/Desktop/nuxeosdk");
-        sdk.addAndSelect(home);
-        preferences.finish();
-    }
-
-    @Test
-    public void TestHotreload() {
-        // Verify if workbench active
-        assertNotNull(workbench.activeShell());
-
-        // Open Nuxeo Wizard dialog
-        NewNuxeoArtifactDialogBot dialog = DialogBot.asyncOpen(workbench,
-                NewNuxeoArtifactDialogBot.class, new OpenNewNuxeoArtifact());
-
-        // Create Nuxeo Project
-        NuxeoProjectCreationWizardBot wizard = dialog.enterWizard(
-                NuxeoProjectCreationWizardBot.class, "Nuxeo Plugin Project",
-                "Nuxeo Plugin Project");
-        wizard.fillAndFinish("project");
     }
 
 }
