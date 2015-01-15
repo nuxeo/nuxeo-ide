@@ -24,6 +24,7 @@ import org.nuxeo.ide.qatests.dialogs.DialogOperation;
 import org.nuxeo.ide.qatests.dialogs.NewNuxeoArtifactDialogBot;
 import org.nuxeo.ide.qatests.dialogs.NuxeoPreferencesBot;
 import org.nuxeo.ide.qatests.perspectives.NuxeoPerspectiveBot;
+import org.nuxeo.ide.qatests.views.NuxeoServerViewBot;
 
 public class NuxeoIDEWorkbench {
 
@@ -42,7 +43,8 @@ public class NuxeoIDEWorkbench {
         @Override
         public void run(NuxeoPerspectiveBot dialog) {
             // Change the perspective via the Open Perspective dialog
-            workbench.menu("Window").menu("Open Perspective").menu("Other...").click();
+            dialog.workbench.menu("Window").menu("Open Perspective").menu(
+                    "Other...").click();
         }
     }
 
@@ -62,6 +64,14 @@ public class NuxeoIDEWorkbench {
                     break;
                 }
             }
+        }
+    }
+
+    public class ActivateServerView implements
+            DialogOperation<NuxeoServerViewBot> {
+        @Override
+        public void run(NuxeoServerViewBot dialog) {
+            dialog.workbench.viewByTitle("Nuxeo Server").setFocus();
         }
     }
 

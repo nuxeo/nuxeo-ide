@@ -13,19 +13,21 @@
  *
  * Contributors: Nuxeo contributors
  */
-package org.nuxeo.ide.qatests.suite;
+package org.nuxeo.ide.qatests.dialogs;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-import org.nuxeo.ide.qatests.suite.usecases.TestHotReload;
-import org.nuxeo.ide.qatests.suite.usecases.TestProjectCreation;
-import org.nuxeo.ide.qatests.suite.usecases.TestSDKConfiguration;
-import org.nuxeo.ide.qatests.suite.usecases.TestSeamWizard;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 
-@RunWith(Suite.class)
-@SuiteClasses({ TestSDKConfiguration.class, TestProjectCreation.class,
-        TestHotReload.class, TestSeamWizard.class })
-public class TestNuxeoIDESuite {
+public class DialogAreaBot extends DialogBot{
+
+    public DialogAreaBot(SWTWorkbenchBot workbench, String title) {
+        super(workbench, title);
+    }
+
+    @Override
+    protected SWTBotShell waitShellUntil() {
+        handleActivation();
+        return shell;
+    }
 
 }
