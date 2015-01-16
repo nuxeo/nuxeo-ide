@@ -15,7 +15,9 @@
  */
 package org.nuxeo.ide.qatests.dialogs;
 
-public interface DialogOperation<T extends DialogBot> {
+import org.nuxeo.ide.qatests.ComponentBot;
+
+public interface DialogOperation<T extends ComponentBot> {
 
     /**
      * when opening the dialog the shell can be null

@@ -16,8 +16,9 @@
 package org.nuxeo.ide.qatests.dialogs;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 
-public class FileChooserDialogBot extends DialogBot {
+public class FileChooserDialogBot extends ComponentBot {
 
     public FileChooserDialogBot(SWTWorkbenchBot workbench) {
         super(workbench, "");

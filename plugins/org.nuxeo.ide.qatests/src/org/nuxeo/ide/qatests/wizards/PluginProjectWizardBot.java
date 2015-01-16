@@ -17,9 +17,9 @@ package org.nuxeo.ide.qatests.wizards;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 
-public class PluginProjectWizardBot extends DialogBot {
+public class PluginProjectWizardBot extends ComponentBot {
 
     protected SWTBotText projectId;
 

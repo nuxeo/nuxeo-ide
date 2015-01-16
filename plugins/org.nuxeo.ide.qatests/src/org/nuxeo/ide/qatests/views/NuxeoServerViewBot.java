@@ -21,7 +21,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 import org.nuxeo.ide.qatests.dialogs.DialogOperation;
 
 public class NuxeoServerViewBot extends ViewBot {
@@ -76,8 +76,8 @@ public class NuxeoServerViewBot extends ViewBot {
         hotreload.click();
     }
 
-    public <T extends DialogBot> T deploy(Class<T> dialogClass) {
-        return DialogBot.asyncOpen(workbench, dialogClass,
+    public <T extends ComponentBot> T deploy(Class<T> dialogClass) {
+        return ComponentBot.asyncOpen(workbench, dialogClass,
                 new DialogOperation<T>() {
                     @Override
                     public void run(T dialog) {

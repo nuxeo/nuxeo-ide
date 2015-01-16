@@ -19,32 +19,24 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.nuxeo.ide.qatests.dialogs.NuxeoDeployProjectsBot;
 import org.nuxeo.ide.qatests.suite.NuxeoIDEWorkbench;
 import org.nuxeo.ide.qatests.views.NuxeoServerViewBot;
 
-public class TestHotReload extends NuxeoIDEWorkbench {
+public class StopServer extends NuxeoIDEWorkbench {
 
     @Test
-    public void testHotreload() throws InterruptedException {
+    public void stopServer() {
         // Verify if workbench active
         assertNotNull(workbench.activeShell());
 
         // Active Nuxeo Server View
         NuxeoServerViewBot sdkServer = activateServerView();
 
-        // Manage the server - test hotreload
-        // Deploy project
-        sdkServer.deploy(NuxeoDeployProjectsBot.class);
-        // Start the server and wait until fully started.
-        sdkServer.playRun();
-        // Clear console
-        sdkServer.clearConsole();
-        // Hotreload server.
-        sdkServer.playHotReload();
-        // Check if no error in console
-        Assert.assertTrue(!workbench.activeView().bot().styledText().getText().contains(
-                "ERROR"));
+        // Stop the server
+        sdkServer.playStop();
+        // Check if server stopped in console
+        Assert.assertTrue(workbench.activeView().bot().styledText().getText().contains(
+                "Nuxeo Server Stopped"));
     }
 
 }

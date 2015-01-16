@@ -21,9 +21,9 @@ import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 
-public class ProjectChooserBot extends DialogBot {
+public class ProjectChooserBot extends ComponentBot {
 
     protected SWTBotText filter;
 

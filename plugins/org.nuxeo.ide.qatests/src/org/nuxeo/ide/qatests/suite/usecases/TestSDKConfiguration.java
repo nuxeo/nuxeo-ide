@@ -19,9 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
 import org.nuxeo.ide.qatests.dialogs.NuxeoPreferencesBot;
-import org.nuxeo.ide.qatests.perspectives.NuxeoPerspectiveBot;
 import org.nuxeo.ide.qatests.suite.NuxeoIDEWorkbench;
 import org.nuxeo.ide.qatests.wizards.SDKPreferenceBot;
 
@@ -32,14 +30,12 @@ public class TestSDKConfiguration extends NuxeoIDEWorkbench {
         // Close welcome page if exists
         workbench.viewByTitle("Welcome").close();
         // Open Nuxeo Perspective
-        DialogBot.asyncOpen(workbench, NuxeoPerspectiveBot.class,
-                new OpenNuxeoPerspective());
+        openNuxeoPerspective();
         // Open Preferences
-        NuxeoPreferencesBot preferences = DialogBot.asyncOpen(workbench,
-                NuxeoPreferencesBot.class, new OpenNuxeoPreferences());
+        NuxeoPreferencesBot preferences = getPreferences();
         // Choose SDK
-        SDKPreferenceBot sdk = preferences.select(SDKPreferenceBot.class);
-        File home = new File("/Users/vladimirpasquier/Desktop/nuxeosdk");
+        SDKPreferenceBot sdk = preferences.selectSDKPreferences();
+        File home = new File(NUXEOSDK_PATH);
         sdk.addAndSelect(home);
         preferences.finish();
     }

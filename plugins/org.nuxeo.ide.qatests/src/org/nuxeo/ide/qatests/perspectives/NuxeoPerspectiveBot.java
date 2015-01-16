@@ -16,9 +16,9 @@
 package org.nuxeo.ide.qatests.perspectives;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 
-public class NuxeoPerspectiveBot extends DialogBot {
+public class NuxeoPerspectiveBot extends ComponentBot {
 
     public NuxeoPerspectiveBot(SWTWorkbenchBot workbench) {
         super(workbench, "Open Perspective");

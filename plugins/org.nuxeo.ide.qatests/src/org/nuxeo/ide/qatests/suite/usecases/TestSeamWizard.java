@@ -18,7 +18,6 @@ package org.nuxeo.ide.qatests.suite.usecases;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
 import org.nuxeo.ide.qatests.dialogs.NewNuxeoArtifactDialogBot;
 import org.nuxeo.ide.qatests.suite.NuxeoIDEWorkbench;
 import org.nuxeo.ide.qatests.wizards.SeamServiceCreationWizardBot;
@@ -31,12 +30,10 @@ public class TestSeamWizard extends NuxeoIDEWorkbench {
         assertNotNull(workbench.activeShell());
 
         // Open Nuxeo Wizard dialog
-        NewNuxeoArtifactDialogBot dialog = DialogBot.asyncOpen(workbench,
-                NewNuxeoArtifactDialogBot.class, new OpenNewNuxeoArtifact());
+        NewNuxeoArtifactDialogBot dialog = getNuxeoWizardsDialog();
 
         // Create Seam Bean
-        SeamServiceCreationWizardBot wizard = dialog.enterWizard(
-                SeamServiceCreationWizardBot.class, "Service Bean", "Seam");
+        SeamServiceCreationWizardBot wizard = dialog.getSeamServiceWizard();
         wizard.fillAndFinish("project", "org.nuxeo.sample", "TypeManager");
     }
 

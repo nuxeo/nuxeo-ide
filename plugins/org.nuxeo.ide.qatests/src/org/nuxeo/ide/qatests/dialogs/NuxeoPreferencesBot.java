@@ -22,9 +22,10 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.nuxeo.ide.qatests.Bot;
+import org.nuxeo.ide.qatests.ComponentBot;
 import org.nuxeo.ide.qatests.wizards.SDKPreferenceBot;
 
-public class NuxeoPreferencesBot extends DialogBot {
+public class NuxeoPreferencesBot extends ComponentBot {
 
     protected SWTBotTreeItem nuxeo;
 
@@ -79,6 +80,10 @@ public class NuxeoPreferencesBot extends DialogBot {
         Choice choice = choices.get(botClass);
         nuxeo.select(choice.name);
         return newBot(botClass);
+    }
+
+    public SDKPreferenceBot selectSDKPreferences() {
+        return select(SDKPreferenceBot.class);
     }
 
     public void finish() {

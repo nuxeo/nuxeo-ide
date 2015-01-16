@@ -20,11 +20,11 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 import org.nuxeo.ide.qatests.dialogs.DialogOperation;
 import org.nuxeo.ide.qatests.widgets.ServiceChooserBot;
 
-public class SeamServiceCreationWizardBot extends DialogBot {
+public class SeamServiceCreationWizardBot extends ComponentBot {
 
     public SeamServiceCreationWizardBot(SWTWorkbenchBot workbench) {
         super(workbench, "New Nuxeo Artifact");
@@ -63,7 +63,7 @@ public class SeamServiceCreationWizardBot extends DialogBot {
     }
 
     public void selectServiceByName(String name) {
-        ServiceChooserBot chooser = DialogBot.asyncOpen(workbench,
+        ServiceChooserBot chooser = ComponentBot.asyncOpen(workbench,
                 ServiceChooserBot.class,
                 new DialogOperation<ServiceChooserBot>() {
 

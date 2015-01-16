@@ -19,7 +19,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotToolbarButton;
 
-public class NuxeoDeployProjectsBot extends DialogAreaBot {
+public class NuxeoDeployProjectsBot extends DialogBot {
 
     protected SWTBotButton ok;
 

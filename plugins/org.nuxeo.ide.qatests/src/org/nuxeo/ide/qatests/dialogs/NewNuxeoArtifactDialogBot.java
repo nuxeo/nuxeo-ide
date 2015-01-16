@@ -20,8 +20,11 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.nuxeo.ide.qatests.ComponentBot;
+import org.nuxeo.ide.qatests.wizards.NuxeoProjectCreationWizardBot;
+import org.nuxeo.ide.qatests.wizards.SeamServiceCreationWizardBot;
 
-public class NewNuxeoArtifactDialogBot extends DialogBot {
+public class NewNuxeoArtifactDialogBot extends ComponentBot {
 
     protected SWTBotText text;
 
@@ -43,7 +46,7 @@ public class NewNuxeoArtifactDialogBot extends DialogBot {
         super(workbench, "New Nuxeo Artifact");
     }
 
-    public <T extends DialogBot> T enterWizard(Class<T> wizardClass,
+    public <T extends ComponentBot> T enterWizard(Class<T> wizardClass,
             String name, String category) {
 
         text.setFocus();
@@ -57,7 +60,7 @@ public class NewNuxeoArtifactDialogBot extends DialogBot {
             itemCategory.select(name);
         }
 
-        return DialogBot.asyncOpen(workbench, wizardClass,
+        return ComponentBot.asyncOpen(workbench, wizardClass,
                 new DialogOperation<T>() {
 
                     @Override
@@ -65,6 +68,16 @@ public class NewNuxeoArtifactDialogBot extends DialogBot {
                         next.click();
                     }
                 });
+    }
+
+    public NuxeoProjectCreationWizardBot getNuxeoProjectWizard() {
+        return enterWizard(NuxeoProjectCreationWizardBot.class,
+                "Nuxeo Plugin Project", "Nuxeo Plugin Project");
+    }
+
+    public SeamServiceCreationWizardBot getSeamServiceWizard() {
+        return enterWizard(SeamServiceCreationWizardBot.class, "Service Bean",
+                "Seam");
     }
 
 }

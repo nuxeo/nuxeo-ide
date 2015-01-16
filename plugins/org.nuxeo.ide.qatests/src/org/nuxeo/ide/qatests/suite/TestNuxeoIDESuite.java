@@ -18,6 +18,7 @@ package org.nuxeo.ide.qatests.suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.nuxeo.ide.qatests.suite.usecases.StopServer;
 import org.nuxeo.ide.qatests.suite.usecases.TestHotReload;
 import org.nuxeo.ide.qatests.suite.usecases.TestProjectCreation;
 import org.nuxeo.ide.qatests.suite.usecases.TestSDKConfiguration;
@@ -25,7 +26,7 @@ import org.nuxeo.ide.qatests.suite.usecases.TestSeamWizard;
 
 @RunWith(Suite.class)
 @SuiteClasses({ TestSDKConfiguration.class, TestProjectCreation.class,
-        TestHotReload.class, TestSeamWizard.class })
+        TestHotReload.class, TestSeamWizard.class, StopServer.class })
 public class TestNuxeoIDESuite {
 
 }

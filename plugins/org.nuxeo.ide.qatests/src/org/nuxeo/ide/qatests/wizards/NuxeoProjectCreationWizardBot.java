@@ -20,9 +20,9 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 
-public class NuxeoProjectCreationWizardBot extends DialogBot {
+public class NuxeoProjectCreationWizardBot extends ComponentBot {
 
     public NuxeoProjectCreationWizardBot(SWTWorkbenchBot workbench) {
         super(workbench, "New Nuxeo Artifact");
@@ -62,5 +62,6 @@ public class NuxeoProjectCreationWizardBot extends DialogBot {
         typeProjectName(projectName);
         next();
         finish();
+        workbench.tree().getTreeItem(projectName).expand();
     }
 }

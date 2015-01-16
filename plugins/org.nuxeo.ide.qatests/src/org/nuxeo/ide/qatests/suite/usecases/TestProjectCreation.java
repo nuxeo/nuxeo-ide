@@ -18,7 +18,6 @@ package org.nuxeo.ide.qatests.suite.usecases;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
 import org.nuxeo.ide.qatests.dialogs.NewNuxeoArtifactDialogBot;
 import org.nuxeo.ide.qatests.suite.NuxeoIDEWorkbench;
 import org.nuxeo.ide.qatests.wizards.NuxeoProjectCreationWizardBot;
@@ -31,15 +30,12 @@ public class TestProjectCreation extends NuxeoIDEWorkbench {
         assertNotNull(workbench.activeShell());
 
         // Open Nuxeo Wizard dialog
-        NewNuxeoArtifactDialogBot dialog = DialogBot.asyncOpen(workbench,
-                NewNuxeoArtifactDialogBot.class, new OpenNewNuxeoArtifact());
+        NewNuxeoArtifactDialogBot dialog = getNuxeoWizardsDialog();
 
         // Create Nuxeo Project
-        NuxeoProjectCreationWizardBot wizard = dialog.enterWizard(
-                NuxeoProjectCreationWizardBot.class, "Nuxeo Plugin Project",
-                "Nuxeo Plugin Project");
+        NuxeoProjectCreationWizardBot wizard = dialog.getNuxeoProjectWizard();
         wizard.fillAndFinish("project");
-        workbench.tree().getTreeItem("project").expand();
+
     }
 
 }

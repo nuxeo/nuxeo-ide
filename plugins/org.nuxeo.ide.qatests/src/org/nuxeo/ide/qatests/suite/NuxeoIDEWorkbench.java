@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 import org.nuxeo.ide.qatests.dialogs.DialogOperation;
 import org.nuxeo.ide.qatests.dialogs.NewNuxeoArtifactDialogBot;
 import org.nuxeo.ide.qatests.dialogs.NuxeoPreferencesBot;
@@ -28,9 +29,31 @@ import org.nuxeo.ide.qatests.views.NuxeoServerViewBot;
 
 public class NuxeoIDEWorkbench {
 
+    protected static final String NUXEOSDK_PATH = "/Users/vladimirpasquier/Desktop/nuxeosdk";
+
     protected SWTWorkbenchBot workbench = new SWTWorkbenchBot();
 
-    public class OpenNewNuxeoArtifact implements
+    public NuxeoPreferencesBot getPreferences() {
+        return ComponentBot.asyncOpen(workbench, NuxeoPreferencesBot.class,
+                new OpenNuxeoPreferences());
+    }
+
+    public void openNuxeoPerspective() {
+        ComponentBot.asyncOpen(workbench, NuxeoPerspectiveBot.class,
+                new OpenNuxeoPerspective());
+    }
+
+    public NewNuxeoArtifactDialogBot getNuxeoWizardsDialog() {
+        return ComponentBot.asyncOpen(workbench,
+                NewNuxeoArtifactDialogBot.class, new OpenNewNuxeoArtifact());
+    }
+
+    public NuxeoServerViewBot activateServerView() {
+        return ComponentBot.asyncOpen(workbench, NuxeoServerViewBot.class,
+                new ActivateServerView());
+    }
+
+    private class OpenNewNuxeoArtifact implements
             DialogOperation<NewNuxeoArtifactDialogBot> {
         @Override
         public void run(NewNuxeoArtifactDialogBot dialog) {
@@ -38,7 +61,7 @@ public class NuxeoIDEWorkbench {
         }
     }
 
-    public class OpenNuxeoPerspective implements
+    private class OpenNuxeoPerspective implements
             DialogOperation<NuxeoPerspectiveBot> {
         @Override
         public void run(NuxeoPerspectiveBot dialog) {
@@ -48,7 +71,7 @@ public class NuxeoIDEWorkbench {
         }
     }
 
-    public class OpenNuxeoPreferences implements
+    private class OpenNuxeoPreferences implements
             DialogOperation<NuxeoPreferencesBot> {
         @Override
         public void run(NuxeoPreferencesBot dialog) {
@@ -67,7 +90,7 @@ public class NuxeoIDEWorkbench {
         }
     }
 
-    public class ActivateServerView implements
+    private class ActivateServerView implements
             DialogOperation<NuxeoServerViewBot> {
         @Override
         public void run(NuxeoServerViewBot dialog) {

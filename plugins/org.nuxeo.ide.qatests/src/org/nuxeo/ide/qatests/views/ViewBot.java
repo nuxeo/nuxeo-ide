@@ -19,16 +19,16 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.nuxeo.ide.qatests.dialogs.DialogBot;
+import org.nuxeo.ide.qatests.ComponentBot;
 
-public class ViewBot extends DialogBot{
+public class ViewBot extends ComponentBot {
 
     public SWTBotShell shell;
 
     public SWTBotView activeView;
 
     public ViewBot(SWTWorkbenchBot workbench, String title) {
-        super(workbench,title);
+        super(workbench, title);
     }
 
     @Override
