@@ -2,18 +2,18 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-    <extension 
-       point="org.eclipse.ui.preferencePages"> 
-      <page 
-         id="org.nuxeo.ide.prefs.connect" 
-         name="Nuxeo Connect" 
-         class="org.nuxeo.ide.connect.ui.ConnectPreferencePage" 
-         category="org.nuxeo.ide.prefs"> 
-      </page> 
+    <extension
+       point="org.eclipse.ui.preferencePages">
+      <page
+         id="org.nuxeo.ide.prefs.connect"
+         name="Nuxeo Online Services"
+         class="org.nuxeo.ide.connect.ui.ConnectPreferencePage"
+         category="org.nuxeo.ide.prefs">
+      </page>
    </extension>
 
-           
-     <!-- #### Studio Project Editor #### --> 
+
+     <!-- #### Studio Project Editor #### -->
      <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -23,25 +23,25 @@
             name="Studio Project Editor">
       </editor>
    </extension>
-      
+
    <extension point="org.eclipse.ui.propertyPages">
      <page
            category="org.nuxeo.ide.project.props"
            class="org.nuxeo.ide.connect.ui.StudioPropertyPage"
            id="org.nuxeo.ide.connect.studio.props"
            name="Nuxeo Studio">
-         <enabledWhen>                                                                                                                                      
-            <adapt                                                                                                                                          
-                  type="org.eclipse.core.resources.IProject">                                                                                               
-               <test                                                                                                                                        
-                     property="org.eclipse.core.resources.projectNature"                                                                                    
-                     value="org.nuxeo.ide.NuxeoNature">                                                                                               
-               </test>                                                                                                                                      
-            </adapt>                                                                                                                                        
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.nuxeo.ide.NuxeoNature">
+               </test>
+            </adapt>
          </enabledWhen>
      </page>
-   </extension>      
-      
+   </extension>
+
    <!-- #### Schema completor ##### -->
 
  <extension point="org.eclipse.jdt.ui.javaCompletionProposalComputer"
@@ -73,7 +73,7 @@
           restorable="true">
     </view>
  </extension>
- 
+
  <!-- ### Navigator content extensions ### -->
     <extension
             point="org.eclipse.ui.navigator.viewer">
@@ -93,7 +93,7 @@
           name="Nuxeo Studio Content"
           priority="normal">
        <triggerPoints>
-       <or>       
+       <or>
           <adapt
                 type="org.eclipse.core.resources.IProject">
                 <test
@@ -104,7 +104,7 @@
        </triggerPoints>
        <override
            policy="InvokeAlwaysRegardlessOfSuppressedExt"
-           suppressedExtensionId="org.eclipse.ui.navigator.resourceContent"/>       
+           suppressedExtensionId="org.eclipse.ui.navigator.resourceContent"/>
        <possibleChildren>
           <instanceof
                 value="org.nuxeo.ide.connect.studio.content.StudioProjectElement">
@@ -117,11 +117,11 @@
              <instanceof
                    value="org.nuxeo.ide.connect.studio.content.StudioProjectElement">
              </instanceof>
-          </enablement> 
-       </actionProvider> 
+          </enablement>
+       </actionProvider>
     </navigatorContent>
  </extension>
- 
+
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -151,9 +151,9 @@
          </parameter>
       </key>
    </extension>
-   
+
    <!-- ### Document Adapter wizard ### -->
-   
+
    <extension
          point="org.eclipse.ui.newWizards">
          <wizard
@@ -163,7 +163,7 @@
             id="org.nuxeo.ide.core.adapterWizard"
             name="Document Adapter">
       </wizard>
-      
+
       <!-- test -->
       <wizard
             category="org.nuxeo.ide.project.newWizards/org.nuxeo.ide.test.newWizards"
@@ -172,8 +172,8 @@
             id="org.nuxeo.ide.connect.features.test.StudioUnitTestWizard"
             name="Studio Unit Test">
       </wizard>
-      
-      
+
+
    </extension>
    <extension
          id="org.nuxeo.ide.connect.sdk_provider"

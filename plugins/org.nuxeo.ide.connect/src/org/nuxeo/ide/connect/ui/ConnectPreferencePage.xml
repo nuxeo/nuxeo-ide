@@ -1,32 +1,38 @@
 <panel cols="1" layout="grid">
 
-<frame cols='2' layout="grid" label="Connect Account"  hfill="true">
+  <frame cols='2' layout="grid" label="Online Services account" hfill="true">
 
-<link colspan="2" hfill="true" wrap="true" trim="false">Enter your Nuxeo Connect account information and click on 'connect' button to retrieve 
-the 'Studio' projects associated with your account.
-This step is required if you want to bind your Nuxeo plugins to a Studio project. 
+    <link colspan="2" hfill="true" wrap="true" trim="false">
+Enter your Nuxeo Online Services account information and click on 'connect' button
+to retrieve the 'Studio' projects associated with your account.
+This step is required if you want to bind your Nuxeo plugins to a Studio project.
 
-For more information on Nuxeo Connect and Nuxeo Studio click here: 
-<a href="http://connect.nuxeo.com">http://connect.nuxeo.com</a>
-</link>
+The Nuxeo Online Services subscription offers access to services, support, maintenance
+and customization tools to speed development time and future-proof your application.
+Nuxeo Online Services include Nuxeo Studio, Nuxeo Marketplace, Nuxeo Cloud and Nuxeo Support.
 
-<text>Host:</text><textbox id="host" hfill="true"/>
-<text>Username:</text><textbox id="username" hfill="true"/>
-<text>Password:</text><password id="password" hfill="true"/>
+For more information see:
+<a href="http://www.nuxeo.com/products/online-services/">Nuxeo Online Services introduction on www.nuxeo.com</a>
+<a href="http://doc.nuxeo.com/x/qYRH">Nuxeo Online Services documentation</a>
+    </link>
 
-<panel colspan="2" halign="right">
-<button id="connect">Connect</button>
-</panel>
+    <text>Host:</text>
+    <textbox id="host" hfill="true" />
+    <text>Username:</text>
+    <textbox id="username" hfill="true" />
+    <text>Password:</text>
+    <password id="password" hfill="true" />
 
-</frame>
+    <panel colspan="2" halign="right">
+      <button id="connect">Connect</button>
+    </panel>
+  </frame>
 
-<frame cols='1' layout="grid" label="Studio Projects" hfill="true" id="studio" vfill="true">
-<text hfill="true">
-The Studio projects associated with your account:
-</text>
-<listbox id="projects" hfill="true" vfill="true" height="200"></listbox>
-
-</frame>
-
+  <frame cols='1' layout="grid" label="Studio Projects" hfill="true" id="studio" vfill="true">
+    <text hfill="true">
+      The Studio projects associated with your account:
+    </text>
+    <listbox id="projects" hfill="true" vfill="true" height="200"></listbox>
+  </frame>
 
 </panel>
