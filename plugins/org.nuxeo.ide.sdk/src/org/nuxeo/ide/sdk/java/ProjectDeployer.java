@@ -89,7 +89,7 @@ public class ProjectDeployer {
         devFolder.create(IResource.FORCE|IResource.DERIVED, true, monitor);
         mainFolder.create(IResource.FORCE|IResource.DERIVED, true, monitor);
         seamFolder.create(IResource.FORCE|IResource.DERIVED, true, monitor);
-        mergeFolder(findMember(project.getOutputLocation()), mainFolder, monitor);
+        mergeOutputLocation(project.getOutputLocation(), monitor);
         for (IPackageFragmentRoot root : project.getPackageFragmentRoots()) {
             if (root.getKind() != IPackageFragmentRoot.K_SOURCE) {
                 continue;
