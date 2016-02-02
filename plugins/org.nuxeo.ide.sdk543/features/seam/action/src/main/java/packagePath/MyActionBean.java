@@ -18,7 +18,6 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.webapp.documentsLists.DocumentsListsManager;
-import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 
 /**
  *
