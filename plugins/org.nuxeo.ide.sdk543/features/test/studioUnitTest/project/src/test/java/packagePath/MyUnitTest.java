@@ -28,15 +28,24 @@ import com.google.inject.Inject;
 public class ${className} {
 
     @Inject
-    CoreSession coreSession; 
+    CoreSession coreSession;
 
     <#list docTypes as docType>
     @Test
     public void test${docType.id}() throws Exception {
+        // Create a document under the repository root
+        // So far the document will be stored in memory
         DocumentModel ${docType.id} = coreSession.createDocumentModel("/", "${docType.label}",
                 "${docType.id}");
         Assert.assertNotNull(${docType.id});
+        // Mark the document for creation in database
+        // To improve performances all pending changes will be written at the same time
+        // When calling coreSession.save()
         ${docType.id} = coreSession.createDocument(${docType.id});
+        // Save all pending changes on documents in the database
+        // This method is only needed in the context of a unit test
+        // Anywhere else, it will be called automatically
+        coreSession.save();
         Assert.assertNotNull(${docType.id});
     }
     </#list>
