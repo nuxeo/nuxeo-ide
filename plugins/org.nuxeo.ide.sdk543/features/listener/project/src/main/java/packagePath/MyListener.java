@@ -2,7 +2,7 @@ ${copyright}
 
 package ${package};
 
-import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.event.Event;
 import org.nuxeo.ecm.core.event.EventListener;
 
@@ -12,8 +12,8 @@ import org.nuxeo.ecm.core.event.EventListener;
  */
 public class ${className} implements EventListener {
 
-    public void handleEvent(Event event) throws ClientException {
+    public void handleEvent(Event event) throws NuxeoException {
 
-    }    
+    }
 
 }
