@@ -13,13 +13,12 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.nuxeo.ecm.core.api.CoreSession;
-import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.PropertyException;
 import org.nuxeo.ecm.platform.ui.web.api.NavigationContext;
 import org.nuxeo.ecm.platform.ui.web.invalidations.AutomaticDocumentBasedInvalidation;
 import org.nuxeo.ecm.platform.ui.web.invalidations.DocumentContextBoundActionBean;
-import org.nuxeo.ecm.webapp.helpers.ResourcesAccessor;
 
 /**
  * Code skeleton for a Bean that is controlling
@@ -57,9 +56,6 @@ public class ${class} extends DocumentContextBoundActionBean implements Serializ
     @In(create = true, required = false)
     protected transient FacesMessages facesMessages;
 
-    @In(create = true)
-    protected transient ResourcesAccessor resourcesAccessor;
-
     @In(create = true, required = false)
     protected NuxeoPrincipal currentNuxeoPrincipal;
 
@@ -69,18 +65,19 @@ public class ${class} extends DocumentContextBoundActionBean implements Serializ
     protected int updateCount = 0;
 
     // This method is automatically called
-    //  - before your bean will be called by JSF or any other bean
-    //  - only if the currentDocument has changed
+    // - before your bean will be called by JSF or any other bean
+    // - only if the currentDocument has changed
     //
     // To get the currentDocument, you can directly use
     // the inherited getCurrentDocument method
     @Override
     protected void resetBeanCache(DocumentModel currentDoc) {
         try {
-            title=getCurrentDocument().getTitle();
-            contributors = (String[]) getCurrentDocument().getPropertyValue("dc:contributors");
-            updateCount=0;
-        } catch (ClientException e) {
+            title = getCurrentDocument().getTitle();
+            contributors = (String[]) getCurrentDocument().getPropertyValue(
+                    "dc:contributors");
+            updateCount = 0;
+        } catch (PropertyException e) {
             log.error("Cannot fetch document properties", e);
         }
     }
@@ -111,16 +108,11 @@ public class ${class} extends DocumentContextBoundActionBean implements Serializ
     // Sample method that is bound to form submit
     public String save() {
         // commit the change in document
-        try {
-            DocumentModel doc = getCurrentDocument();
-            doc.setPropertyValue("dc:title", title);
-            documentManager.saveDocument(doc);
-            documentManager.save();
-        } catch (ClientException e) {
-            log.error("Cannot save title", e);
-            return null;
-        }
-        updateCount+=1;
+        DocumentModel doc = getCurrentDocument();
+        doc.setPropertyValue("dc:title", title);
+        documentManager.saveDocument(doc);
+        documentManager.save();
+        updateCount += 1;
         // if you need to change the current document and let Nuxeo
         // select the correct view
         // you can use navigationContext and return the view
