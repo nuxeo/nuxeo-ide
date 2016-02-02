@@ -6,11 +6,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.io.Serializable;
 
-import org.nuxeo.ecm.core.api.ClientException;
+import org.nuxeo.ecm.core.api.NuxeoException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.Blob;
-import org.nuxeo.ecm.core.api.model.PropertyException;
+import org.nuxeo.ecm.core.api.PropertyException;
 
 /**
  * ${authorTag}
@@ -23,7 +23,7 @@ public class ${className} {
         this.doc = doc;
     }
 
-    public void save(CoreSession session) throws ClientException {
+    public void save(CoreSession session) throws NuxeoException {
         session.saveDocument(doc);
     }
 
@@ -32,13 +32,13 @@ public class ${className} {
     }
 
     <#list fields as field>
-    public ${field.type} ${field.getter}() throws PropertyException, ClientException {
+    public ${field.type} ${field.getter}() throws PropertyException, NuxeoException {
         return (${field.type})doc.getPropertyValue("${field.path}");
     }
 
-    public void ${field.setter}(${field.type} value) throws PropertyException, ClientException {
+    public void ${field.setter}(${field.type} value) throws PropertyException, NuxeoException {
         doc.setPropertyValue("${field.path}", ${field.cast("value")});
     }
 
-    </#list>    
+    </#list>
 }
