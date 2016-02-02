@@ -56,9 +56,6 @@ public class ${class} extends DocumentContextBoundActionBean implements Serializ
     @In(create = true, required = false)
     protected transient FacesMessages facesMessages;
 
-    @In(create = true)
-    protected transient ResourcesAccessor resourcesAccessor;
-
     @In(create = true, required = false)
     protected NuxeoPrincipal currentNuxeoPrincipal;
 
