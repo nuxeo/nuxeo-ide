@@ -21,7 +21,7 @@ set -ex
 [ $# -ne 1 ] && echo "usage: $0 [release|after-release|minor-branch|major-branch]" && exit 1
 
 operation=$1
-project_version=$(mvn -N help:evaluate -Dexpression='project.version' | grep -v '^\[')
+project_version=$(mvn -nsu -N help:evaluate -Dexpression='project.version' | grep -v '^\[')
 
 parse_project_version $project_version
 
