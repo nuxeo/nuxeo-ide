@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Nuxeo IDE Connect
 Bundle-SymbolicName: org.nuxeo.ide.connect;singleton:=true
-Bundle-Version: 1.2.5.R12x_v20160203_1110
+Bundle-Version: 1.2.6.qualifier
 Bundle-Activator: org.nuxeo.ide.connect.ConnectPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
