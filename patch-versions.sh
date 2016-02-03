@@ -167,13 +167,13 @@ diff -r b872b22ad3d5 -r 927d1d313a1d plugins/org.nuxeo.ide.qatests/pom.xml
 @@ -63,12 +63,12 @@
              <dependency> 
                <type>p2-installable-unit</type>
-               <artifactId>org.nuxeo.ide.sdk.feature.group</artifactId>
+               <artifactId>org.nuxeo.ide.sdk.feature</artifactId>
 -              <version>${previous_osgi}</version>
 +              <version>${next_osgi}</version>
              </dependency>
              <dependency> 
                <type>p2-installable-unit</type>
-               <artifactId>org.nuxeo.ide.shell.feature.group</artifactId>
+               <artifactId>org.nuxeo.ide.shell.feature</artifactId>
 -              <version>${previous_osgi}</version>
 +              <version>${next_osgi}</version>
              </dependency>
