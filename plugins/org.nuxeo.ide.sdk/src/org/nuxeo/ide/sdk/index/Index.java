@@ -118,7 +118,7 @@ public class Index {
     protected Map<String, String> index;
 
     public Index(Map<String, String> map) {
-        this.index = map;
+        index = map;
     }
 
     public final Map<String, String> getIndex() {
@@ -184,6 +184,10 @@ public class Index {
             map.put(unresolved.getArtifact().getId(), unresolved);
         }
         return map.values().toArray(new DependencyEntry[map.size()]);
+    }
+
+    public void merge(Index artifactIndex) {
+        index.putAll(artifactIndex.index);
     }
 
 }

@@ -182,9 +182,9 @@ public class NuxeoSDK {
 
     public NuxeoSDK(SDKInfo info) {
         this.info = info;
-        this.root = info.getInstallDirectory();
-        this.controller = new ServerController(info);
-        this.compIndexMgr = new ComponentIndexManager(this.root);
+        root = info.getInstallDirectory();
+        controller = new ServerController(info);
+        compIndexMgr = new ComponentIndexManager(root);
         controller.addServerLifeCycleListener(compIndexMgr);
     }
 
@@ -233,6 +233,7 @@ public class NuxeoSDK {
         if (_index == null) {
             synchronized (this) {
                 testIndex = Index.load(new File(root, SDKInfo.SDK_TEST_ARTIFACTS_PATH), SDKInfo.SDK_TEST_ARTIFACTS_FILE);
+                testIndex.merge(getArtifactIndex());
                 _index = testIndex;
             }
         }
