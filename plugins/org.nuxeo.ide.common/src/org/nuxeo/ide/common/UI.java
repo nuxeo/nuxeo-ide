@@ -24,7 +24,7 @@ import org.eclipse.ui.statushandlers.StatusManager;
 
 /**
  * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
- * 
+ *
  */
 public class UI {
 
@@ -59,12 +59,20 @@ public class UI {
         showWarning(message, APPLICATION_NAME);
     }
 
+    public static void showWarning(String message, Throwable t) {
+        showWarning(message, t, APPLICATION_NAME);
+    }
+
     public static void showWarning(String message, String title) {
+        showWarning(message, null, APPLICATION_NAME);
+    }
+
+    public static void showWarning(String message, Throwable t, String title) {
         StatusManager mgr = StatusManager.getManager();
         IStatus status = new Status(
                 IStatus.WARNING,
                 Activator.getDefault().getContext().getBundle().getSymbolicName(),
-                message);
+                message, t);
         mgr.handle(status, StatusManager.SHOW|StatusManager.LOG);
     }
 

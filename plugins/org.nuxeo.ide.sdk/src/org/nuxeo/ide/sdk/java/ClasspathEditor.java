@@ -19,8 +19,6 @@
 package org.nuxeo.ide.sdk.java;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,8 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarFile;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -169,15 +165,14 @@ public class ClasspathEditor {
 
     protected String artifactKey(IClasspathEntry entry) throws Exception {
         IPath jarPath = JavaCore.getResolvedClasspathEntry(entry).getPath();
-        IPath pomPath = jarPath.removeFileExtension().addFileExtension("pom");
-        File pomFile = pomPath.toFile();
-        if (!pomFile.exists()) {
-            pomFile = JarUtils.getPom(jarPath.toFile());
+        File jarFile = jarPath.toFile();
+        if (jarFile.isDirectory()) {
+            PomModel pom = new PomModel(JarUtils.getPom(jarFile));
+            return String.format("%s-%s.jar", pom.getArtifactId(), pom.getArtifactVersion());
         }
-        PomModel pomModel = new PomModel(pomFile);
-        return pomModel.getGroupId() + ":" + pomModel.getArtifactId();
+        return jarPath.lastSegment();
     }
-    
+
     protected String artifactKey(String gav) {
         int twoDotIndex = 0;
         for (int i = 0; i < 2; i++) {
@@ -185,28 +180,28 @@ public class ClasspathEditor {
         }
         return gav.substring(0, twoDotIndex);
     }
-    
+
     /**
      * Removing classpath entries that are in already in the containers. This
      * method is intended to be called after a mvn eclipse:eclipse
      */
     protected void removeDuplicates()  {
-        
+
         // classpath index
         Map<String, IClasspathEntry> cpIndex = new HashMap<String, IClasspathEntry>();
         List<IClasspathEntry> duplicateEntries = new ArrayList<IClasspathEntry>();
         for (IClasspathEntry each : entries) {
             if (each.getEntryKind() != IClasspathEntry.CPE_VARIABLE) {
                 continue;
-            }         
+            }
             String key;
             try {
                 key = artifactKey(each);
             } catch (Exception cause) {
                 UI.showWarning("cannot compute artifact key for " + each
-                        + ", skipping");
+                        + ", skipping (don't embed a pom in jar)", cause);
                 continue;
-            }           
+            }
             if (cpIndex.containsKey(key)) {
                 UI.showWarning("classpath contains duplicate entries for "
                         + key + ", keeping last " + each);
@@ -219,14 +214,13 @@ public class ClasspathEditor {
 
         // sdk index
         Collection<String> sdkIndex = new ArrayList<String>();
-        sdkIndex.addAll(NuxeoSDK.getDefault().getArtifactIndex().getIndex().values());
-        sdkIndex.addAll(NuxeoSDK.getDefault().getTestArtifactIndex().getIndex().values());
+        sdkIndex.addAll(NuxeoSDK.getDefault().getArtifactIndex().getIndex().keySet());
+        sdkIndex.addAll(NuxeoSDK.getDefault().getTestArtifactIndex().getIndex().keySet());
 
         // cleanup
         for (String each : sdkIndex) {
-            String key = artifactKey(each);
-            if (cpIndex.containsKey(key)) {
-                IClasspathEntry entry = cpIndex.get(key);
+            if (cpIndex.containsKey(each)) {
+                IClasspathEntry entry = cpIndex.get(each);
                 entries.remove(entry);
                 dirty = true;
             }

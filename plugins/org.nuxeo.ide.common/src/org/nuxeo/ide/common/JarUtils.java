@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Contributors:
  *     Nuxeo - initial API and implementation
  *
@@ -21,10 +21,14 @@
 
 package org.nuxeo.ide.common;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -59,7 +63,7 @@ public final class JarUtils {
         }
         return true;
     }
-    
+
     public static Manifest getManifest(File file) {
         try {
             if (file.isDirectory()) {
@@ -71,7 +75,7 @@ public final class JarUtils {
             return null;
         }
     }
-    
+
     public static Manifest getDirectoryManifest(File file) throws IOException {
         FileInputStream fis = null;
         try {
@@ -97,15 +101,15 @@ public final class JarUtils {
     }
 
     public static Manifest getManifest(URL url) {
-        try {
-            return new JarFile(new File(url.getFile())).getManifest();
+        try (JarFile file=new JarFile(new File(url.getFile()))) {
+            return file.getManifest();
         } catch (IOException e) {
             return null;
         }
     }
 
 
-    public static File getPom(File file) throws IOException {
+    public static InputStream getPom(File file) throws IOException, URISyntaxException {
         if (file.isDirectory()) {
             return getDirectoryPom(file);
         } else {
@@ -114,11 +118,11 @@ public final class JarUtils {
     }
 
     protected static class PomFinder extends SimpleFileVisitor<Path> {
-        
+
         protected Path pom;
 
         boolean inMetaInf;
-        
+
         @Override
         public FileVisitResult preVisitDirectory(Path dir,
                 BasicFileAttributes attrs) throws IOException {
@@ -128,7 +132,7 @@ public final class JarUtils {
             if ("meta-inf".equals(dir.getFileName().toString().toLowerCase())) {
                 inMetaInf = true;
                 return FileVisitResult.CONTINUE;
-            } 
+            }
             return FileVisitResult.SKIP_SUBTREE;
         }
 
@@ -142,7 +146,7 @@ public final class JarUtils {
             }
             return FileVisitResult.CONTINUE;
         }
-        
+
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                 throws IOException {
@@ -152,25 +156,28 @@ public final class JarUtils {
             pom = file;
             return FileVisitResult.TERMINATE;
         }
-        
+
     }
-    public static File getDirectoryPom(File file) throws IOException {
+    public static InputStream getDirectoryPom(File file) throws IOException {
         PomFinder finder = new PomFinder();
         Files.walkFileTree(Paths.get(file.toURI()), finder);
         if (finder.pom == null) {
             throw new FileNotFoundException("Cannot find pom in " + file.getName());
         }
-        return finder.pom.toFile();
+        return new FileInputStream(finder.pom.toFile());
     }
-    
-    public static File getJarPom(File file) throws IOException {
+
+    public static InputStream getJarPom(File file) throws IOException, URISyntaxException {
         try (JarFile jar = new JarFile(file)) {
             Enumeration<JarEntry> it = jar.entries();
             while (it.hasMoreElements()) {
                 JarEntry each = it.nextElement();
                 if (each.getName().endsWith("/pom.xml")) {
-                    return new File(file.getPath().concat("!").concat(
-                            each.getName()));
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    try (InputStream input = jar.getInputStream(each)) {
+                        IOUtils.copy(input, bos);
+                    }
+                    return new ByteArrayInputStream(bos.toByteArray());
                 }
             }
         }
