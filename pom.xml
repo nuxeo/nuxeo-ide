@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.nuxeo.ide</groupId>
   <artifactId>org.nuxeo.ide.tycho</artifactId>
-  <version>1.2.6-SNAPSHOT</version>
+  <version>1.2.6.R12x_v20160705_1035</version>
   <packaging>pom</packaging>
   <name>Nuxeo IDE Tycho Build</name>
   <description>Provide common tycho build directives.</description>
