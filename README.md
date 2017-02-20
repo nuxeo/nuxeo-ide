@@ -1,3 +1,6 @@
+# Warning
+Nuxeo IDE won't be released anymore and should not be used for releases of Nuxeo Platform greater than LTS 2015 as no support would be provided. You should instead use [Nuxeo CLI](https://doc.nuxeo.com/nxdoc/getting-started-with-nuxeo-generator/).
+
 # Nuxeo IDE - tools for developing nuxeo components in eclipse
 
 Nuxeo IDE is the Integrated Development Environment (IDE) for developers using the Nuxeo Platform a full-featured Open Source Content Management Platform to help developers build document management solutions, case management solutions, digital asset management solutions, and business content applications.
